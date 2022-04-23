@@ -1,0 +1,49 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.7'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'com.hanghae99'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    //실행 파라미터를 로그를 통해 직접 확인할 수 있다.
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
+
+    //  S3 연결 라이브러리
+    //implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
+    //  .스프링 시큐리티 라이브러리
+    //implementation 'org.springframework.boot:spring-boot-starter-security'
+    // 테스트 - 스프링시큐리티
+    //testImplementation 'org.springframework.security:spring-security-test'
+    // JWT 토큰
+    //implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    //유효성 검사
+    //implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
