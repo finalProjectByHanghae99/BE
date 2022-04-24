@@ -23,4 +23,11 @@ public class UserController {
         userService.registerUser(requestDto);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
+
+    // 이메일 중복검사 API
+    @PostMapping("/user/emailCheck")
+    public ResponseEntity<ExceptionResponse> emailCheck(@RequestBody SignupDto.RequestDto requestDto) {
+        userService.emailCheck(requestDto.getEmail());
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.DUPLICATE_ERROR_SIGNUP_EMAIL), HttpStatus.OK);
+    }
 }

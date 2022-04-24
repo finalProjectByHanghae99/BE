@@ -21,17 +21,6 @@ public class UserService {
     @Transactional
     public void registerUser(SignupDto.RequestDto requestDto) {
 
-        // 회원 이메일 중복 확인
-        String email = requestDto.getEmail();
-        if (userRepository.existsByEmail(email)) {
-            throw new PrivateException(ErrorCode.DUPLICATE_ERROR_SIGNUP_EMAIL);
-        }
-
-        // 회원 닉네임 중복 확인
-        String nickname = requestDto.getNickname();
-        if (userRepository.existsByNickname(nickname)) {
-            throw new PrivateException(ErrorCode.DUPLICATE_ERROR_SIGNUP_NICKNAME);
-        }
         // 회원 비밀번호 암호화
         String password = passwordEncoder.encode(requestDto.getPassword());
 
@@ -40,13 +29,20 @@ public class UserService {
 
         User user = userRepository.save(
                 User.builder()
-                        .email(email)
-                        .nickname(nickname)
+                        .email(requestDto.getEmail())
+                        .nickname(requestDto.getNickname())
                         .password(password)
                         .address(requestDto.getAddress())
 //                        .intro("자시소개를 해주세요")
 //                        .profileImg("dfdfdfdfdff.png")
                         .build()
         );
+    }
+
+    // 회원 이메일 중복확인
+    public void emailCheck(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new PrivateException(ErrorCode.DUPLICATE_ERROR_SIGNUP_EMAIL);
+        }
     }
 }
