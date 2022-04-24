@@ -1,12 +1,13 @@
 package com.hanghae99.finalprooject.model;
 
-import lombok.Getter;
+import lombok.*;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 @Entity
 public class User {
 
@@ -24,17 +25,10 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
-
     private String intro;
 
     private String address;
 
     private String profileImg;
-
-
-
-
-
-
 
 }
