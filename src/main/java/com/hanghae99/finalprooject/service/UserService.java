@@ -45,4 +45,11 @@ public class UserService {
             throw new PrivateException(ErrorCode.DUPLICATE_ERROR_SIGNUP_EMAIL);
         }
     }
+
+    // 회원 닉네임 중복확인
+    public void nicknameCheck(String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
+            throw new PrivateException(ErrorCode.DUPLICATE_ERROR_SIGNUP_NICKNAME);
+        }
+    }
 }
