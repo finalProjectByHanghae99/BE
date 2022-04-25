@@ -27,8 +27,6 @@ public class User {
 
     private String intro;
 
-    private String address;
-
     private String profileImg;
 
 }

@@ -1,4 +1,4 @@
-package com.hanghae99.finalprooject.dto;
+package com.hanghae99.finalprooject.dto.userDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +14,15 @@ public class SignupDto {
         private String password;
         private String pwCheck;
         private String nickname;
-        private String address;
         private String intro;
         private String profileImg;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class ResponseDto {
+        private String email;
+        private String password;
     }
 }

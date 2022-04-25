@@ -1,6 +1,6 @@
 package com.hanghae99.finalprooject.validator;
 
-import com.hanghae99.finalprooject.dto.SignupDto;
+import com.hanghae99.finalprooject.dto.userDto.SignupDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
 
@@ -20,7 +20,7 @@ public class UserValidator {
 
         // 이메일 설정 유효성 검사
         if (email == null || !Pattern.matches(patternEmail, email)) {
-            throw new PrivateException(ErrorCode.DUPLICATE_ERROR_SIGNUP_EMAIL);
+            throw new PrivateException(ErrorCode.WRONG_INPUT_SIGNUP_EMAIL);
         }
 
         // 비밀번호 설정 유효성 검사
