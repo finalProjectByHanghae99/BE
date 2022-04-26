@@ -14,6 +14,7 @@ import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -66,16 +67,15 @@ public class UserService {
     }
 
     // 회원 이메일 중복확인
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean emailCheck(String email) {
         return userRepository.existsByEmail(email);
     }
 
     // 회원 닉네임 중복확인
-    public void nicknameCheck(String nickname) {
-        if (userRepository.existsByNickname(nickname)) {
-            throw new PrivateException(ErrorCode.DUPLICATE_ERROR_SIGNUP_NICKNAME);
-        }
+    @Transactional(readOnly = true)
+    public boolean nicknameCheck(String nickname) {
+       return userRepository.existsByNickname(nickname);
     }
 
     // 로그인

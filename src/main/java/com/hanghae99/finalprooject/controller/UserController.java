@@ -35,12 +35,10 @@ public class UserController {
         return ResponseEntity.ok(userService.emailCheck(requestDto.getEmail()));
     }
 
-
     // 닉네임 중복검사 API
     @PostMapping("/user/nicknameCheck")
-    public ResponseEntity<ExceptionResponse> nicknameCheck(@RequestBody SignupDto.RequestDto requestDto) {
-        userService.nicknameCheck(requestDto.getNickname());
-        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.DUPLICATE_ERROR_SIGNUP_NICKNAME), HttpStatus.OK);
+    public ResponseEntity<Boolean> nicknameCheck(@RequestBody SignupDto.RequestDto requestDto) {
+        return ResponseEntity.ok(userService.nicknameCheck(requestDto.getNickname()));
     }
 
     // 로그인 API

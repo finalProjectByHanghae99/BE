@@ -17,7 +17,6 @@ public enum ErrorCode {
     WRONG_INPUT_SIGNUP_NICKNAME(HttpStatus.BAD_REQUEST, "400", "닉네임 형식을 맞춰주세요"),
     DUPLICATE_CHECK_SIGNUP_EMAIL(HttpStatus.BAD_REQUEST, "400", "Email 중복확인을 해주세요"),
     DUPLICATE_CHECK_SIGNUP_NICKNAME(HttpStatus.BAD_REQUEST, "400", "닉네임 중복확인을 해주세요"),
-    DUPLICATE_ERROR_SIGNUP_NICKNAME(HttpStatus.BAD_REQUEST, "400", "이미 존재하는 닉네임입니다"),
 
     // Token
     JWT_TOKEN_WRONG_AUTHORITY(HttpStatus.FORBIDDEN, "403", "권한 정보가 없는 토큰입니다"),
