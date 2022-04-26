@@ -127,4 +127,8 @@ public class UserService {
 
         return tokenDto;
     }
+
+    public void checkNickname(String nickname) {
+        userRepository.existsByNickname(nickname);
+    }
 }

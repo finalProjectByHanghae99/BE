@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider implements InitializingBean { // Jwt 생성, 검증하는 component
 
     private static final String AUTHORITIES_KEY = "auth";
-    private static final String BEARER_TYPE = "bearer";
+    private static final String BEARER_TYPE = "Bearer";
 
     // Access Token 유효기간 - 1시간
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 1000L;
@@ -51,8 +51,9 @@ public class JwtTokenProvider implements InitializingBean { // Jwt 생성, 검�
 
     // Token 생성 Method
     public TokenDto generateTokenDto(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+//        String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.joining(","));
+        String authorities = "ROLE_USER";
 
         long now = (new Date()).getTime();
 
@@ -60,7 +61,9 @@ public class JwtTokenProvider implements InitializingBean { // Jwt 생성, 검�
 
         // Access Token 생성
         String accessToken = Jwts.builder()
+                .setHeaderParam("typ", "JWT")
                 .setSubject(authentication.getName())
+                .setIssuer("HH99_9_FINAL_PROJECT")
                 .claim(AUTHORITIES_KEY, authorities)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)

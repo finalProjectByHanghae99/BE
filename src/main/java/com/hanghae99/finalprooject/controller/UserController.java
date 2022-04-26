@@ -6,7 +6,6 @@ import com.hanghae99.finalprooject.dto.userDto.TokenDto;
 import com.hanghae99.finalprooject.dto.userDto.TokenRequestDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.ExceptionResponse;
-import com.hanghae99.finalprooject.jwt.SecurityUtil;
 import com.hanghae99.finalprooject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,11 +41,17 @@ public class UserController {
     }
 
     // 로그인 API
+//    @PostMapping("/user/login")
+//    public ResponseEntity<ExceptionResponse> login(@RequestBody LoginDto loginDto) {
+//        TokenDto tokenDto = userService.login(loginDto);
+//        return  new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+//    }
+
     @PostMapping("/user/login")
-    public ResponseEntity<ExceptionResponse> login(@RequestBody LoginDto loginDto) {
-        TokenDto tokenDto = userService.login(loginDto);
-        return  new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
+        return ResponseEntity.ok(userService.login(loginDto));
     }
+
 
     // 토큰 재발행 API
     @PostMapping("/user/reissue")
@@ -54,11 +59,8 @@ public class UserController {
         return ResponseEntity.ok(userService.reissue(tokenRequestDto));
     }
 
-    @GetMapping("/test")
-
-    @PostMapping("/post/test")
-    public ExceptionResponse testPost(){
-        System.out.println(SecurityUtil.getCurrentUserId());
-        return new ExceptionResponse(ErrorCode.OK);
+    @GetMapping("/api/logintest")
+    public ResponseEntity<ExceptionResponse> getLoginTest(){
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
 }

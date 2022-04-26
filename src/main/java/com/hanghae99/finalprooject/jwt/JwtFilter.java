@@ -38,6 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
             // SecurityContext에 Authentication 객체 저장
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.info("SecurityContext [username : " + authentication.getName() + "] 인증 저보 저장 완료");
+            System.out.println("SecurityContext [username : " + authentication.getName() + "] 인증 저보 저장 완료");
         }
         filterChain.doFilter(request, response);
     }
