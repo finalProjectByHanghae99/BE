@@ -31,10 +31,10 @@ public class UserController {
 
     // 이메일 중복검사 API
     @PostMapping("/user/emailCheck")
-    public ResponseEntity<ExceptionResponse> emailCheck(@RequestBody SignupDto.RequestDto requestDto) {
-        userService.emailCheck(requestDto.getEmail());
-        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.DUPLICATE_ERROR_SIGNUP_EMAIL), HttpStatus.OK);
+    public ResponseEntity<Boolean> emailCheck(@RequestBody SignupDto.RequestDto requestDto) {
+        return ResponseEntity.ok(userService.emailCheck(requestDto.getEmail()));
     }
+
 
     // 닉네임 중복검사 API
     @PostMapping("/user/nicknameCheck")

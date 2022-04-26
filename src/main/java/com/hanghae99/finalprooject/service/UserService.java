@@ -66,10 +66,9 @@ public class UserService {
     }
 
     // 회원 이메일 중복확인
-    public void emailCheck(String email) {
-        if (!userRepository.existsByEmail(email)) {
-            throw new PrivateException(ErrorCode.DUPLICATE_ERROR_SIGNUP_EMAIL);
-        }
+    @Transactional
+    public boolean emailCheck(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     // 회원 닉네임 중복확인
