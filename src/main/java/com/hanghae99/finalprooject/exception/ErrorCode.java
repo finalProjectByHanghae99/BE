@@ -15,6 +15,8 @@ public enum ErrorCode {
     WRONG_INPUT_SIGNUP_PASSWORD(HttpStatus.BAD_REQUEST, "400", "비밀번호 형식을 맞춰주세요"),
     WRONG_INPUT_SIGNUP_PWCHECK(HttpStatus.BAD_REQUEST, "400", "비밀번호가 일치하지 않습니다"),
     WRONG_INPUT_SIGNUP_NICKNAME(HttpStatus.BAD_REQUEST, "400", "닉네임 형식을 맞춰주세요"),
+    DUPLICATE_CHECK_SIGNUP_EMAIL(HttpStatus.BAD_REQUEST, "400", "Email 중복확인을 해주세요"),
+    DUPLICATE_CHECK_SIGNUP_NICKNAME(HttpStatus.BAD_REQUEST, "400", "닉네임 중복확인을 해주세요"),
     DUPLICATE_ERROR_SIGNUP_EMAIL(HttpStatus.BAD_REQUEST, "400", "이미 존재하는 Email입니다"),
     DUPLICATE_ERROR_SIGNUP_NICKNAME(HttpStatus.BAD_REQUEST, "400", "이미 존재하는 닉네임입니다"),
 

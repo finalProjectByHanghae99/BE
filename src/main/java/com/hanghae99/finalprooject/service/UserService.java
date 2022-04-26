@@ -39,13 +39,13 @@ public class UserService {
         // 회원 이메일 중복 확인
         String email = requestDto.getEmail();
         if (userRepository.existsByEmail(email)) {
-            throw new PrivateException(ErrorCode.DUPLICATE_ERROR_SIGNUP_EMAIL);
+            throw new PrivateException(ErrorCode.DUPLICATE_CHECK_SIGNUP_EMAIL);
         }
 
         // 회원 닉네임 중복 확인
         String nickname = requestDto.getNickname();
         if (userRepository.existsByNickname(nickname)) {
-            throw new PrivateException(ErrorCode.DUPLICATE_ERROR_SIGNUP_NICKNAME);
+            throw new PrivateException(ErrorCode.DUPLICATE_CHECK_SIGNUP_NICKNAME);
         }
 
         // 회원 비밀번호 암호화
@@ -67,7 +67,7 @@ public class UserService {
 
     // 회원 이메일 중복확인
     public void emailCheck(String email) {
-        if (userRepository.existsByEmail(email)) {
+        if (!userRepository.existsByEmail(email)) {
             throw new PrivateException(ErrorCode.DUPLICATE_ERROR_SIGNUP_EMAIL);
         }
     }
