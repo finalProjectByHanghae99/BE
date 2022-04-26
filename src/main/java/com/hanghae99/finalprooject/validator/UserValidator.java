@@ -7,21 +7,24 @@ import com.hanghae99.finalprooject.exception.PrivateException;
 import java.util.regex.Pattern;
 
 public class UserValidator {
-    public static void validateUserRegister(SignupDto.RequestDto requestDto) {
+    public static void validateInputEmail(SignupDto.RequestDto requestDto) {
 
         String email = requestDto.getEmail();
-        String password = requestDto.getPassword();
-        String pwCheck = requestDto.getPwCheck();
-        String nickname = requestDto.getNickname();
 
         String patternEmail = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
-        String patternPw = "^[A-Za-z0-9]{6,20}$";
-        String patternNickname = "^[A-Za-z0-9가-힣]{4,10}$";
 
         // 이메일 설정 유효성 검사
         if (email == null || !Pattern.matches(patternEmail, email)) {
             throw new PrivateException(ErrorCode.WRONG_INPUT_SIGNUP_EMAIL);
         }
+    }
+
+    public static void validateInputPassword(SignupDto.RequestDto requestDto) {
+
+        String password = requestDto.getPassword();
+        String pwCheck = requestDto.getPwCheck();
+
+        String patternPw = "^[A-Za-z0-9]{6,20}$";
 
         // 비밀번호 설정 유효성 검사
         if (password == null || !Pattern.matches(patternPw, password)) {
@@ -32,6 +35,13 @@ public class UserValidator {
         if (!password.equals(pwCheck)) {
             throw new PrivateException(ErrorCode.WRONG_INPUT_SIGNUP_PWCHECK);
         }
+    }
+
+    public static void validateInputNickname(SignupDto.RequestDto requestDto) {
+
+        String nickname = requestDto.getNickname();
+
+        String patternNickname = "^[A-Za-z0-9가-힣]{4,10}$";
 
         // 닉네임 설정 유효성 검사
         if (nickname == null || !Pattern.matches(patternNickname, nickname)) {

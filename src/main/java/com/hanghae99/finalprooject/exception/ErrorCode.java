@@ -18,6 +18,11 @@ public enum ErrorCode {
     DUPLICATE_CHECK_SIGNUP_EMAIL(HttpStatus.BAD_REQUEST, "400", "Email 중복확인을 해주세요"),
     DUPLICATE_CHECK_SIGNUP_NICKNAME(HttpStatus.BAD_REQUEST, "400", "닉네임 중복확인을 해주세요"),
 
+    DUPLICATE_SIGNUP_EMAIL(HttpStatus.BAD_REQUEST, "400", "해당 Email이 이미 존재합니다"),
+    CORRECT_SIGNUP_EMAIL(HttpStatus.OK, "200", "사용할 수 있는 Email입니다"),
+    DUPLICATE_SIGNUP_NICKNAME(HttpStatus.BAD_REQUEST, "400", "해당 닉네임이 이미 존재합니다"),
+    CORRECT_SIGNUP_NICKNAME(HttpStatus.OK, "200", "사용할 수 있는 닉네임입니다"),
+
     // Token
     JWT_TOKEN_WRONG_AUTHORITY(HttpStatus.FORBIDDEN, "403", "권한 정보가 없는 토큰입니다"),
     JWT_TOKEN_WRONG_SIGNATURE(HttpStatus.UNAUTHORIZED, "401", "잘못된 JWT 서명입니다"),

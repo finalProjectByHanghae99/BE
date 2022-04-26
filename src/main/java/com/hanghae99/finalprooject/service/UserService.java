@@ -53,7 +53,9 @@ public class UserService {
         String password = passwordEncoder.encode(requestDto.getPassword());
 
         // 유효성 검사
-        UserValidator.validateUserRegister(requestDto);
+        UserValidator.validateInputEmail(requestDto);
+        UserValidator.validateInputPassword(requestDto);
+        UserValidator.validateInputNickname(requestDto);
 
         User user = userRepository.save(
                 User.builder()
@@ -64,18 +66,6 @@ public class UserService {
 //                        .profileImg("dfdfdfdfdff.png")
                         .build()
         );
-    }
-
-    // 회원 이메일 중복확인
-    @Transactional(readOnly = true)
-    public boolean emailCheck(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    // 회원 닉네임 중복확인
-    @Transactional(readOnly = true)
-    public boolean nicknameCheck(String nickname) {
-       return userRepository.existsByNickname(nickname);
     }
 
     // 로그인
