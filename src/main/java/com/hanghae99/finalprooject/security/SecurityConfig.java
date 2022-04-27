@@ -71,5 +71,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //JwtSecurityConfig 등록
                 .and()
                 .apply(new JwtSecurityConfig(jwtTokenProvider));
+
     }
 }

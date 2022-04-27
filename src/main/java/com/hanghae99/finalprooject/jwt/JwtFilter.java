@@ -29,6 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        //헤더에서 토큰 꺼내옴
         String token = resolveToken(request);
 
         // Token 유효 검증
