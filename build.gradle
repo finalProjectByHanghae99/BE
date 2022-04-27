@@ -42,6 +42,11 @@ dependencies {
     //유효성 검사
     //implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    //webSocket
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'io.lettuce:lettuce-core:6.1.5.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 }
 
 tasks.named('test') {
