@@ -131,4 +131,14 @@ public class UserService {
         }
         userRepository.deleteById(user.getId());
     }
+
+    // 로그아웃
+    @Transactional
+    public void deleteRefreshToken(TokenRequestDto tokenRequestDto) {
+        Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
+        RefreshToken token = refreshTokenRepository.findByRefreshKey(authentication.getName()).orElseThrow(
+                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
+        );
+        refreshTokenRepository.deleteById(token.getRefreshKey());
+    }
 }
