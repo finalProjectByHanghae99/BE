@@ -1,15 +1,13 @@
 package com.hanghae99.finalprooject.dto;
 
 import com.hanghae99.finalprooject.model.Message;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class MessageDto {
 
     private Message.MessageType type;
