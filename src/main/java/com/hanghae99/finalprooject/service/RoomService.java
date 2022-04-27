@@ -30,7 +30,7 @@ public class RoomService {
     public RoomDto.Response createRoomService(RoomDto.Request roomDto, UserDetailsImpl userDetails){
 
         Post post = postRepository.findById(roomDto.getPostId()).orElseThrow(
-                ()-> new IllegalArgumentException("no post")
+                ()-> new IllegalArgumentException("해당 게시글이 존재하지 않아 방을 생성할 수 없습니다.")
         );
 
 
