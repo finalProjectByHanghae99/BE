@@ -21,5 +21,4 @@ public class Img {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Post post;
-
 }

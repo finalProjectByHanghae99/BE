@@ -43,7 +43,12 @@ public enum ErrorCode {
 
     //기타
     NOT_FOUND_AUTHORIZATION_IN_SECURITY_CONTEXT(HttpStatus.INTERNAL_SERVER_ERROR, "998", "Security Context에 인증 정보가 없습니다."),
-    NOT_FOUND_USER_INFO(HttpStatus.NOT_FOUND, "404", "해당 유저가 존재하지 않습니다");
+    NOT_FOUND_USER_INFO(HttpStatus.NOT_FOUND, "404", "해당 유저가 존재하지 않습니다"),
+
+    // 이미지
+    WRONG_INPUT_IMAGE(HttpStatus.BAD_REQUEST, "400", "이미지는 반드시 있어야 합니다"),
+    IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "400", "이미지 업로드에 실패했습니다"),
+    WRONG_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "400", "지원하지 않는 파일 형식입니다");
 
     private final HttpStatus status;
     private final String errorCode;
