@@ -49,11 +49,11 @@ public class AwsS3UploadService {
                 .build();
     }
 
-    public List<String> uploadImgList(List<MultipartFile> images) throws IOException {
+    public List<String> uploadImgList(List<MultipartFile> imgList) throws IOException {
         List<String> imgDtoList = new ArrayList<>();
 
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
-        for (MultipartFile image : images) {
+        for (MultipartFile image : imgList) {
             String fileName = createFileName(image.getOriginalFilename());
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(image.getSize());
