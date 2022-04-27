@@ -45,8 +45,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     http.authorizeRequests()
         // login 없이 허용
+
         .antMatchers("/user/login").permitAll()
-        .antMatchers("/signup").permitAll()
+        .antMatchers("/user/signup").permitAll()
         .antMatchers("/oauth/callback/kakao").permitAll()
         .antMatchers("/signup/checkid").permitAll()
         .antMatchers("/signup/checknick").permitAll()
