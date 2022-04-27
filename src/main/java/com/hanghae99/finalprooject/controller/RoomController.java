@@ -31,7 +31,7 @@ public class RoomController {
     //chat room create
     @PostMapping("/api/room")
     public RoomDto.Response roomCreate(@RequestBody RoomDto.Request roomDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return roomService.createRoomService(roomDto,userDetails);
+        return roomService.createRoomService(roomDto, userDetails);
 
     }
 

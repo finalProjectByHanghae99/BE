@@ -1,9 +1,6 @@
 package com.hanghae99.finalprooject.service;
 
-import com.hanghae99.finalprooject.dto.userDto.LoginDto;
-import com.hanghae99.finalprooject.dto.userDto.SignupDto;
-import com.hanghae99.finalprooject.dto.userDto.TokenDto;
-import com.hanghae99.finalprooject.dto.userDto.TokenRequestDto;
+import com.hanghae99.finalprooject.dto.userDto.*;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
 import com.hanghae99.finalprooject.jwt.JwtTokenProvider;
@@ -120,10 +117,18 @@ public class UserService {
 
     // 회원 탈퇴
     @Transactional
-    public void deleteUser() {
+    public void deleteUser(SignOutDto signOutDto) {
+        String loginUser = signOutDto.getNickname();
+        log.info("로그인 username : " + loginUser);
+
         User user = userRepository.findByNickname(SecurityUtil.getCurrentUserNickname()).orElseThrow(
                 () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
         );
+        log.info("DB 저장된 username : " + user.getNickname());
+
+        if (!(user.getNickname().equals(loginUser))) {
+            throw new PrivateException(ErrorCode.NOT_MATCH_USER_INFO);
+        }
         userRepository.deleteById(user.getId());
     }
 }
