@@ -6,7 +6,7 @@ import com.hanghae99.finalprooject.dto.LastMessageDto;
 import com.hanghae99.finalprooject.dto.RoomDto;
 import com.hanghae99.finalprooject.model.*;
 import com.hanghae99.finalprooject.repository.*;
-import com.hanghae99.finalprooject.security.UserDetailsImpl;
+import com.hanghae99.finalprooject.jwt.UserDetailsImpl;
 import com.hanghae99.finalprooject.timeConversion.MessageTimeConversion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,25 +27,25 @@ public class RoomService {
     private final MessageRepository messageRepository;
 
     @Transactional
-    public RoomDto.Response createRoomService(RoomDto.Request roomDto, UserDetailsImpl userDetails){
+    public RoomDto.Response createRoomService(RoomDto.Request roomDto, UserDetailsImpl userDetails) {
 
         Post post = postRepository.findById(roomDto.getPostId()).orElseThrow(
-                ()-> new IllegalArgumentException("no post")
+                () -> new IllegalArgumentException("no post")
         );
 
 
         User user = userDetails.getUser(); //게시물에 접근하는 유저
 
         User toUser = userRepository.findById(roomDto.getToUserId()).orElseThrow( //게시물 주인
-                ()-> new IllegalArgumentException("no touser")
+                () -> new IllegalArgumentException("no touser")
         );
         List<Room> checkRoomList = roomRepository.findByRoomPostId(post.getId());
         //해당 게시물에 모든 채팅정보 가져오기
         //룸네임 / 룸pk / roomPostId
-        for (Room room : checkRoomList){
-            UserRoom checkUserRoom = userRoomRepository.findByRoomAndUserAndToUser(room,user,toUser);
+        for (Room room : checkRoomList) {
+            UserRoom checkUserRoom = userRoomRepository.findByRoomAndUserAndToUser(room, user, toUser);
             //해당 게시물에 유저와, 게시물에 접근하는 유저에 채팅방 정보가 있는지 확인
-            if(checkUserRoom != null){ //이미 대화하고 있던 방이 있을경우.
+            if (checkUserRoom != null) { //이미 대화하고 있던 방이 있을경우.
                 throw new IllegalArgumentException("same room");
             }
         }
@@ -123,20 +123,20 @@ public class RoomService {
             if (userRoom.getLastMessageId() == null) {
                 lastMessageDto = LastMessageDto.builder()
                         .content("방이 생성 되었습니다.")
-                        .createdAt(MessageTimeConversion.timeConversion(userRoom.getCreatedAt()))
+                        .createdAt(MessageTimeConversion.timeConversion(userRoom.getCreateAt()))
                         .build();
             } else {
                 Message message = messageRepository.getById(userRoom.getLastMessageId());
                 lastMessageDto = LastMessageDto.builder()
                         .content(message.getContent())
-                        .createdAt(MessageTimeConversion.timeConversion(message.getCreatedAt()))
+                        .createdAt(MessageTimeConversion.timeConversion(message.getCreateAt()))
                         .build();
             }
 
             Post post = postRepository.findById(userRoom.getRoom().getRoomPostId()).orElse(null);
             ChatRoomDto chatRoomDto;
 
-            if(post == null){
+            if (post == null) {
                 chatRoomDto = ChatRoomDto.builder()
                         .roomName(userRoom.getRoom().getRoomName())
                         .postId(userRoom.getRoom().getRoomPostId())
@@ -145,7 +145,7 @@ public class RoomService {
                         .currentStatus(CurrentStatus.success)
                         .notReadingMessageCount(userRoom.getCount())
                         .build();
-            }else{
+            } else {
                 chatRoomDto = ChatRoomDto.builder()
                         .roomName(userRoom.getRoom().getRoomName())
                         .postId(userRoom.getRoom().getRoomPostId())
@@ -155,10 +155,8 @@ public class RoomService {
                         .notReadingMessageCount(userRoom.getCount())
                         .build();
             }
-
-
             chatRoomDtos.add(chatRoomDto);
         }
-
         return chatRoomDtos;
+    }
 }

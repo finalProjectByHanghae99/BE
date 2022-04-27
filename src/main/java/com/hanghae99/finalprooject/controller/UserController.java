@@ -69,15 +69,10 @@ public class UserController {
     }
 
     // 회원 탈퇴 API
-//    @DeleteMapping("/user/remove")
-//    public ResponseEntity<ExceptionResponse> deleteUser() {
-//        userService.deleteUser();
-//        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
-//    }
-
     @DeleteMapping("/user/remove")
-    public ResponseEntity<String> deleteUser() {
+    public ResponseEntity<ExceptionResponse> deleteUser() {
         userService.deleteUser();
-        return ResponseEntity.ok("ok");
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
+
 }

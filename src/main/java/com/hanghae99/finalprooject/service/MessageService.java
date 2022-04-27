@@ -3,10 +3,10 @@ package com.hanghae99.finalprooject.service;
 import com.hanghae99.finalprooject.dto.MessageDto;
 import com.hanghae99.finalprooject.dto.MessageListDto;
 import com.hanghae99.finalprooject.dto.RoomDto;
+import com.hanghae99.finalprooject.jwt.UserDetailsImpl;
 import com.hanghae99.finalprooject.model.*;
 import com.hanghae99.finalprooject.redis.RedisMessagePublisher;
 import com.hanghae99.finalprooject.repository.*;
-import com.hanghae99.finalprooject.security.UserDetailsImpl;
 import com.hanghae99.finalprooject.timeConversion.MessageTimeConversion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
@@ -56,7 +56,7 @@ public class MessageService {
 
 
                     .build();
-        // 채팅방을 나갈 시에 메시지
+            // 채팅방을 나갈 시에 메시지
         } else if (Message.MessageType.Exit.equals(messageDto.getType())) {
             sendMessageDto = MessageDto.builder()
                     .message(sender.getNickname() + "님이 퇴장 하셨습니다.")
@@ -173,7 +173,7 @@ public class MessageService {
     }
 
     private List<MessageDto> DiscriminationWhoSentMessage(RoomDto.findRoomDto roomDto , UserDetailsImpl userDetails
-    ,Room room, PageImpl<Message> messages){
+            ,Room room, PageImpl<Message> messages){
         List<MessageDto> messageDtos = new ArrayList<>();
         for(Message message : messages){
             //게시물 주인이 보낸 메시지
@@ -182,7 +182,7 @@ public class MessageService {
                         .message(message.getContent())
                         .roomName(room.getRoomName())
                         .senderId(message.getUser().getId())
-                       // .receiverId(userDetails.getUser().getId())
+                        // .receiverId(userDetails.getUser().getId())
                         .type(message.getMessageType())
                         .createdAt(MessageTimeConversion.timeConversion(message.getCreateAt()))
                         .build();
