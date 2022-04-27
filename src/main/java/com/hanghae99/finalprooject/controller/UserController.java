@@ -12,10 +12,7 @@ import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -69,5 +66,18 @@ public class UserController {
     @GetMapping("/api/logintest")
     public ResponseEntity<ExceptionResponse> getLoginTest(){
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
+
+    // 회원 탈퇴 API
+//    @DeleteMapping("/user/remove")
+//    public ResponseEntity<ExceptionResponse> deleteUser() {
+//        userService.deleteUser();
+//        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+//    }
+
+    @DeleteMapping("/user/remove")
+    public ResponseEntity<String> deleteUser() {
+        userService.deleteUser();
+        return ResponseEntity.ok("ok");
     }
 }

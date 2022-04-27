@@ -7,6 +7,7 @@ import com.hanghae99.finalprooject.dto.userDto.TokenRequestDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
 import com.hanghae99.finalprooject.jwt.JwtTokenProvider;
+import com.hanghae99.finalprooject.jwt.SecurityUtil;
 import com.hanghae99.finalprooject.model.RefreshToken;
 import com.hanghae99.finalprooject.model.User;
 import com.hanghae99.finalprooject.repository.RefreshTokenRepository;
@@ -14,7 +15,6 @@ import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.asm.Advice;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -118,7 +118,12 @@ public class UserService {
         return tokenDto;
     }
 
-    public void checkNickname(String nickname) {
-        userRepository.existsByNickname(nickname);
+    // 회원 탈퇴
+    @Transactional
+    public void deleteUser() {
+        User user = userRepository.findByNickname(SecurityUtil.getCurrentUserNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+        userRepository.deleteById(user.getId());
     }
 }

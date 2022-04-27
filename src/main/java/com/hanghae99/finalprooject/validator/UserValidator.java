@@ -11,7 +11,7 @@ public class UserValidator {
 
         String email = requestDto.getEmail();
 
-        String patternEmail = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
+        String patternEmail = "^[a-zA-Z0-9]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
 
         // 이메일 설정 유효성 검사
         if (email == null || !Pattern.matches(patternEmail, email)) {
