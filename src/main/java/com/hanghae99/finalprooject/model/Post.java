@@ -14,7 +14,7 @@ public class Post extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="post_id")
+    @Column
     private Long id;
 
     @Column(nullable = false)
@@ -24,7 +24,7 @@ public class Post extends TimeStamped {
     private String content;
 
     @Column(nullable = false)
-    private int price;
+    private String deadline;
 
     @Enumerated(EnumType.STRING)
     private CurrentStatus status;
@@ -44,9 +44,13 @@ public class Post extends TimeStamped {
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     private List<Img> imgList = new ArrayList<>();
 
-
-
-
-
-
+    public Post(String title, String content, String deadline, CurrentStatus status, String region, String category, User user) {
+        this.title = title;
+        this.content = content;
+        this.deadline = deadline;
+        this.status = status;
+        this.region = region;
+        this.category = category;
+        this.user = user;
+    }
 }

@@ -13,7 +13,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column
     private Long id;
 
     @Column(nullable = false)
@@ -28,5 +28,4 @@ public class User {
     private String intro;
 
     private String profileImg;
-
 }

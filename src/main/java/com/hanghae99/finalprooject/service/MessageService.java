@@ -56,7 +56,7 @@ public class MessageService {
 
 
                     .build();
-        // 채팅방을 나갈 시에 메시지
+            // 채팅방을 나갈 시에 메시지
         } else if (Message.MessageType.Exit.equals(messageDto.getType())) {
             sendMessageDto = MessageDto.builder()
                     .message(sender.getNickname() + "님이 퇴장 하셨습니다.")
@@ -173,7 +173,7 @@ public class MessageService {
     }
 
     private List<MessageDto> DiscriminationWhoSentMessage(RoomDto.findRoomDto roomDto , UserDetailsImpl userDetails
-    ,Room room, PageImpl<Message> messages){
+            ,Room room, PageImpl<Message> messages){
         List<MessageDto> messageDtos = new ArrayList<>();
         for(Message message : messages){
             //게시물 주인이 보낸 메시지
@@ -182,7 +182,7 @@ public class MessageService {
                         .message(message.getContent())
                         .roomName(room.getRoomName())
                         .senderId(message.getUser().getId())
-                       // .receiverId(userDetails.getUser().getId())
+                        // .receiverId(userDetails.getUser().getId())
                         .type(message.getMessageType())
                         .createdAt(MessageTimeConversion.timeConversion(message.getCreateAt()))
                         .build();
