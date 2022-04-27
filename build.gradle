@@ -33,11 +33,13 @@ dependencies {
     //  S3 연결 라이브러리
     //implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
     //  .스프링 시큐리티 라이브러리
-    //implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     // 테스트 - 스프링시큐리티
     //testImplementation 'org.springframework.security:spring-security-test'
     // JWT 토큰
-    //implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
     //유효성 검사
     //implementation 'org.springframework.boot:spring-boot-starter-validation'
