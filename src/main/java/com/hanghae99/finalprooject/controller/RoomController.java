@@ -3,13 +3,14 @@ package com.hanghae99.finalprooject.controller;
 
 import com.hanghae99.finalprooject.dto.ChatRoomDto;
 import com.hanghae99.finalprooject.dto.RoomDto;
+import com.hanghae99.finalprooject.jwt.UserDetailsImpl;
 import com.hanghae99.finalprooject.redis.RedisMessageSubscriber;
-import com.hanghae99.finalprooject.security.UserDetailsImpl;
 import com.hanghae99.finalprooject.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

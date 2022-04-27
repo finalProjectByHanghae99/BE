@@ -17,11 +17,7 @@ public class RedisMessagePublisher {
         통칭하여 sub/ pub 라고 하며 채팅방에서는 redis 의 topic 을 채팅방이라 생각하자!
 
         pub/ sub 은 대화를 하거나, 보는 행위
-
-
-
-
-     */
+ */
 
     // redis 발행 서비스 구현
     // 메시지 발행 시 redis 구독 서비스가 메시지 처리

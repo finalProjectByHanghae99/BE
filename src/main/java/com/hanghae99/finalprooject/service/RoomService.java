@@ -4,9 +4,9 @@ import com.hanghae99.finalprooject.dto.ChatRoomDto;
 import com.hanghae99.finalprooject.dto.ChatUserDto;
 import com.hanghae99.finalprooject.dto.LastMessageDto;
 import com.hanghae99.finalprooject.dto.RoomDto;
+import com.hanghae99.finalprooject.jwt.UserDetailsImpl;
 import com.hanghae99.finalprooject.model.*;
 import com.hanghae99.finalprooject.repository.*;
-import com.hanghae99.finalprooject.security.UserDetailsImpl;
 import com.hanghae99.finalprooject.timeConversion.MessageTimeConversion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -123,13 +123,13 @@ public class RoomService {
             if (userRoom.getLastMessageId() == null) {
                 lastMessageDto = LastMessageDto.builder()
                         .content("방이 생성 되었습니다.")
-                        .createdAt(MessageTimeConversion.timeConversion(userRoom.getCreatedAt()))
+                        .createdAt(MessageTimeConversion.timeConversion(userRoom.getCreateAt()))
                         .build();
             } else {
                 Message message = messageRepository.getById(userRoom.getLastMessageId());
                 lastMessageDto = LastMessageDto.builder()
                         .content(message.getContent())
-                        .createdAt(MessageTimeConversion.timeConversion(message.getCreatedAt()))
+                        .createdAt(MessageTimeConversion.timeConversion(message.getCreateAt()))
                         .build();
             }
 
@@ -161,4 +161,5 @@ public class RoomService {
         }
 
         return chatRoomDtos;
+}
 }
