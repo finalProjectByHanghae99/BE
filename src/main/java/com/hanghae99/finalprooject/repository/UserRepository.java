@@ -18,5 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // custom service
     Optional<User> findByNickname(String nickname);
 
+//    Optional<User> findByUsername(String username);
+
 }
 
