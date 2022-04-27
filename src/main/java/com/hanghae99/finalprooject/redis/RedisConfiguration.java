@@ -25,16 +25,16 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableRedisRepositories
 public class RedisConfiguration extends CachingConfigurerSupport {
 
-//    @Value("${spring.redis.port}")
-//    private int port;
+    @Value("${spring.redis.port}")
+    private int port;
+
+    @Value("${spring.redis.host}")
+    private String host;
 //
-//    @Value("${spring.redis.host}")
-//    private String host;
-////
-//    @Bean
-//    public RedisConnectionFactory redisConnectionFactory() {
-//        return new LettuceConnectionFactory(host, port);
-//    }
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory(host, port);
+    }
 
     // jackson LocalDateTime mapper
 //    @Bean
