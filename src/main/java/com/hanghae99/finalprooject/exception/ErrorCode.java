@@ -39,9 +39,11 @@ public enum ErrorCode {
     LOGIN_NOT_FOUNT_EMAIL(HttpStatus.NOT_FOUND, "404", "해당 Email을 찾을 수 없습니다"),
 
     // 회원 탈퇴
-    NOT_FOUND_USER_INFO(HttpStatus.NOT_FOUND, "404", "해당 유저가 존재하지 않습니다"),
+    NOT_MATCH_USER_INFO(HttpStatus.BAD_REQUEST, "400", "유저 정보가 일치하지 않습니다"),
+
     //기타
-    NOT_FOUND_AUTHORIZATION_IN_SECURITY_CONTEXT(HttpStatus.INTERNAL_SERVER_ERROR, "998", "Security Context에 인증 정보가 없습니다.");
+    NOT_FOUND_AUTHORIZATION_IN_SECURITY_CONTEXT(HttpStatus.INTERNAL_SERVER_ERROR, "998", "Security Context에 인증 정보가 없습니다."),
+    NOT_FOUND_USER_INFO(HttpStatus.NOT_FOUND, "404", "해당 유저가 존재하지 않습니다");
 
     private final HttpStatus status;
     private final String errorCode;
