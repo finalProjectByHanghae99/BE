@@ -17,7 +17,6 @@ public class RefreshToken {
 
     private String refreshValue;
 
-    @Builder
     public RefreshToken(String refreshKey, String refreshValue) {
         this.refreshKey = refreshKey;
         this.refreshValue = refreshValue;
