@@ -1,9 +1,6 @@
 package com.hanghae99.finalprooject.controller;
 
-import com.hanghae99.finalprooject.dto.userDto.LoginDto;
-import com.hanghae99.finalprooject.dto.userDto.SignupDto;
-import com.hanghae99.finalprooject.dto.userDto.TokenDto;
-import com.hanghae99.finalprooject.dto.userDto.TokenRequestDto;
+import com.hanghae99.finalprooject.dto.userDto.*;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.ExceptionResponse;
 import com.hanghae99.finalprooject.repository.UserRepository;
@@ -62,22 +59,17 @@ public class UserController {
         return ResponseEntity.ok(userService.reissue(tokenRequestDto));
     }
 
-    // 테스트용 API
-    @GetMapping("/api/logintest")
-    public ResponseEntity<ExceptionResponse> getLoginTest(){
+    // 회원 탈퇴 API
+    @DeleteMapping("/user/remove")
+    public ResponseEntity<ExceptionResponse> deleteUser(@RequestBody SignOutDto signOutDto) {
+        userService.deleteUser(signOutDto);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
 
-    // 회원 탈퇴 API
-//    @DeleteMapping("/user/remove")
-//    public ResponseEntity<ExceptionResponse> deleteUser() {
-//        userService.deleteUser();
-//        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
-//    }
-
-    @DeleteMapping("/user/remove")
-    public ResponseEntity<String> deleteUser() {
-        userService.deleteUser();
-        return ResponseEntity.ok("ok");
+    // 로그아웃 API
+    @PostMapping("/user/logout")
+    public ResponseEntity<ExceptionResponse> logout(@RequestBody TokenRequestDto tokenRequestDto) {
+        userService.deleteRefreshToken(tokenRequestDto);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
 }

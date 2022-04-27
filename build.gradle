@@ -32,7 +32,7 @@ dependencies {
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
 
     //  S3 연결 라이브러리
-    //implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
     //  .스프링 시큐리티 라이브러리
     implementation 'org.springframework.boot:spring-boot-starter-security'
     // 테스트 - 스프링시큐리티

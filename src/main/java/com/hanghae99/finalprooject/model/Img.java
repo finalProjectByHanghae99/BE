@@ -1,7 +1,6 @@
 package com.hanghae99.finalprooject.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,7 +11,7 @@ public class Img {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="img_id")
+    @Column
     private Long id;
 
     @Column(nullable = false)
@@ -22,4 +21,8 @@ public class Img {
     @JoinColumn
     private Post post;
 
+    public Img(String imgUrl, Post post) {
+        this.imgUrl = imgUrl;
+        this.post = post;
+    }
 }
