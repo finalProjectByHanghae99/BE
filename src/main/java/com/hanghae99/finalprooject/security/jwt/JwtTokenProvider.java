@@ -40,10 +40,11 @@ public class JwtTokenProvider {
   }
 
   // 토큰 생성
+  // email , email
   public TokenDto createToken(String userPk, String email) {
 
     Claims claims = Jwts.claims().setSubject(userPk);
-    claims.put("username", email);
+    claims.put("email", email);
 
     Date now = new Date();
 
@@ -73,7 +74,7 @@ public class JwtTokenProvider {
     return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
   }
 
-  // JWT 토큰에서 인증 정보 조회
+  // JWT 토큰에서 인증 정보 조회 // 토큰의 subject -> email
   public Authentication getAuthentication(String token) {
     UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
     return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
