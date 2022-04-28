@@ -8,6 +8,7 @@ import com.hanghae99.finalprooject.model.User;
 import com.hanghae99.finalprooject.repository.RefreshTokenRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.security.jwt.JwtTokenProvider;
+import com.hanghae99.finalprooject.security.jwt.TokenDto;
 import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -91,8 +91,7 @@ public class UserService {
 //    }
 
 
-
-//    // 로그인
+    //    // 로그인
     @Transactional
     public TokenDto login(LoginDto loginDto) {
 
@@ -100,39 +99,11 @@ public class UserService {
                 () -> new IllegalArgumentException("해당 이메일이 없습니다")
         );
 
-//        User user = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(
-//                () -> new DockingException(ErrorCode.USERNAME_NOT_FOUND)
-//        );
-//        validateLogin(requestDto, user);
+        //saveRefreshToken(loginDto, tokenDto);
 
-        TokenDto tokenDto = jwtTokenProvider.createToken(loginDto.getEmail(),
-                loginDto.getEmail());
-
-        saveRefreshToken(requestDto, tokenDto);
-
-        List<Map<String, Object>> eduList = getEduList(user);
-        List<String> alarmContents = findUserAlarms(user);
-        List<Long> requestedPostList = userRepository.getPostIdFromFosterForm(user);
-
-        LoginResponseDto loginResponseDto = LoginResponseDto.of(
-                user, jwtTokenProvider.createToken(requestDto.getUsername(), requestDto.getUsername()),
-                eduList, alarmContents, requestedPostList);
-
-        return SuccessResult.success(loginResponseDto);
+        return jwtTokenProvider.createToken(user.getEmail(), user.getEmail());
     }
 
-    private void saveRefreshToken(LoginDto loginDto, TokenDto tokenDto) {
-        RefreshToken refreshToken = new RefreshToken(loginDto.getEmail(),
-                tokenDto.getRefreshToken());
-        authRedisSave(refreshToken.getKey(), refreshToken.getValue());
-//    refreshTokenRepository.save(refreshToken);
-    }
-
-    private void authRedisSave(String username,String refreshToken) {
-        final ValueOperations<String, Object> stringStringValueOperations = redisTemplate.opsForValue();
-        stringStringValueOperations.set(username, refreshToken);
-        redisTemplate.expire(username, 1209600, TimeUnit.SECONDS);//2주
-    }
 
 //    // Token 재발급
 //    @Transactional

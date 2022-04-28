@@ -6,7 +6,7 @@ import com.hanghae99.finalprooject.dto.LastMessageDto;
 import com.hanghae99.finalprooject.dto.RoomDto;
 import com.hanghae99.finalprooject.model.*;
 import com.hanghae99.finalprooject.repository.*;
-import com.hanghae99.finalprooject.jwt.UserDetailsImpl;
+import com.hanghae99.finalprooject.security.UserDetailsImpl;
 import com.hanghae99.finalprooject.timeConversion.MessageTimeConversion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
