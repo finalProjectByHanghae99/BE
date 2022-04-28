@@ -6,6 +6,7 @@ import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.ExceptionResponse;
 import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.security.jwt.TokenDto;
+import com.hanghae99.finalprooject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalprooject.service.UserService;
 import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -57,11 +58,11 @@ public class UserController {
         return ResponseEntity.ok(userService.login(loginDto));
     }
 
-//    // 토큰 재발행 API
-//    @PostMapping("/user/reissue")
-//    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
-//        return ResponseEntity.ok(userService.reissue(tokenRequestDto));
-//    }
+    // 토큰 재발행 API
+    @PostMapping("/user/reissue")
+    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
+        return ResponseEntity.ok(userService.reissue(tokenRequestDto));
+    }
 //
 //    // 회원 탈퇴 API
 //    @DeleteMapping("/user/remove")

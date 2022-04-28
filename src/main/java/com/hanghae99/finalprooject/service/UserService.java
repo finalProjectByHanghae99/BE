@@ -8,11 +8,14 @@ import com.hanghae99.finalprooject.model.RefreshToken;
 import com.hanghae99.finalprooject.model.User;
 import com.hanghae99.finalprooject.repository.RefreshTokenRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
+import com.hanghae99.finalprooject.security.jwt.JwtReturn;
 import com.hanghae99.finalprooject.security.jwt.JwtTokenProvider;
 import com.hanghae99.finalprooject.security.jwt.TokenDto;
+import com.hanghae99.finalprooject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,37 +88,38 @@ public class UserService {
         return tokenDto;
     }
 
-//    // Token 재발급
-//    @Transactional
-//    public TokenDto reissue(TokenRequestDto tokenRequestDto) {
-//        log.info("Access Token : " + tokenRequestDto.getAccessToken());
-//        log.info("Refresh Token : " + tokenRequestDto.getRefreshToken());
-//
-//        // RefreshToken 만료됐을 경우
-//        if (!jwtTokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-//            throw new PrivateException(ErrorCode.REFRESH_TOKEN_EXPIRED);
-//        }
-//
-//        Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-//
-//        // RefreshToken DB에 없을 경우
-//        RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(authentication.getName()).orElseThrow(
-//                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
-//        );
-//
-//        // RefreshToken 일치하지 않는 경우
-//        if (!refreshToken.getRefreshValue().equals(tokenRequestDto.getRefreshToken())) {
-//            throw new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_MATCH);
-//        }
-//        log.info("RefreshToken 만료 및 일치 확인");
-//
-//        // Access Token, Refresh Token 재발급
-//        TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
-//        RefreshToken updateRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
-//        refreshTokenRepository.save(updateRefreshToken);
-//
-//        return tokenDto;
-//    }
+    // Token 재발급
+    @Transactional
+    public TokenDto reissue(TokenRequestDto tokenRequestDto) {
+        log.info("Refresh Token : " + tokenRequestDto.getRefreshToken());
+
+        // RefreshToken 만료됐을 경우
+        if (jwtTokenProvider.validateToken(tokenRequestDto.getRefreshToken()) != JwtReturn.SUCCESS) {
+            throw new PrivateException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+        }
+
+        User user = userRepository.findById(tokenRequestDto.getUserId()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+        String email = user.getEmail();
+
+        // RefreshToken DB에 없을 경우
+        RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(email).orElseThrow(
+                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
+        );
+
+        // RefreshToken 일치하지 않는 경우
+        if (!refreshToken.getRefreshValue().equals(tokenRequestDto.getRefreshToken())) {
+            throw new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_MATCH);
+        }
+
+        // Access Token, Refresh Token 재발급
+        TokenDto tokenDto = jwtTokenProvider.createToken(email, email);
+        RefreshToken updateRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
+        refreshTokenRepository.save(updateRefreshToken);
+
+        return tokenDto;
+    }
 
     // 회원 탈퇴
 //    @Transactional
