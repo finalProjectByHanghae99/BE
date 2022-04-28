@@ -28,22 +28,13 @@ public class PostController {
     private final AwsS3UploadService awsS3UploadService;
 
     // post 등록 API
-//    @PostMapping("/api/post")
-//    public ResponseEntity<ExceptionResponse> createPost(@RequestPart("data") PostDto.RequestDto requestDto,
-//                                                        @RequestPart("img") List<MultipartFile> imgList,
-//                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-//        List<String> imgUrlList = awsS3UploadService.uploadImgList(imgList);
-//        log.info("ImgUrlList : " + imgUrlList);
-//        postService.createPost(requestDto, imgUrlList, userDetails);
-//        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
-//    }
-
-    // post 등록 API 다른 버전
     @PostMapping("/api/post")
-    public ResponseEntity<ExceptionResponse> createPost(@RequestPart("data") String jsonString,
-                                                        @RequestPart("img") List<MultipartFile> imgs,
+    public ResponseEntity<ExceptionResponse> createPost(@RequestPart("data") PostDto.RequestDto requestDto,
+                                                        @RequestPart("img") List<MultipartFile> imgList,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        postService.createPost(jsonString, imgs, userDetails);
+        List<String> imgUrlList = awsS3UploadService.uploadImg(imgList);
+        log.info("ImgUrlList : " + imgUrlList);
+        postService.createPost(requestDto, imgUrlList, userDetails);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
 }

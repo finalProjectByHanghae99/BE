@@ -3,11 +3,8 @@ package com.hanghae99.finalprooject.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hanghae99.finalprooject.model.CurrentStatus;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 public class PostDto {
 
@@ -37,7 +34,6 @@ public class PostDto {
             this.currentStatus = CurrentStatus.valueOf(currentStatus);
             this.region = region;
             this.category = category;
-
         }
     }
 }
