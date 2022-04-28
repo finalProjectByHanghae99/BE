@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 public class UserController {
-
+//
     private final UserService userService;
     private final UserRepository userRepository;
 
@@ -26,7 +26,7 @@ public class UserController {
         userService.registerUser(requestDto);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
-
+//
     // 이메일 중복검사 API
     @PostMapping("/user/emailCheck")
     public ResponseEntity<ExceptionResponse> emailCheck(@RequestBody SignupDto.RequestDto requestDto){

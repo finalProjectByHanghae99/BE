@@ -40,7 +40,7 @@ public class UserService {
         String nickname = requestDto.getNickname();
         if (userRepository.existsByNickname(nickname)) {
             throw new PrivateException(ErrorCode.DUPLICATE_CHECK_SIGNUP_NICKNAME);
-        }
+        }//
 
         // 회원 비밀번호 암호화
         String password = passwordEncoder.encode(requestDto.getPassword());
