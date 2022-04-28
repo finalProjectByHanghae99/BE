@@ -52,6 +52,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     //redis 내장 포트 사용 << 실제 웹 애플리케이션 구동 시 변경필요
     implementation 'it.ozimov:embedded-redis:0.7.2'
+
+    //테스트 코드 lombok
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 }
 
 tasks.named('test') {
