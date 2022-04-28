@@ -1,6 +1,7 @@
 package com.hanghae99.finalprooject.service;
 
 import com.hanghae99.finalprooject.dto.userDto.LoginDto;
+import com.hanghae99.finalprooject.dto.userDto.SignOutDto;
 import com.hanghae99.finalprooject.dto.userDto.SignupDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
@@ -8,6 +9,7 @@ import com.hanghae99.finalprooject.model.RefreshToken;
 import com.hanghae99.finalprooject.model.User;
 import com.hanghae99.finalprooject.repository.RefreshTokenRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
+import com.hanghae99.finalprooject.security.UserDetailsImpl;
 import com.hanghae99.finalprooject.security.jwt.JwtReturn;
 import com.hanghae99.finalprooject.security.jwt.JwtTokenProvider;
 import com.hanghae99.finalprooject.security.jwt.TokenDto;
@@ -15,7 +17,6 @@ import com.hanghae99.finalprooject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,21 +123,22 @@ public class UserService {
     }
 
     // 회원 탈퇴
-//    @Transactional
-//    public void deleteUser(SignOutDto signOutDto) {
-//        String loginUser = signOutDto.getNickname();
-//        log.info("로그인 username : " + loginUser);
-//
-//        User user = userRepository.findByNickname(SecurityUtil.getCurrentUserNickname()).orElseThrow(
-//                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
-//        );
-//        log.info("DB 저장된 username : " + user.getNickname());
-//
-//        if (!(user.getNickname().equals(loginUser))) {
-//            throw new PrivateException(ErrorCode.NOT_MATCH_USER_INFO);
-//        }
-//        userRepository.deleteById(user.getId());
-//    }
+    @Transactional
+    public void deleteUser(SignOutDto signOutDto, UserDetailsImpl userDetails) {
+        String loginUser = signOutDto.getNickname();
+        log.info("로그인 username : " + loginUser);
+
+        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        log.info("DB 저장된 username : " + user.getNickname());
+
+        if (!(user.getNickname().equals(loginUser))) {
+            throw new PrivateException(ErrorCode.NOT_MATCH_USER_INFO);
+        }
+        userRepository.deleteById(user.getId());
+    }
 
 //    // 로그아웃
 //    @Transactional
