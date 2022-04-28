@@ -8,8 +8,11 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.hanghae99.finalprooject.dto.ImgDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
+import com.hanghae99.finalprooject.model.Img;
+import com.hanghae99.finalprooject.repository.ImgRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,48 +29,43 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AwsS3UploadService {
 
-    private final AmazonS3 s3Client;
+    private final S3Service s3Service;
 
-    @Value("${cloud.aws.credentials.accessKey}")
-    private String accessKey;
+//    @Value("${cloud.aws.credentials.accessKey}")
+//    private String accessKey;
+//
+//    @Value("${cloud.aws.credentials.secretKey}")
+//    private String secretKey;
+//
+//    @Value("${cloud.aws.s3.bucket}")
+//    private String bucket;
+//
+//    @Value("${cloud.aws.region.static}")
+//    private String region;
+//
+//    @PostConstruct
+//    public AmazonS3Client amazonS3Client() {
+//        BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
+//        return (AmazonS3Client) AmazonS3ClientBuilder.standard()
+//                .withRegion(region)
+//                .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+//                .build();
+//    }
 
-    @Value("${cloud.aws.credentials.secretKey}")
-    private String secretKey;
+    public ImgDto uploadImage(MultipartFile file) throws IOException {
+        String filename = createFileName(file.getOriginalFilename());
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.getSize());
+        objectMetadata.setContentType(file.getContentType());
+        InputStream inputStream = file.getInputStream();
 
-    @Value("${cloud.aws.region.static}")
-    private String region;
+        s3Service.uploadFile(inputStream,objectMetadata,filename);
 
-    @PostConstruct
-    public AmazonS3Client amazonS3Client() {
-        BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKey, secretKey);
-        return (AmazonS3Client) AmazonS3ClientBuilder.standard()
-                .withRegion(region)
-                .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+        return ImgDto.builder()
+                .imgUrl(s3Service.getFileUrl(filename))
                 .build();
-    }
 
-    public List<String> uploadImgList(List<MultipartFile> imgList) throws IOException {
-        List<String> imgDtoList = new ArrayList<>();
-
-        // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
-        for (MultipartFile image : imgList) {
-            String fileName = createFileName(image.getOriginalFilename());
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(image.getSize());
-            objectMetadata.setContentType(image.getContentType());
-
-            try(InputStream inputStream = image.getInputStream()) {
-                s3Client.putObject(new PutObjectRequest(bucket+"/post/image", fileName, inputStream, objectMetadata)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
-                imgDtoList.add(s3Client.getUrl(bucket+"/post/image", fileName).toString());
-            } catch(IOException e) {
-                throw new PrivateException(ErrorCode.IMAGE_UPLOAD_ERROR);
-            }
-        }
-        return imgDtoList;
     }
 
     // 이미지 파일명 중복 방지를 위해  UUID로 랜덤 생성

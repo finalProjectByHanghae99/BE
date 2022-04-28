@@ -1,13 +1,16 @@
 package com.hanghae99.finalprooject.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Getter
 @Entity
 public class Post extends TimeStamped {
@@ -27,7 +30,7 @@ public class Post extends TimeStamped {
     private String deadline;
 
     @Enumerated(EnumType.STRING)
-    private CurrentStatus status;
+    private CurrentStatus currentStatus;
 
     @Column(nullable = false)
     private String category;
@@ -44,11 +47,11 @@ public class Post extends TimeStamped {
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     private List<Img> imgList = new ArrayList<>();
 
-    public Post(String title, String content, String deadline, CurrentStatus status, String region, String category, User user) {
+    public Post(String title, String content, String deadline, CurrentStatus currentStatus, String region, String category, User user) {
         this.title = title;
         this.content = content;
         this.deadline = deadline;
-        this.status = status;
+        this.currentStatus = currentStatus;
         this.region = region;
         this.category = category;
         this.user = user;
