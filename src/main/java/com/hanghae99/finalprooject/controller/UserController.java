@@ -5,7 +5,6 @@ import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.ExceptionResponse;
 import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.security.jwt.TokenDto;
-import com.hanghae99.finalprooject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalprooject.service.UserService;
 import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -67,11 +66,11 @@ public class UserController {
 //        userService.deleteUser(signOutDto);
 //        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
 //    }
-//
-//    // 로그아웃 API
-//    @PostMapping("/user/logout")
-//    public ResponseEntity<ExceptionResponse> logout(@RequestBody TokenRequestDto tokenRequestDto) {
-//        userService.deleteRefreshToken(tokenRequestDto);
-//        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
-//    }
+
+    // 로그아웃 API
+    @PostMapping("/user/logout")
+    public ResponseEntity<ExceptionResponse> logout(@RequestBody TokenRequestDto tokenRequestDto) {
+        userService.deleteRefreshToken(tokenRequestDto);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
 }

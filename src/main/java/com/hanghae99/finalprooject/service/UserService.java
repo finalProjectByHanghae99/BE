@@ -1,20 +1,29 @@
 package com.hanghae99.finalprooject.service;
 
-import com.hanghae99.finalprooject.dto.userDto.LoginDto;
-import com.hanghae99.finalprooject.dto.userDto.SignupDto;
+import com.hanghae99.finalprooject.dto.userDto.*;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
+import com.hanghae99.finalprooject.model.RefreshToken;
 import com.hanghae99.finalprooject.model.User;
+import com.hanghae99.finalprooject.repository.RefreshTokenRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.security.jwt.JwtTokenProvider;
 import com.hanghae99.finalprooject.security.jwt.TokenDto;
 import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.security.SecurityUtil;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -25,6 +34,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
@@ -91,18 +101,14 @@ public class UserService {
                 () -> new IllegalArgumentException("해당 이메일이 없습니다")
         );
 
-        //saveRefreshToken(loginDto, tokenDto);
+//        User user = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(
+//                () -> new DockingException(ErrorCode.USERNAME_NOT_FOUND)
+//        );
+//        validateLogin(requestDto, user);
 
-        return jwtTokenProvider.createToken(user.getEmail(),user.getEmail());
+
+        return jwtTokenProvider.createToken(loginDto.getEmail(), loginDto.getEmail());
     }
-
-//    private void saveRefreshToken(LoginDto loginDto, TokenDto tokenDto) {
-//        RefreshToken refreshToken = new RefreshToken(loginDto.getEmail(),
-//                tokenDto.getRefreshToken());
-
-//    refreshTokenRepository.save(refreshToken);
-  //  }
-
 
 
 //    // Token 재발급
@@ -154,13 +160,13 @@ public class UserService {
 //        userRepository.deleteById(user.getId());
 //    }
 
-//    // 로그아웃
-//    @Transactional
-//    public void deleteRefreshToken(TokenRequestDto tokenRequestDto) {
-//        Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-//        RefreshToken token = refreshTokenRepository.findByRefreshKey(authentication.getName()).orElseThrow(
-//                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
-//        );
-//        refreshTokenRepository.deleteById(token.getRefreshKey());
-//    }
+    // 로그아웃
+    @Transactional
+    public void deleteRefreshToken(TokenRequestDto tokenRequestDto) {
+        Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
+        RefreshToken token = refreshTokenRepository.findByRefreshKey(authentication.getName()).orElseThrow(
+                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
+        );
+        refreshTokenRepository.deleteById(token.getRefreshKey());
+    }
 }
