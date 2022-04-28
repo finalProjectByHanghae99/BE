@@ -14,8 +14,6 @@ import javax.persistence.*;
 @Entity
 public class Message extends TimeStamped{
 
-
-
     //대화 상태
     public enum MessageType {
         Talk, Exit, Start

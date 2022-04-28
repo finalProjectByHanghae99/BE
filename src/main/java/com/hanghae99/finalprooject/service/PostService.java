@@ -15,9 +15,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -25,7 +27,10 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
     private final ImgRepository imgRepository;
+
+    private final AwsS3UploadService awsS3UploadService;
 
     // post 등록
     @Transactional
@@ -39,11 +44,11 @@ public class PostService {
         String title = requestDto.getTitle();
         String content = requestDto.getContent();
         String deadline = requestDto.getDeadline();
-        CurrentStatus status = requestDto.getCurrentStatus();
+        CurrentStatus currentStatus = requestDto.getCurrentStatus();
         String region = requestDto.getRegion();
         String category = requestDto.getCategory();
 
-        Post post = new Post(title, content, deadline, status, region, category, user);
+        Post post = new Post(title, content, deadline, currentStatus, region, category, user);
 
         List<String> imgList = new ArrayList<>();
         for (String imgUrl : imgUrlList) {
@@ -58,5 +63,67 @@ public class PostService {
         if(imgPaths == null || imgPaths.isEmpty()){
             throw new PrivateException(ErrorCode.WRONG_INPUT_IMAGE);
         }
+    }
+
+    public PostDto.DetailDto getDetail(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+        );
+
+        List<String> imgUrl = imgRepository.findAllByPost(post)
+                .stream()
+                .map(Img::getImgUrl)
+                .collect(Collectors.toList());
+
+        // 댓글 추가 필요
+
+        return new PostDto.DetailDto(postId, post, imgUrl);
+    }
+
+    @Transactional
+    public void updatePost(Long postId, PostDto.RequestDto requestDto, List<MultipartFile> imgUrlList, UserDetailsImpl userDetails) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+        );
+
+        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        // 본인 post만 수정
+        if (!post.getUser().equals(user)) {
+            throw new PrivateException(ErrorCode.POST_UPDATE_WRONG_ACCESS);
+        }
+
+        List<String> imgPaths = awsS3UploadService.updateImg(postId, imgUrlList);
+        log.info("수정된 이미지 Url : " + imgPaths);
+
+        post.updatePost(requestDto);
+
+        List<String> imgList = new ArrayList<>();
+        for (String imgUrl : imgPaths) {
+            Img img = new Img(imgUrl, post);
+            imgRepository.save(img);
+            imgList.add(img.getImgUrl());
+        }
+    }
+
+    // post 삭제
+    @Transactional
+    public void deletePost(Long postId, UserDetailsImpl userDetails) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+        );
+
+        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        if (!post.getUser().equals(user)) {
+            throw new PrivateException(ErrorCode.POST_UPDATE_WRONG_ACCESS);
+        }
+        awsS3UploadService.deleteImg(postId);
+        imgRepository.deleteAllByPostId(postId);
+        postRepository.deleteById(postId);
     }
 }
