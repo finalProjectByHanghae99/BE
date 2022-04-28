@@ -76,9 +76,9 @@ public class UserController {
     }
 
     // 로그아웃 API
-//    @PostMapping("/user/logout")
-//    public ResponseEntity<ExceptionResponse> logout(@RequestBody TokenRequestDto tokenRequestDto) {
-//        userService.deleteRefreshToken(tokenRequestDto);
-//        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
-//    }
+    @PostMapping("/user/logout")
+    public ResponseEntity<ExceptionResponse> logout(@RequestBody TokenRequestDto tokenRequestDto) {
+        userService.deleteRefreshToken(tokenRequestDto);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
 }
