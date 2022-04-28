@@ -33,7 +33,6 @@
 //        log.info("ImgUrlList : " + imgUrlList);
 //        postService.createPost(requestDto, imgUrlList);
 //        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
-//
-//        //testetest
 //    }
 //}
+//
