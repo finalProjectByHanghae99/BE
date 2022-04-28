@@ -11,9 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -36,5 +34,11 @@ public class PostController {
         log.info("ImgUrlList : " + imgUrlList);
         postService.createPost(requestDto, imgUrlList, userDetails);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
+
+    // post 상세 조회
+    @GetMapping("/api/post/{postId}")
+    public PostDto.DetailDto getDetailPost(@PathVariable Long postId) {
+        return postService.getDetail(postId);
     }
 }

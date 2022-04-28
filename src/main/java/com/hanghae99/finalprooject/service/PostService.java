@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -60,4 +61,18 @@ public class PostService {
         }
     }
 
+    public PostDto.DetailDto getDetail(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+        );
+
+        List<String> imgUrl = imgRepository.findAllByPost(post)
+                .stream()
+                .map(Img::getImgUrl)
+                .collect(Collectors.toList());
+
+        // 댓글 추가 필요
+
+        return new PostDto.DetailDto(postId, post, imgUrl);
+    }
 }
