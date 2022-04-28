@@ -1,6 +1,5 @@
 package com.hanghae99.finalprooject.model;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

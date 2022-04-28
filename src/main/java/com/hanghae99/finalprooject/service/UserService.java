@@ -91,17 +91,29 @@ public class UserService {
 //    }
 
 
-    //    // 로그인
+    // 로그인
     @Transactional
     public TokenDto login(LoginDto loginDto) {
 
         User user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(
-                () -> new IllegalArgumentException("해당 이메일이 없습니다")
+                () -> new PrivateException(ErrorCode.LOGIN_NOT_FOUNT_EMAIL)
         );
 
-        //saveRefreshToken(loginDto, tokenDto);
+        // 로그인 유효성 검사
+        UserValidator.validateEmailEmpty(loginDto);
+        UserValidator.validatePasswordEmpty(loginDto);
 
-        return jwtTokenProvider.createToken(user.getEmail(), user.getEmail());
+        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+            throw new PrivateException(ErrorCode.LOGIN_PASSWORD_NOT_MATCH);
+        }
+
+        TokenDto tokenDto = jwtTokenProvider.createToken(user.getEmail(), user.getEmail());
+
+        RefreshToken refreshToken = new RefreshToken(loginDto.getEmail(),
+                tokenDto.getRefreshToken());
+
+        refreshTokenRepository.save(refreshToken);
+        return tokenDto;
     }
 
 
@@ -163,4 +175,6 @@ public class UserService {
         );
         refreshTokenRepository.deleteById(token.getRefreshKey());
     }
+
+
 }

@@ -54,6 +54,12 @@ public class UserController {
         return ResponseEntity.ok(userService.login(loginDto));
     }
 
+//    @PostMapping("/user/login")
+//    public ResponseEntity<ExceptionResponse> login(@RequestBody LoginDto loginDto) {
+//        userService.login(loginDto);
+//        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+//    }
+
 //    // 토큰 재발행 API
 //    @PostMapping("/user/reissue")
 //    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {

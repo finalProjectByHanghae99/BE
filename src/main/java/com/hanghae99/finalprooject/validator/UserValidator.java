@@ -1,8 +1,10 @@
 package com.hanghae99.finalprooject.validator;
 
+import com.hanghae99.finalprooject.dto.userDto.LoginDto;
 import com.hanghae99.finalprooject.dto.userDto.SignupDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
+import com.hanghae99.finalprooject.model.User;
 
 import java.util.regex.Pattern;
 
@@ -46,6 +48,24 @@ public class UserValidator {
         // 닉네임 설정 유효성 검사
         if (nickname == null || !Pattern.matches(patternNickname, nickname)) {
             throw new PrivateException(ErrorCode.WRONG_INPUT_SIGNUP_NICKNAME);
+        }
+    }
+
+    public static void validateEmailEmpty(LoginDto loginDto) {
+
+        String email = loginDto.getEmail();
+
+        if (email.isEmpty()) {
+            throw new PrivateException(ErrorCode.LOGIN_EMAIL_EMPTY);
+        }
+    }
+
+    public static void validatePasswordEmpty(LoginDto loginDto) {
+
+        String password = loginDto.getPassword();
+
+        if (password.isEmpty()) {
+            throw new PrivateException(ErrorCode.LOGIN_PASSWORD_EMPTY);
         }
     }
 }
