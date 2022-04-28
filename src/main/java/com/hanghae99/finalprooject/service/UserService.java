@@ -1,6 +1,7 @@
 package com.hanghae99.finalprooject.service;
 
-import com.hanghae99.finalprooject.dto.userDto.*;
+import com.hanghae99.finalprooject.dto.userDto.LoginDto;
+import com.hanghae99.finalprooject.dto.userDto.SignupDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
 import com.hanghae99.finalprooject.model.RefreshToken;
@@ -9,22 +10,12 @@ import com.hanghae99.finalprooject.repository.RefreshTokenRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.security.jwt.JwtTokenProvider;
 import com.hanghae99.finalprooject.security.jwt.TokenDto;
-import com.hanghae99.finalprooject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.security.SecurityUtil;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -34,7 +25,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -72,29 +62,7 @@ public class UserService {
         );
     }
 
-//    @Transactional
-//    public TokenDto login(LoginDto loginDto) {
-//        UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication();
-//
-//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-//
-////        TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
-//
-//        TokenDto tokenDto = jwtTokenProvider.createToken(loginDto.getEmail(), ,
-//                loginDto.getEmail());
-//
-//        RefreshToken refreshToken = RefreshToken.builder()
-//                .refreshKey(authentication.getName())
-//                .refreshValue(tokenDto.getRefreshToken())
-//                .build();
-//
-//        refreshTokenRepository.save(refreshToken);
-//        return tokenDto;
-//    }
-
-
-
-//    // 로그인
+    // 로그인
     @Transactional
     public TokenDto login(LoginDto loginDto) {
 
@@ -102,15 +70,20 @@ public class UserService {
                 () -> new IllegalArgumentException("해당 이메일이 없습니다")
         );
 
-//        User user = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(
-//                () -> new DockingException(ErrorCode.USERNAME_NOT_FOUND)
-//        );
-//        validateLogin(requestDto, user);
+        UserValidator.validateEmailEmpty(loginDto);
+        UserValidator.validatePasswordEmpty(loginDto);
 
+        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+            throw new PrivateException(ErrorCode.LOGIN_PASSWORD_NOT_MATCH);
+        }
 
-        return jwtTokenProvider.createToken(loginDto.getEmail(), loginDto.getEmail());
+        TokenDto tokenDto = jwtTokenProvider.createToken(loginDto.getEmail(), loginDto.getEmail());
+
+        RefreshToken refreshToken = new RefreshToken(loginDto.getEmail(),tokenDto.getRefreshToken());
+        refreshTokenRepository.save(refreshToken);
+
+        return tokenDto;
     }
-
 
 //    // Token 재발급
 //    @Transactional
