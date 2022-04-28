@@ -1,16 +1,8 @@
 package com.hanghae99.finalprooject.security.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
-import java.util.Base64;
-import java.util.Date;
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
+import com.hanghae99.finalprooject.exception.ErrorCode;
+import com.hanghae99.finalprooject.exception.PrivateException;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +12,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Base64;
+import java.util.Date;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -28,9 +25,11 @@ public class JwtTokenProvider {
   @Value("${jwt.secret-key}")
   private String secretKey;
 
-  private Long acessTokenValidTime = 30 * 60 * 1000L;//30분
+  // Access Token 유효기간 - 1시간
+  private static final Long acessTokenValidTime = 60 * 60 * 1000L;
 
-  private Long refreshTokenValidTime = 14 * 24 * 60 * 60 * 1000L;//2주
+  // Refresh Token 유효기간 - 7일
+  private static final Long refreshTokenValidTime = 7 * 24 * 60 * 60 * 1000L;
 
   private final UserDetailsService userDetailsService;
 
@@ -45,9 +44,10 @@ public class JwtTokenProvider {
     Claims claims = Jwts.claims().setSubject(userPk);
     claims.put("username", email);
 
+
     Date now = new Date();
 
-    String accessToeken = Jwts.builder()
+    String accessToken = Jwts.builder()
         .setClaims(claims)
         .setIssuedAt(now)
         .setExpiration(new Date(now.getTime() + acessTokenValidTime))
@@ -61,12 +61,11 @@ public class JwtTokenProvider {
         .compact();
 
     return TokenDto.builder()
-        .accessToken(accessToeken)
+        .accessToken(accessToken)
         .accessTokenExpiresIn(acessTokenValidTime)
         .refreshToken(refreshToken)
         .build();
   }
-
 
   // 토큰에서 회원 정보 추출
   public String getUserPk(String token) {
@@ -88,24 +87,23 @@ public class JwtTokenProvider {
     System.out.println(jwtToken);
     try {
       Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-      if (claims.getBody().getExpiration().after(new Date()) == true) {
+      if (claims.getBody().getExpiration().after(new Date())) {
         return JwtReturn.SUCCESS;
       } else {
         return JwtReturn.FAIL;
       }
     } catch (ExpiredJwtException e) {
-      log.info("jwt토큰이 만료되었습니다.", e);
-      log.info(e.getMessage());
-      return JwtReturn.EXPIRED;
+      log.info("만료된 JWT 토큰입니다");
+      throw new PrivateException(ErrorCode.JWT_TOKEN_EXPIRED);
     } catch (UnsupportedJwtException e) {
-      log.info("지원되지 않는 JWT 토큰입니다.");
-      log.info(e.getMessage());
+      log.info("지원되지 않는 JWT 토큰입니다");
+      throw new PrivateException(ErrorCode.JWT_TOKEN_NOT_SUPPORTED);
     } catch (IllegalArgumentException e) {
-      log.info("JWT 토큰이 잘못되었습니다.");
-      log.info(e.getMessage());
+      log.info("JWT 토큰이 잘못되었습니다");
+      throw new PrivateException(ErrorCode.JWT_TOKEN_WRONG_FORM);
     } catch (MalformedJwtException e) {
-      log.info("잘못된 JWT 서명입니다.");
-      log.info(e.getMessage());
+      log.info("잘못된 JWT 서명입니다");
+      throw new PrivateException(ErrorCode.JWT_TOKEN_WRONG_SIGNATURE);
     } catch (Exception e) {
       log.info(e.getMessage());
     }
@@ -113,7 +111,6 @@ public class JwtTokenProvider {
   }
 
   public String getAccessTokenPayload(String accessToken) {
-
     return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken)
         .getBody().getSubject();
   }

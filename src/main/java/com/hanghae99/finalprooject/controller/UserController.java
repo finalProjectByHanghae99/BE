@@ -1,9 +1,12 @@
 package com.hanghae99.finalprooject.controller;
 
-import com.hanghae99.finalprooject.dto.userDto.*;
+import com.hanghae99.finalprooject.dto.userDto.LoginDto;
+import com.hanghae99.finalprooject.dto.userDto.SignOutDto;
+import com.hanghae99.finalprooject.dto.userDto.SignupDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.ExceptionResponse;
 import com.hanghae99.finalprooject.repository.UserRepository;
+import com.hanghae99.finalprooject.security.UserDetailsImpl;
 import com.hanghae99.finalprooject.security.jwt.TokenDto;
 import com.hanghae99.finalprooject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalprooject.service.UserService;
@@ -11,7 +14,11 @@ import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
@@ -55,23 +62,23 @@ public class UserController {
         return ResponseEntity.ok(userService.login(loginDto));
     }
 
-//    // 토큰 재발행 API
-//    @PostMapping("/user/reissue")
-//    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
-//        return ResponseEntity.ok(userService.reissue(tokenRequestDto));
-//    }
-//
-//    // 회원 탈퇴 API
-//    @DeleteMapping("/user/remove")
-//    public ResponseEntity<ExceptionResponse> deleteUser(@RequestBody SignOutDto signOutDto) {
-//        userService.deleteUser(signOutDto);
-//        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
-//    }
+    // 토큰 재발행 API
+    @PostMapping("/user/reissue")
+    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
+        return ResponseEntity.ok(userService.reissue(tokenRequestDto));
+    }
+
+    // 회원 탈퇴 API
+    @DeleteMapping("/user/remove")
+    public ResponseEntity<ExceptionResponse> deleteUser(@RequestBody SignOutDto signOutDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.deleteUser(signOutDto, userDetails);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
 
     // 로그아웃 API
-//    @PostMapping("/user/logout")
-//    public ResponseEntity<ExceptionResponse> logout(@RequestBody TokenRequestDto tokenRequestDto) {
-//        userService.deleteRefreshToken(tokenRequestDto);
-//        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
-//    }
+    @PostMapping("/user/logout")
+    public ResponseEntity<ExceptionResponse> logout(@RequestBody TokenRequestDto tokenRequestDto) {
+        userService.deleteRefreshToken(tokenRequestDto);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
 }

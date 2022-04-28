@@ -1,30 +1,25 @@
 package com.hanghae99.finalprooject.service;
 
-import com.hanghae99.finalprooject.dto.userDto.*;
+import com.hanghae99.finalprooject.dto.userDto.LoginDto;
+import com.hanghae99.finalprooject.dto.userDto.SignOutDto;
+import com.hanghae99.finalprooject.dto.userDto.SignupDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
 import com.hanghae99.finalprooject.model.RefreshToken;
 import com.hanghae99.finalprooject.model.User;
 import com.hanghae99.finalprooject.repository.RefreshTokenRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
+import com.hanghae99.finalprooject.security.UserDetailsImpl;
+import com.hanghae99.finalprooject.security.jwt.JwtReturn;
 import com.hanghae99.finalprooject.security.jwt.JwtTokenProvider;
 import com.hanghae99.finalprooject.security.jwt.TokenDto;
 import com.hanghae99.finalprooject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.security.SecurityUtil;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -34,7 +29,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -72,29 +66,7 @@ public class UserService {
         );
     }
 
-//    @Transactional
-//    public TokenDto login(LoginDto loginDto) {
-//        UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication();
-//
-//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-//
-////        TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
-//
-//        TokenDto tokenDto = jwtTokenProvider.createToken(loginDto.getEmail(), ,
-//                loginDto.getEmail());
-//
-//        RefreshToken refreshToken = RefreshToken.builder()
-//                .refreshKey(authentication.getName())
-//                .refreshValue(tokenDto.getRefreshToken())
-//                .build();
-//
-//        refreshTokenRepository.save(refreshToken);
-//        return tokenDto;
-//    }
-
-
-
-//    // 로그인
+    // 로그인
     @Transactional
     public TokenDto login(LoginDto loginDto) {
 
@@ -102,72 +74,83 @@ public class UserService {
                 () -> new IllegalArgumentException("해당 이메일이 없습니다")
         );
 
-//        User user = userRepository.findByUsername(requestDto.getUsername()).orElseThrow(
-//                () -> new DockingException(ErrorCode.USERNAME_NOT_FOUND)
-//        );
-//        validateLogin(requestDto, user);
+        UserValidator.validateEmailEmpty(loginDto);
+        UserValidator.validatePasswordEmpty(loginDto);
 
+        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+            throw new PrivateException(ErrorCode.LOGIN_PASSWORD_NOT_MATCH);
+        }
 
-        return jwtTokenProvider.createToken(loginDto.getEmail(), loginDto.getEmail());
+        TokenDto tokenDto = jwtTokenProvider.createToken(loginDto.getEmail(), loginDto.getEmail());
+
+        RefreshToken refreshToken = new RefreshToken(loginDto.getEmail(),tokenDto.getRefreshToken());
+        refreshTokenRepository.save(refreshToken);
+
+        return tokenDto;
     }
 
+    // Token 재발급
+    @Transactional
+    public TokenDto reissue(TokenRequestDto tokenRequestDto) {
+        log.info("Refresh Token : " + tokenRequestDto.getRefreshToken());
 
-//    // Token 재발급
-//    @Transactional
-//    public TokenDto reissue(TokenRequestDto tokenRequestDto) {
-//        log.info("Access Token : " + tokenRequestDto.getAccessToken());
-//        log.info("Refresh Token : " + tokenRequestDto.getRefreshToken());
-//
-//        // RefreshToken 만료됐을 경우
-//        if (!jwtTokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-//            throw new PrivateException(ErrorCode.REFRESH_TOKEN_EXPIRED);
-//        }
-//
-//        Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-//
-//        // RefreshToken DB에 없을 경우
-//        RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(authentication.getName()).orElseThrow(
-//                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
-//        );
-//
-//        // RefreshToken 일치하지 않는 경우
-//        if (!refreshToken.getRefreshValue().equals(tokenRequestDto.getRefreshToken())) {
-//            throw new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_MATCH);
-//        }
-//        log.info("RefreshToken 만료 및 일치 확인");
-//
-//        // Access Token, Refresh Token 재발급
-//        TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
-//        RefreshToken updateRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
-//        refreshTokenRepository.save(updateRefreshToken);
-//
-//        return tokenDto;
-//    }
+        // RefreshToken 만료됐을 경우
+        if (jwtTokenProvider.validateToken(tokenRequestDto.getRefreshToken()) != JwtReturn.SUCCESS) {
+            throw new PrivateException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+        }
+
+        User user = userRepository.findById(tokenRequestDto.getUserId()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+        String email = user.getEmail();
+
+        // RefreshToken DB에 없을 경우
+        RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(email).orElseThrow(
+                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
+        );
+
+        // RefreshToken 일치하지 않는 경우
+        if (!refreshToken.getRefreshValue().equals(tokenRequestDto.getRefreshToken())) {
+            throw new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_MATCH);
+        }
+
+        // Access Token, Refresh Token 재발급
+        TokenDto tokenDto = jwtTokenProvider.createToken(email, email);
+        RefreshToken updateRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
+        refreshTokenRepository.save(updateRefreshToken);
+
+        return tokenDto;
+    }
 
     // 회원 탈퇴
-//    @Transactional
-//    public void deleteUser(SignOutDto signOutDto) {
-//        String loginUser = signOutDto.getNickname();
-//        log.info("로그인 username : " + loginUser);
-//
-//        User user = userRepository.findByNickname(SecurityUtil.getCurrentUserNickname()).orElseThrow(
-//                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
-//        );
-//        log.info("DB 저장된 username : " + user.getNickname());
-//
-//        if (!(user.getNickname().equals(loginUser))) {
-//            throw new PrivateException(ErrorCode.NOT_MATCH_USER_INFO);
-//        }
-//        userRepository.deleteById(user.getId());
-//    }
+    @Transactional
+    public void deleteUser(SignOutDto signOutDto, UserDetailsImpl userDetails) {
+        String loginUser = signOutDto.getNickname();
+        log.info("로그인 username : " + loginUser);
 
-//    // 로그아웃
-//    @Transactional
-//    public void deleteRefreshToken(TokenRequestDto tokenRequestDto) {
-//        Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-//        RefreshToken token = refreshTokenRepository.findByRefreshKey(authentication.getName()).orElseThrow(
-//                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
-//        );
-//        refreshTokenRepository.deleteById(token.getRefreshKey());
-//    }
+        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        log.info("DB 저장된 username : " + user.getNickname());
+
+        if (!(user.getNickname().equals(loginUser))) {
+            throw new PrivateException(ErrorCode.NOT_MATCH_USER_INFO);
+        }
+        userRepository.deleteById(user.getId());
+    }
+
+    // 로그아웃
+    @Transactional
+    public void deleteRefreshToken(TokenRequestDto tokenRequestDto) {
+        User user = userRepository.findById(tokenRequestDto.getUserId()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+        String email = user.getEmail();
+
+        RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(email).orElseThrow(
+                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
+        );
+        refreshTokenRepository.deleteById(refreshToken.getRefreshKey());
+    }
 }
