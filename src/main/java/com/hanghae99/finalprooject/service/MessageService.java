@@ -201,7 +201,6 @@ public class MessageService {
 
     }
 
-
     @Transactional
     public void updateRoomMessageCount(RoomDto.UpdateCountDto updateCountDto) {
         Room room = roomRepository.findByRoomName(updateCountDto.getRoomName()).orElseThrow(
@@ -217,5 +216,3 @@ public class MessageService {
         userRoom.countChange();
     }
 }
-
-

@@ -4,7 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Getter
 @Entity
 public class Img {

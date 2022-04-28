@@ -1,15 +1,20 @@
 package com.hanghae99.finalprooject.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hanghae99.finalprooject.model.CurrentStatus;
-import lombok.AllArgsConstructor;
+import com.hanghae99.finalprooject.model.Post;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class PostDto {
 
     @Getter
     @Setter
-    @AllArgsConstructor
     public static class RequestDto {
         private String title;
         private String content;
@@ -17,5 +22,56 @@ public class PostDto {
         private CurrentStatus currentStatus;
         private String region;
         private String category;
+
+        @JsonCreator
+        public RequestDto(
+                @JsonProperty("title") String title,
+                @JsonProperty("content") String content,
+                @JsonProperty("deadline") String deadline,
+                @JsonProperty("currentStatus") String currentStatus,
+                @JsonProperty("region") String region,
+                @JsonProperty("category") String category
+
+        ){
+            this.title = title;
+            this.content = content;
+            this.deadline = deadline;
+            this.currentStatus = CurrentStatus.valueOf(currentStatus);
+            this.region = region;
+            this.category = category;
+        }
+    }
+
+    @Getter
+    public static class DetailDto {
+        private Long postId;
+        private Long userId;
+        private String nickname;
+        private String title;
+        private String content;
+        private String deadline;
+        private CurrentStatus currentStatus;
+        private String region;
+        private String category;
+        private String createdAt;
+        private List<String> imgList;
+
+        public DetailDto(Long postId, Post post, List<String> imgList) {
+            this.postId = postId;
+            this.userId = post.getUser().getId();
+            this.nickname = post.getUser().getNickname();
+            this.title = post.getTitle();
+            this.content = post.getContent();
+            this.deadline = post.getDeadline();
+            this.currentStatus = post.getCurrentStatus();
+            this.region = post.getRegion();
+            this.category = post.getCategory();
+            this.createdAt = formatter(post.getCreateAt());
+            this.imgList = imgList;
+        }
+
+        public String formatter(LocalDateTime localDateTime) {
+            return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(localDateTime);
+        }
     }
 }

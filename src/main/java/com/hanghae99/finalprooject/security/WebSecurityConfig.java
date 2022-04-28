@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @RequiredArgsConstructor
 @Configuration
@@ -36,7 +39,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
-    http.cors();
+    http
+            .cors()
+            .configurationSource(corsConfigurationSource());
     http.csrf().disable().sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     http.headers().frameOptions().disable();
@@ -57,5 +62,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
             UsernamePasswordAuthenticationFilter.class);
+  }
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowCredentials(true) ;
+    configuration.addAllowedOriginPattern("*");
+    configuration.addAllowedOrigin("http://localhost:3000"); // local 테스트 시
+    configuration.addAllowedOrigin("http://outsta.s3-website.ap-northeast-2.amazonaws.com"); // 배포 시
+    configuration.addAllowedMethod("*");
+    configuration.addAllowedHeader("*");
+    configuration.addExposedHeader("Authorization");
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
   }
 }

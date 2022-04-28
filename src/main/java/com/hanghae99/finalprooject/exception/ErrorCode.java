@@ -51,7 +51,11 @@ public enum ErrorCode {
     // 이미지
     WRONG_INPUT_IMAGE(HttpStatus.BAD_REQUEST, "400", "이미지는 반드시 있어야 합니다"),
     IMAGE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "400", "이미지 업로드에 실패했습니다"),
-    WRONG_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "400", "지원하지 않는 파일 형식입니다");
+    WRONG_IMAGE_FORMAT(HttpStatus.BAD_REQUEST, "400", "지원하지 않는 파일 형식입니다"),
+
+    // Post
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 게시물을 찾을 수 없습니다"),
+    POST_UPDATE_WRONG_ACCESS(HttpStatus.BAD_REQUEST, "400", "본인의 게시물만 수정할 수 있습니다");
 
     private final HttpStatus status;
     private final String errorCode;

@@ -11,9 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -32,9 +30,34 @@ public class PostController {
     public ResponseEntity<ExceptionResponse> createPost(@RequestPart("data") PostDto.RequestDto requestDto,
                                                         @RequestPart("img") List<MultipartFile> imgList,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        List<String> imgUrlList = awsS3UploadService.uploadImgList(imgList);
+        List<String> imgUrlList = awsS3UploadService.uploadImg(imgList);
         log.info("ImgUrlList : " + imgUrlList);
         postService.createPost(requestDto, imgUrlList, userDetails);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
+
+    // post 상세 조회 API
+    @GetMapping("/api/post/{postId}")
+    public PostDto.DetailDto getDetailPost(@PathVariable Long postId) {
+        return postService.getDetail(postId);
+    }
+
+    // post 수정 API
+    @PutMapping("/api/post/{postId}")
+    public ResponseEntity<ExceptionResponse> updatePost(@PathVariable Long postId,
+                                                        @RequestPart("data") PostDto.RequestDto requestDto,
+                                                        @RequestPart("img") List<MultipartFile> imgList,
+                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        List<String> imgUrlList = awsS3UploadService.uploadImg(imgList);
+//        log.info("ImgUrlList : " + imgUrlList);
+        postService.updatePost(postId, requestDto, imgList, userDetails);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
+
+    // post 삭제 API
+    @DeleteMapping("/api/post/{postId}")
+    public ResponseEntity<ExceptionResponse> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postService.deletePost(postId, userDetails);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
 }
