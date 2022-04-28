@@ -37,6 +37,9 @@ public enum ErrorCode {
 
     // 로그인
     LOGIN_NOT_FOUNT_EMAIL(HttpStatus.NOT_FOUND, "404", "해당 Email을 찾을 수 없습니다"),
+    LOGIN_EMAIL_EMPTY(HttpStatus.BAD_REQUEST, "400", "Email을 입력해주세요"),
+    LOGIN_PASSWORD_EMPTY(HttpStatus.BAD_REQUEST, "400", "비밀번호를 입력해주세요"),
+    LOGIN_PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "400", "비밀번호가 틀렸습니다. 다시 입력해주세요"),
 
     // 회원 탈퇴
     NOT_MATCH_USER_INFO(HttpStatus.BAD_REQUEST, "400", "유저 정보가 일치하지 않습니다"),

@@ -45,15 +45,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     http.authorizeRequests()
         // login 없이 허용
-        .antMatchers("/user/login").permitAll()
-        .antMatchers("/signup").permitAll()
-        .antMatchers("/oauth/callback/kakao").permitAll()
-        .antMatchers("/signup/checkid").permitAll()
-        .antMatchers("/signup/checknick").permitAll()
-        .antMatchers("/posts").permitAll()
-        .antMatchers("/posts/**").permitAll()
+        .antMatchers("/user/**").permitAll()
+        .antMatchers("/api/posts").permitAll()
         .antMatchers("/ws-stomp").permitAll()
-        .antMatchers("/**").permitAll()
 
         //추가 - 메인 페이지 접근 허용
         .antMatchers("/").permitAll()
