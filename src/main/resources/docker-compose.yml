@@ -1,8 +1,0 @@
-services:
-  redis:
-    image: redis:alpine					# 가져올 redis 이미지를 alpine으로 설정
-    command: redis-server --port 6379		# 컨테이너가 띄워질때 수행할 명령어
-    container_name: redis_boot			# 컨테이너 이름을 설정
-    hostname: redis_boot					# 컨테이너 내에 사용하는 이름을 설정
-    ports:
-      - 6379:6379

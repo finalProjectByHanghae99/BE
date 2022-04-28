@@ -3,11 +3,13 @@ package com.hanghae99.finalprooject.redis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hanghae99.finalprooject.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
+
 
 @Component
 @RequiredArgsConstructor
@@ -32,10 +34,10 @@ public class RedisMessageSubscriber implements MessageListener {
             //레디스에서 발행된 데이터를 받아와 [역직렬화 ] -> 연속적인 데이터를 다시 객체 형태 복원
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
             // MessageDto 객체로 매핑
-            MessageDto message1 = objectMapper.readValue(publishMessage, MessageDto.class);
+            MessageDto chatMessage = objectMapper.readValue(publishMessage, MessageDto.class);
             // 웹 소켓 구독자에게 채팅 메시지 send
-            messagingTemplate.convertAndSend("/sub/"+message1.getRoomName(), message1);
-            messagingTemplate.convertAndSend("/sub/"+message1.getReceiverId(), message1);
+            messagingTemplate.convertAndSend("/sub/"+chatMessage.getRoomName(), chatMessage);
+            messagingTemplate.convertAndSend("/sub/"+chatMessage.getReceiverId(),chatMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }
