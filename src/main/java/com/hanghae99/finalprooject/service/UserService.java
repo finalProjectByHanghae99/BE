@@ -9,6 +9,7 @@ import com.hanghae99.finalprooject.repository.RefreshTokenRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.security.jwt.JwtTokenProvider;
 import com.hanghae99.finalprooject.security.jwt.TokenDto;
+import com.hanghae99.finalprooject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalprooject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -160,13 +161,13 @@ public class UserService {
 //        userRepository.deleteById(user.getId());
 //    }
 
-    // 로그아웃
-    @Transactional
-    public void deleteRefreshToken(TokenRequestDto tokenRequestDto) {
-        Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-        RefreshToken token = refreshTokenRepository.findByRefreshKey(authentication.getName()).orElseThrow(
-                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
-        );
-        refreshTokenRepository.deleteById(token.getRefreshKey());
-    }
+//    // 로그아웃
+//    @Transactional
+//    public void deleteRefreshToken(TokenRequestDto tokenRequestDto) {
+//        Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
+//        RefreshToken token = refreshTokenRepository.findByRefreshKey(authentication.getName()).orElseThrow(
+//                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
+//        );
+//        refreshTokenRepository.deleteById(token.getRefreshKey());
+//    }
 }

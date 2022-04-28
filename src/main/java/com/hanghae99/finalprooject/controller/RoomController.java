@@ -1,6 +1,5 @@
 package com.hanghae99.finalprooject.controller;
 
-
 import com.hanghae99.finalprooject.dto.ChatRoomDto;
 import com.hanghae99.finalprooject.dto.RoomDto;
 import com.hanghae99.finalprooject.redis.RedisMessageSubscriber;
