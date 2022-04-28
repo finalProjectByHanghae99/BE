@@ -39,9 +39,6 @@ public class MessageService {
                 () -> new IllegalArgumentException("메시지를 보내는 이가 없습니다.")
         );
 
-        User receiver = userRepository.findById(messageDto.getReceiverId()).orElseThrow(
-                () -> new IllegalArgumentException("메시지를 받는 이가 없습니다.")
-        );
 
         // 전달받는 메시지 타입을 체크 ,
         // 메시지 시작.
