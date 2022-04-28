@@ -107,4 +107,23 @@ public class PostService {
             imgList.add(img.getImgUrl());
         }
     }
+
+    // post 삭제
+    @Transactional
+    public void deletePost(Long postId, UserDetailsImpl userDetails) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+        );
+
+        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        if (!post.getUser().equals(user)) {
+            throw new PrivateException(ErrorCode.POST_UPDATE_WRONG_ACCESS);
+        }
+        awsS3UploadService.deleteImg(postId);
+        imgRepository.deleteAllByPostId(postId);
+        postRepository.deleteById(postId);
+    }
 }

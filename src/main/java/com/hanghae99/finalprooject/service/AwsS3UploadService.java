@@ -1,11 +1,13 @@
 package com.hanghae99.finalprooject.service;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.hanghae99.finalprooject.exception.ErrorCode;
@@ -106,34 +108,35 @@ public class AwsS3UploadService {
         return uploadImg(imgUrlList);
     }
 
-    private void deleteImg(Long postId) {
-        List<Img> lastImgList = imgRepository.findByPostId(postId);
-        log.info("수정/삭제 전 이미지 Url : " + lastImgList);
-
-        for (Img lastImg : lastImgList) {
-            if (!"".equals(lastImg.getImgUrl()) && lastImg.getImgUrl() != null) {
-                String lastImgUrl = lastImg.getImgUrl();
-                lastImgUrl = lastImgUrl.replace("https://s3.ap-northeast-2.amazonaws.com/hyemco-butket/post/image/", "");
-                boolean isExistObject = s3Client.doesObjectExist(bucket, lastImgUrl);
-                log.info("삭제한 이미지 Url : " + lastImgUrl);
-                log.info("삭제할 이미지 Url : " + lastImg.getImgUrl());
-                log.info("isExistObject : " + isExistObject);
-
-                if (isExistObject) {
-                    s3Client.deleteObject(bucket, lastImgUrl);
-                }
-            }
-            imgRepository.deleteById(lastImg.getId());
-        }
-    }
-
-    // 이미지 삭제
-//    public void deleteImg(List<Img> imgList) {
-//        try {
-//            imgList.stream().forEach(i -> s3Client.deleteObject(new DeleteObjectRequest(bucket+"/post/image", i.getImgUrl().split("amazonaws.com/")[1])));
-//        } catch (AmazonServiceException e) {
-//            System.err.println(e.getErrorMessage());
+//    public void deleteImg(Long postId) {
+//        List<Img> lastImgList = imgRepository.findByPostId(postId);
+//        log.info("수정/삭제 전 이미지 Url : " + lastImgList);
+//
+//        for (Img lastImg : lastImgList) {
+//            if (!"".equals(lastImg.getImgUrl()) && lastImg.getImgUrl() != null) {
+//                String lastImgUrl = lastImg.getImgUrl();
+//                lastImgUrl = lastImgUrl.replace("https://s3.ap-northeast-2.amazonaws.com/hyemco-butket/post/image/", "");
+//                boolean isExistObject = s3Client.doesObjectExist(bucket, lastImgUrl);
+//                log.info("삭제한 이미지 Url : " + lastImgUrl);
+//                log.info("삭제할 이미지 Url : " + lastImg.getImgUrl());
+//                log.info("isExistObject : " + isExistObject);
+//
+//                if (isExistObject) {
+//                    s3Client.deleteObject(bucket, lastImgUrl);
+//                }
+//            }
+//            imgRepository.deleteById(lastImg.getId());
 //        }
 //    }
 
+    // 이미지 삭제
+    public void deleteImg(Long postId) {
+        List<Img> lastImgList = imgRepository.findByPostId(postId);
+
+        try {
+            lastImgList.stream().forEach(i -> s3Client.deleteObject(new DeleteObjectRequest(bucket+"/post/image", i.getImgUrl().split("amazonaws.com/")[1])));
+        } catch (AmazonServiceException e) {
+            System.err.println(e.getErrorMessage());
+        }
+    }
 }
