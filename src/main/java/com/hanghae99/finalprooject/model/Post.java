@@ -1,13 +1,18 @@
 package com.hanghae99.finalprooject.model;
 
+import com.hanghae99.finalprooject.dto.PostDto;
+import com.hanghae99.finalprooject.exception.ErrorCode;
+import com.hanghae99.finalprooject.exception.PrivateException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -55,5 +60,15 @@ public class Post extends TimeStamped {
         this.region = region;
         this.category = category;
         this.user = user;
+    }
+
+    // post 수정 생성자
+    public void updatePost(PostDto.RequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.deadline = requestDto.getDeadline();
+        this.currentStatus = requestDto.getCurrentStatus();
+        this.region = requestDto.getRegion();
+        this.category = requestDto.getCategory();
     }
 }

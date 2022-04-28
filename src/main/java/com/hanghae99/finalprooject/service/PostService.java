@@ -9,11 +9,13 @@ import com.hanghae99.finalprooject.model.Post;
 import com.hanghae99.finalprooject.model.User;
 import com.hanghae99.finalprooject.repository.ImgRepository;
 import com.hanghae99.finalprooject.repository.PostRepository;
+import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,9 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
     private final ImgRepository imgRepository;
+
     private final AwsS3UploadService awsS3UploadService;
 
     // post 등록
@@ -74,5 +78,33 @@ public class PostService {
         // 댓글 추가 필요
 
         return new PostDto.DetailDto(postId, post, imgUrl);
+    }
+
+    @Transactional
+    public void updatePost(Long postId, PostDto.RequestDto requestDto, List<MultipartFile> imgUrlList, UserDetailsImpl userDetails) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+        );
+
+        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        // 본인 post만 수정
+        if (!post.getUser().equals(user)) {
+            throw new PrivateException(ErrorCode.POST_UPDATE_WRONG_ACCESS);
+        }
+
+        List<String> imgPaths = awsS3UploadService.updateImg(postId, imgUrlList);
+        log.info("수정된 이미지 Url : " + imgPaths);
+
+        post.updatePost(requestDto);
+
+        List<String> imgList = new ArrayList<>();
+        for (String imgUrl : imgPaths) {
+            Img img = new Img(imgUrl, post);
+            imgRepository.save(img);
+            imgList.add(img.getImgUrl());
+        }
     }
 }

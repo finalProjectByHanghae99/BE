@@ -36,9 +36,21 @@ public class PostController {
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
 
-    // post 상세 조회
+    // post 상세 조회 API
     @GetMapping("/api/post/{postId}")
     public PostDto.DetailDto getDetailPost(@PathVariable Long postId) {
         return postService.getDetail(postId);
+    }
+
+    // post 수정 API
+    @PutMapping("/api/post/{postId}")
+    public ResponseEntity<ExceptionResponse> updatePost(@PathVariable Long postId,
+                                                        @RequestPart("data") PostDto.RequestDto requestDto,
+                                                        @RequestPart("img") List<MultipartFile> imgList,
+                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        List<String> imgUrlList = awsS3UploadService.uploadImg(imgList);
+//        log.info("ImgUrlList : " + imgUrlList);
+        postService.updatePost(postId, requestDto, imgList, userDetails);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
 }

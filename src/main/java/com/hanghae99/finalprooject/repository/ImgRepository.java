@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface ImgRepository extends JpaRepository<Img, Long> {
     List<Img> findAllByPost(Post postId);
+
+    List<Img> findByPostId(Long postId);
 }
