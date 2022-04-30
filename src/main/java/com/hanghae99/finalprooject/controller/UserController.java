@@ -1,6 +1,7 @@
 package com.hanghae99.finalprooject.controller;
 
 import com.hanghae99.finalprooject.dto.userDto.LoginDto;
+import com.hanghae99.finalprooject.dto.userDto.MyPageDto;
 import com.hanghae99.finalprooject.dto.userDto.SignOutDto;
 import com.hanghae99.finalprooject.dto.userDto.SignupDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
@@ -15,10 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -81,4 +79,17 @@ public class UserController {
         userService.deleteRefreshToken(tokenRequestDto);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
+    //유저페이지 정보 API
+    @GetMapping("/api/userInfo/{userId}")
+    public MyPageDto.ResponseDto userInfo(@PathVariable Long userId){
+        return userService.findMyPage(userId);
+    }
+
+
+
+
+
+
+
+
 }

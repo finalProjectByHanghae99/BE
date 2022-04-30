@@ -9,6 +9,7 @@ import com.hanghae99.finalprooject.model.Post;
 import com.hanghae99.finalprooject.model.User;
 import com.hanghae99.finalprooject.repository.ImgRepository;
 import com.hanghae99.finalprooject.repository.PostRepository;
+import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

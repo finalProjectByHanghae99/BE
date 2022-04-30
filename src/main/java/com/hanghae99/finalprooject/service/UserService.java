@@ -1,12 +1,14 @@
 package com.hanghae99.finalprooject.service;
 
 import com.hanghae99.finalprooject.dto.userDto.LoginDto;
+import com.hanghae99.finalprooject.dto.userDto.MyPageDto;
 import com.hanghae99.finalprooject.dto.userDto.SignOutDto;
 import com.hanghae99.finalprooject.dto.userDto.SignupDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
 import com.hanghae99.finalprooject.model.RefreshToken;
 import com.hanghae99.finalprooject.model.User;
+import com.hanghae99.finalprooject.repository.PostRepository;
 import com.hanghae99.finalprooject.repository.RefreshTokenRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.security.UserDetailsImpl;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final PostRepository postRepository;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -152,5 +155,24 @@ public class UserService {
                 () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
         );
         refreshTokenRepository.deleteById(refreshToken.getRefreshKey());
+    }
+    //마이페이지의 정보를 반환
+    @Transactional(readOnly = true)
+    public MyPageDto.ResponseDto findMyPage(Long userId) {
+        // 나 자신 or상대 유저의 pk를 받아와 존재여부 확인
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+
+
+        // 닉네임/프로필 이미지/자기소개/ 등록한 포폴 이미지/ 내가 올린 글 목록
+        return MyPageDto.ResponseDto.builder()
+                .nickname(user.getNickname())
+                .profileImg(user.getProfileImg())
+                .intro(user.getIntro())
+                .introImgList(user.getIntroImgList())
+                .build();
+
     }
 }

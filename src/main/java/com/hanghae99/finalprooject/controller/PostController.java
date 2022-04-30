@@ -46,10 +46,12 @@ public class PostController {
     @PutMapping("/api/post/{postId}")
     public ResponseEntity<ExceptionResponse> updatePost(@PathVariable Long postId,
                                                         @RequestPart("data") PostDto.RequestDto requestDto,
-                                                        @RequestPart("img") List<MultipartFile> imgList,
+                                                        @RequestPart(value = "img",required = false) List<MultipartFile> imgList,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 //        List<String> imgUrlList = awsS3UploadService.uploadImg(imgList);
 //        log.info("ImgUrlList : " + imgUrlList);
+
+
         postService.updatePost(postId, requestDto, imgList, userDetails);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
