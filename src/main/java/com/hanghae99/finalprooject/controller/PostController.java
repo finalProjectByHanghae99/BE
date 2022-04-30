@@ -1,5 +1,6 @@
 package com.hanghae99.finalprooject.controller;
 
+import com.hanghae99.finalprooject.dto.PostDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.ExceptionResponse;
 import com.hanghae99.finalprooject.security.UserDetailsImpl;
@@ -27,5 +28,11 @@ public class PostController {
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         postService.createPost(jsonString, imgs, userDetails);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
+
+    // post 상세 조회 API
+    @GetMapping("/api/post/{postId}")
+    public PostDto.DetailDto getDetailPost(@PathVariable Long postId) {
+        return postService.getDetail(postId);
     }
 }

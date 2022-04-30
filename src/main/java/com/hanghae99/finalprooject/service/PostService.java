@@ -3,9 +3,12 @@ package com.hanghae99.finalprooject.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hanghae99.finalprooject.dto.ImgDto;
 import com.hanghae99.finalprooject.dto.PostDto;
+import com.hanghae99.finalprooject.exception.ErrorCode;
+import com.hanghae99.finalprooject.exception.PrivateException;
 import com.hanghae99.finalprooject.model.Img;
 import com.hanghae99.finalprooject.model.Post;
 import com.hanghae99.finalprooject.model.User;
+import com.hanghae99.finalprooject.repository.ImgRepository;
 import com.hanghae99.finalprooject.repository.PostRepository;
 import com.hanghae99.finalprooject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -24,6 +28,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final ImgRepository imgRepository;
     private final FileUploadService fileUploadService;
 
     // post 등록
@@ -41,6 +46,7 @@ public class PostService {
             }
         }
 
+        // 자료형이 String인 jsonString을 Dto로 변환
         ObjectMapper objectMapper = new ObjectMapper();
         PostDto.RequestDto requestDto = objectMapper.readValue(jsonString, PostDto.RequestDto.class);
 
@@ -67,5 +73,20 @@ public class PostService {
                     .build();
             imgList.add(img);
         }
+    }
+
+    // post 상세 조회
+    public PostDto.DetailDto getDetail(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+        );
+
+        List<String> imgUrl = imgRepository.findAllByPost(post)
+                .stream()
+                .map(Img::getImgUrl)
+                .collect(Collectors.toList());
+
+        // 댓글 추후 추가
+        return new PostDto.DetailDto(postId, post, imgUrl);
     }
 }
