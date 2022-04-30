@@ -45,4 +45,11 @@ public class PostController {
         postService.editPost(postId, jsonString, imgs, userDetails);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
+
+    // post 삭제 API
+    @DeleteMapping("/api/post/{postId}")
+    public ResponseEntity<ExceptionResponse> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postService.deletePost(postId, userDetails);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
 }
