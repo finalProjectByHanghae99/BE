@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 public abstract class TimeStamped {
-
     @CreatedDate
     private LocalDateTime createAt;
 

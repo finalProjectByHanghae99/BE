@@ -26,7 +26,7 @@ public class JwtTokenProvider {
   private String secretKey;
 
   // Access Token 유효기간 - 1시간
-  private static final Long acessTokenValidTime = 60 * 60 * 1000L;
+  private static final Long accessTokenValidTime = 60 * 60 * 1000L;
 
   // Refresh Token 유효기간 - 7일
   private static final Long refreshTokenValidTime = 7 * 24 * 60 * 60 * 1000L;
@@ -50,7 +50,7 @@ public class JwtTokenProvider {
     String accessToken = Jwts.builder()
         .setClaims(claims)
         .setIssuedAt(now)
-        .setExpiration(new Date(now.getTime() + acessTokenValidTime))
+        .setExpiration(new Date(now.getTime() + accessTokenValidTime))
         .signWith(SignatureAlgorithm.HS256, secretKey)
         .compact();
 
@@ -62,7 +62,7 @@ public class JwtTokenProvider {
 
     return TokenDto.builder()
         .accessToken(accessToken)
-        .accessTokenExpiresIn(acessTokenValidTime)
+        .accessTokenExpiresIn(accessTokenValidTime)
         .refreshToken(refreshToken)
         .build();
   }

@@ -46,5 +46,4 @@ public class Message extends TimeStamped{
         this.room = roomRepository.findByRoomName(sendMessageDto.getRoomName()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 방 입니다."));
     }
-
 }
