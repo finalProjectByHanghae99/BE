@@ -53,7 +53,7 @@ public class PostController {
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
 
-    @GetMapping("/api/test/getERR")
+    @GetMapping("/api/test/getERRr")
     public void getPosts(){
         throw new RuntimeException();
     }
