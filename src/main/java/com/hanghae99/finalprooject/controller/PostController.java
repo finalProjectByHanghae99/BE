@@ -35,4 +35,14 @@ public class PostController {
     public PostDto.DetailDto getDetailPost(@PathVariable Long postId) {
         return postService.getDetail(postId);
     }
+
+    // post 수정 API
+    @PutMapping("/api/post/{postId}")
+    public ResponseEntity<ExceptionResponse> editPost(@PathVariable Long postId,
+                                                      @RequestPart(value = "data") String jsonString,
+                                                      @RequestPart(value = "img", required = false) List<MultipartFile> imgs,
+                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        postService.editPost(postId, jsonString, imgs, userDetails);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
 }

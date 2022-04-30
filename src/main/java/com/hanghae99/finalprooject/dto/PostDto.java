@@ -54,4 +54,16 @@ public class PostDto {
             return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(localDateTime);
         }
     }
+
+    @Setter
+    @Getter
+    public static class PutRequestDto {
+        private String title;
+        private String content;
+        private String deadline;
+        private CurrentStatus currentStatus;
+        private String region;
+        private String category;
+        private List<ImgUrlDto> imgUrl;
+    }
 }

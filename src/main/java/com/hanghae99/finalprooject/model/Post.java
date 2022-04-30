@@ -1,5 +1,6 @@
 package com.hanghae99.finalprooject.model;
 
+import com.hanghae99.finalprooject.dto.PostDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -55,6 +56,20 @@ public class Post extends TimeStamped {
         this.region = region;
         this.category = category;
         this.user = user;
+        this.imgList = imgList;
+        for (Img img : imgList) {
+            img.setPost(this);
+        }
+    }
+
+    // post 수정
+    public void updatePost(PostDto.PutRequestDto putRequestDto, List<Img> imgList) {
+        this.title = putRequestDto.getTitle();
+        this.content = putRequestDto.getContent();
+        this.deadline = putRequestDto.getDeadline();
+        this.currentStatus = putRequestDto.getCurrentStatus();
+        this.region = putRequestDto.getRegion();
+        this.category = putRequestDto.getCategory();
         this.imgList = imgList;
         for (Img img : imgList) {
             img.setPost(this);
