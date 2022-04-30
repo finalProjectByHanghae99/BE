@@ -1,21 +1,16 @@
 package com.hanghae99.finalprooject.model;
 
 import com.hanghae99.finalprooject.dto.PostDto;
-import com.hanghae99.finalprooject.exception.ErrorCode;
-import com.hanghae99.finalprooject.exception.PrivateException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Getter
 @Entity
 public class Post extends TimeStamped {
@@ -52,7 +47,8 @@ public class Post extends TimeStamped {
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     private List<Img> imgList = new ArrayList<>();
 
-    public Post(String title, String content, String deadline, CurrentStatus currentStatus, String region, String category, User user) {
+    @Builder
+    public Post(String title, String content, String deadline, CurrentStatus currentStatus, String region, String category, User user, List<Img> imgList) {
         this.title = title;
         this.content = content;
         this.deadline = deadline;
@@ -60,15 +56,23 @@ public class Post extends TimeStamped {
         this.region = region;
         this.category = category;
         this.user = user;
+        this.imgList = imgList;
+        for (Img img : imgList) {
+            img.setPost(this);
+        }
     }
 
-    // post 수정 생성자
-    public void updatePost(PostDto.RequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
-        this.deadline = requestDto.getDeadline();
-        this.currentStatus = requestDto.getCurrentStatus();
-        this.region = requestDto.getRegion();
-        this.category = requestDto.getCategory();
+    // post 수정
+    public void updatePost(PostDto.PutRequestDto putRequestDto, List<Img> imgList) {
+        this.title = putRequestDto.getTitle();
+        this.content = putRequestDto.getContent();
+        this.deadline = putRequestDto.getDeadline();
+        this.currentStatus = putRequestDto.getCurrentStatus();
+        this.region = putRequestDto.getRegion();
+        this.category = putRequestDto.getCategory();
+        this.imgList = imgList;
+        for (Img img : imgList) {
+            img.setPost(this);
+        }
     }
 }

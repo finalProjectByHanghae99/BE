@@ -23,10 +23,6 @@ public class Img {
     @JoinColumn
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private User user;
-
     public Img(String imgUrl, Post post) {
         this.imgUrl = imgUrl;
         this.post = post;
