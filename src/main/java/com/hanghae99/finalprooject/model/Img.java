@@ -8,6 +8,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 @Entity
 public class Img {
 
@@ -17,13 +18,17 @@ public class Img {
     private Long id;
 
     @Column(nullable = false)
+    private String imgName;
+
+    @Column(nullable = false)
     private String imgUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Post post;
 
-    public Img(String imgUrl, Post post) {
+    public Img(String imgName, String imgUrl, Post post) {
+        this.imgName = imgName;
         this.imgUrl = imgUrl;
         this.post = post;
     }
