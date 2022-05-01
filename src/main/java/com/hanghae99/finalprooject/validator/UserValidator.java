@@ -64,7 +64,7 @@ public class UserValidator {
         String password = loginDto.getPassword();
 
         if (password.isEmpty()) {
-            throw new PrivateException(ErrorCode.LOGIN_EMAIL_EMPTY);
+            throw new PrivateException(ErrorCode.LOGIN_PASSWORD_EMPTY);
         }
     }
 }

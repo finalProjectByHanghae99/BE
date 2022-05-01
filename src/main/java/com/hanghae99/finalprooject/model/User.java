@@ -25,6 +25,9 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
+    @Column(nullable = false)
+    private String major;
+
     private String intro;
 
     private String profileImg;

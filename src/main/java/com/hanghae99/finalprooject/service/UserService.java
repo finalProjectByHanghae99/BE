@@ -60,8 +60,8 @@ public class UserService {
                         .email(requestDto.getEmail())
                         .nickname(requestDto.getNickname())
                         .password(password)
-//                        .intro("자시소개를 해주세요")
-//                        .profileImg("dfdfdfdfdff.png")
+                        .major(requestDto.getMajor())
+                        .profileImg("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/basicProfile.png")
                         .build()
         );
     }
@@ -69,13 +69,12 @@ public class UserService {
     // 로그인
     @Transactional
     public TokenDto login(LoginDto loginDto) {
+        UserValidator.validateEmailEmpty(loginDto);
+        UserValidator.validatePasswordEmpty(loginDto);
 
         User user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(
                 () -> new IllegalArgumentException("해당 이메일이 없습니다")
         );
-
-        UserValidator.validateEmailEmpty(loginDto);
-        UserValidator.validatePasswordEmpty(loginDto);
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new PrivateException(ErrorCode.LOGIN_PASSWORD_NOT_MATCH);
