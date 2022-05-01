@@ -16,6 +16,8 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,15 +41,21 @@ public class JwtTokenProvider {
   }
 
   // 토큰 생성
-  public TokenDto createToken(String userPk, String email) {
+  public TokenDto createToken(String userPk, String email,String nickname, String major, String profileImg) {
+
+    Map<String, Object> headers = new HashMap<>();
+    headers.put("typ", "JWT");
 
     Claims claims = Jwts.claims().setSubject(userPk);
-    claims.put("username", email);
-
+    claims.put("email", email);
+    claims.put("nickname", nickname);
+    claims.put("major", major);
+    claims.put("profileImg", profileImg);
 
     Date now = new Date();
 
     String accessToken = Jwts.builder()
+        .setHeader(headers)
         .setClaims(claims)
         .setIssuedAt(now)
         .setExpiration(new Date(now.getTime() + accessTokenValidTime))
