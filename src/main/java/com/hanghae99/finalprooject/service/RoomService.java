@@ -144,7 +144,7 @@ public class RoomService {
                         .postId(userRoom.getRoom().getRoomPostId())
                         .user(chatUserDto)
                         .lastMessage(lastMessageDto)
-                        .currentStatus(CurrentStatus.success)
+//                        .currentStatus(CurrentStatus.success)
                         .notReadingMessageCount(userRoom.getCount())
                         .build();
             } else {
