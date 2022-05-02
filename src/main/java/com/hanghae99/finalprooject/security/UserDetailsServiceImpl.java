@@ -18,10 +18,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     this.userRepository = userRepository;
   }
 
-  public UserDetailsImpl loadUserByUsername(String email) throws UsernameNotFoundException {
-
-    User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> new UsernameNotFoundException("Can't find " + email));
+  public UserDetailsImpl loadUserByUsername(String userPk) throws UsernameNotFoundException {
+    User user = userRepository.findById(Long.parseLong(userPk))
+            .orElseThrow(() -> new UsernameNotFoundException(userPk + "은 존재하지 않는 아이디입니다."));
 
     return new UserDetailsImpl(user);
   }

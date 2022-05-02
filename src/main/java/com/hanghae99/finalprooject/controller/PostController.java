@@ -52,4 +52,9 @@ public class PostController {
         postService.deletePost(postId, userDetails);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
+
+    @GetMapping("/api/test/getERRr")
+    public void getPosts(){
+        throw new RuntimeException();
+    }
 }

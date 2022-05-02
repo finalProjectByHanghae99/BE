@@ -63,8 +63,10 @@ public class UserService {
                         .email(requestDto.getEmail())
                         .nickname(requestDto.getNickname())
                         .password(password)
-//                        .intro("자시소개를 해주세요")
-//                        .profileImg("dfdfdfdfdff.png")
+                        .major(requestDto.getMajor())
+                        .intro("자기 소개를 입력해주세요")
+                        .profileImg("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/basicProfile.png")
+                        .link("작성한 포트폴리오 URL이 없습니다")
                         .build()
         );
     }
@@ -72,19 +74,24 @@ public class UserService {
     // 로그인
     @Transactional
     public TokenDto login(LoginDto loginDto) {
-
-        User user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(
-                () -> new IllegalArgumentException("해당 이메일이 없습니다")
-        );
-
         UserValidator.validateEmailEmpty(loginDto);
         UserValidator.validatePasswordEmpty(loginDto);
+
+        User user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(
+                () -> new PrivateException(ErrorCode.LOGIN_NOT_FOUNT_EMAIL)
+        );
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new PrivateException(ErrorCode.LOGIN_PASSWORD_NOT_MATCH);
         }
 
-        TokenDto tokenDto = jwtTokenProvider.createToken(loginDto.getEmail(), loginDto.getEmail());
+        String sub = String.valueOf(user.getId());
+        String email = loginDto.getEmail();
+        String nickname = user.getNickname();
+        String major = user.getMajor();
+        String profileImgUrl = user.getProfileImg();
+
+        TokenDto tokenDto = jwtTokenProvider.createToken(sub, email, nickname, major, profileImgUrl);
 
         RefreshToken refreshToken = new RefreshToken(loginDto.getEmail(),tokenDto.getRefreshToken());
         refreshTokenRepository.save(refreshToken);
@@ -105,7 +112,12 @@ public class UserService {
         User user = userRepository.findById(tokenRequestDto.getUserId()).orElseThrow(
                 () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
         );
+
+        String sub = "mo-hum";
         String email = user.getEmail();
+        String nickname = user.getNickname();
+        String major = user.getMajor();
+        String profile = user.getProfileImg();
 
         // RefreshToken DB에 없을 경우
         RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(email).orElseThrow(
@@ -118,7 +130,7 @@ public class UserService {
         }
 
         // Access Token, Refresh Token 재발급
-        TokenDto tokenDto = jwtTokenProvider.createToken(email, email);
+        TokenDto tokenDto = jwtTokenProvider.createToken(sub, email, nickname, major, profile);
         RefreshToken updateRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
         refreshTokenRepository.save(updateRefreshToken);
 

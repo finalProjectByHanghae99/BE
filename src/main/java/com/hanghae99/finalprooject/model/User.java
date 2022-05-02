@@ -4,10 +4,6 @@ import lombok.*;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -20,9 +16,6 @@ public class User {
     @Column
     private Long id;
 
-    @Column
-    private String profileImg;
-
     @Column(nullable = false)
     private String email;
 
@@ -32,10 +25,12 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
+    @Column(nullable = false)
+    private String major;
+
     private String intro;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<Img> introImgList = new ArrayList<>();
+    private String profileImg;
 
-
+    private String link;
 }
