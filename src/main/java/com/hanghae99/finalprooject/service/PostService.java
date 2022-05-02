@@ -3,12 +3,11 @@ package com.hanghae99.finalprooject.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hanghae99.finalprooject.dto.ImgDto;
 import com.hanghae99.finalprooject.dto.ImgUrlDto;
+import com.hanghae99.finalprooject.dto.MajorDto;
 import com.hanghae99.finalprooject.dto.PostDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
-import com.hanghae99.finalprooject.model.Img;
-import com.hanghae99.finalprooject.model.Post;
-import com.hanghae99.finalprooject.model.User;
+import com.hanghae99.finalprooject.model.*;
 import com.hanghae99.finalprooject.repository.ImgRepository;
 import com.hanghae99.finalprooject.repository.PostRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
@@ -41,6 +40,7 @@ public class PostService {
     public void createPost(String jsonString, List<MultipartFile> imgs, UserDetailsImpl userDetails) throws IOException {
         log.info("multipartFile imgs={}", imgs);
         List<Img> imgList = new ArrayList<>();
+        List<Major> majorList = new ArrayList<>();
 
         List<ImgDto> imgDtoList = new ArrayList<>();
 
@@ -56,27 +56,37 @@ public class PostService {
         PostDto.RequestDto requestDto = objectMapper.readValue(jsonString, PostDto.RequestDto.class);
 
         User user = userDetails.getUser();
-        dtoParser(imgList, imgDtoList);
+        dtoParser(imgList, imgDtoList, majorList, requestDto);
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
                 .deadline(requestDto.getDeadline())
-                .currentStatus(requestDto.getCurrentStatus())
+                .currentStatus(CurrentStatus.ONGOING)
                 .region(requestDto.getRegion())
-                .category(requestDto.getCategory())
+                .link(requestDto.getLink())
                 .imgList(imgList)
+                .majorList(majorList)
                 .user(user)
                 .build();
         postRepository.save(post);
     }
 
-    private void dtoParser(List<Img> imgList, List<ImgDto> imgDtoList) {
+    private void dtoParser(List<Img> imgList, List<ImgDto> imgDtoList, List<Major> majorList, PostDto.RequestDto requestDto) {
         for (ImgDto imgDto : imgDtoList) {
             Img img = Img.builder()
                     .imgName(imgDto.getImgName())
                     .imgUrl(imgDto.getImgUrl())
                     .build();
             imgList.add(img);
+        }
+
+        for (MajorDto.RequestDto majorRequestDto : requestDto.getMajorList()) {
+            Major major = Major.builder()
+                    .majorName(majorRequestDto.getMajorName())
+                    .numOfPeopleSet(majorRequestDto.getNumOfPeopleSet())
+                    .numOfPeopleApply(0)
+                    .build();
+            majorList.add(major);
         }
     }
 

@@ -3,33 +3,27 @@ package com.hanghae99.finalprooject.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Getter
 @Setter
+@Getter
 @Entity
-public class Img {
+public class Major {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String imgName;
+    private String majorName;
 
-    @Column(nullable = false)
-    private String imgUrl;
+    private Integer numOfPeopleSet;
+
+    private Integer numOfPeopleApply;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Post post;
-
-    public Img(String imgName, String imgUrl, Post post) {
-        this.imgName = imgName;
-        this.imgUrl = imgUrl;
-        this.post = post;
-    }
 }

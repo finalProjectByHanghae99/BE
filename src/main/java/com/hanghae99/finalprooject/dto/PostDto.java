@@ -17,9 +17,9 @@ public class PostDto {
         private String title;
         private String content;
         private String deadline;
-        private CurrentStatus currentStatus;
         private String region;
-        private String category;
+        private String link;
+        private List<MajorDto.RequestDto> majorList;
     }
 
     @Getter
@@ -32,7 +32,6 @@ public class PostDto {
         private String deadline;
         private CurrentStatus currentStatus;
         private String region;
-        private String category;
         private String createdAt;
         private List<String> imgList;
 
@@ -43,9 +42,8 @@ public class PostDto {
             this.title = post.getTitle();
             this.content = post.getContent();
             this.deadline = post.getDeadline();
-            this.currentStatus = post.getCurrentStatus();
+//            this.currentStatus = post.getCurrentStatus();
             this.region = post.getRegion();
-            this.category = post.getCategory();
             this.createdAt = formatter(post.getCreateAt());
             this.imgList = imgList;
         }
@@ -63,7 +61,6 @@ public class PostDto {
         private String deadline;
         private CurrentStatus currentStatus;
         private String region;
-        private String category;
         private List<ImgUrlDto> imgUrl;
     }
 }
