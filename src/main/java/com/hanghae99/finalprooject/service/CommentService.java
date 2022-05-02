@@ -4,11 +4,13 @@ import com.hanghae99.finalprooject.dto.CommentDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
 import com.hanghae99.finalprooject.model.Comment;
+import com.hanghae99.finalprooject.model.User;
 import com.hanghae99.finalprooject.repository.CommentRepository;
 import com.hanghae99.finalprooject.repository.PostRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,18 +37,6 @@ public class CommentService {
                         requestDto.getComment()
                 ))
         );
-
-
-//        Post post = postRepository.findById(postId).orElseThrow(
-//                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
-//        );
-//
-//        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
-//                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
-//        );
-//
-//        Comment comment = new Comment(post, requestDto, user);
-//        commentRepository.save(comment);
     }
 
     public static void convertCommentDto(Comment comment) {
@@ -56,5 +46,24 @@ public class CommentService {
                 comment.getUser().getNickname(),
                 comment.getUser().getProfileImg(),
                 comment.getComment());
+    }
+
+    // comment 수정
+    @Transactional
+    public void editComment(Long commentId, CommentDto.RequestDto requestDto, UserDetailsImpl userDetails) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new PrivateException(ErrorCode.COMMENT_NOT_FOUND)
+        );
+
+        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        // 본인 comment만 수정 가능
+        if (!comment.getUser().equals(user)) {
+            throw new PrivateException(ErrorCode.COMMENT_UPDATE_WRONG_ACCESS);
+        }
+
+        comment.updateComment(requestDto);
     }
 }

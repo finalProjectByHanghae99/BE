@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -31,5 +28,11 @@ public class CommentController {
     }
 
     // 댓글 수정 API
-
+    @PutMapping("/api/comment/{commentId}")
+    public ResponseEntity<ExceptionResponse> editComment(@PathVariable Long commentId,
+                                                         @RequestBody CommentDto.RequestDto requestDto,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.editComment(commentId, requestDto, userDetails);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
 }

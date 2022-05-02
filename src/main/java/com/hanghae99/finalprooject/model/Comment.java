@@ -43,4 +43,11 @@ public class Comment extends TimeStamped{
         comments.comment = comment;
         return comments;
     }
+
+    public void updateComment(CommentDto.RequestDto requestDto) {
+        if (!StringUtils.hasText(requestDto.getComment())) {
+            throw new PrivateException(ErrorCode.COMMENT_WRONG_INPUT);
+        }
+        this.comment = requestDto.getComment();
+    }
 }
