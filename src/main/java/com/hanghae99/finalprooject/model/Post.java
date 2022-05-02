@@ -1,7 +1,6 @@
 package com.hanghae99.finalprooject.model;
 
 import com.hanghae99.finalprooject.dto.PostDto;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,6 @@ public class Post extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long id;
 
     @Column(nullable = false)
@@ -33,32 +31,39 @@ public class Post extends TimeStamped {
     private CurrentStatus currentStatus;
 
     @Column(nullable = false)
-    private String category;
-
-    @Column(nullable = false)
     private String region;
+
+    private String link;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
-    private List<Comment> commentList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Img> imgList = new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Major> majorList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Comment> commentList = new ArrayList<>();
+
     @Builder
-    public Post(String title, String content, String deadline, CurrentStatus currentStatus, String region, String category, User user, List<Img> imgList) {
+    public Post(String title, String content, String deadline, CurrentStatus currentStatus, String region, String link, User user, List<Img> imgList, List<Major> majorList) {
         this.title = title;
         this.content = content;
         this.deadline = deadline;
         this.currentStatus = currentStatus;
         this.region = region;
-        this.category = category;
+        this.link = link;
         this.user = user;
         this.imgList = imgList;
         for (Img img : imgList) {
             img.setPost(this);
+        }
+        this.majorList = majorList;
+        for (Major major : majorList) {
+            major.setPost(this);
         }
     }
 
@@ -69,7 +74,6 @@ public class Post extends TimeStamped {
         this.deadline = putRequestDto.getDeadline();
         this.currentStatus = putRequestDto.getCurrentStatus();
         this.region = putRequestDto.getRegion();
-        this.category = putRequestDto.getCategory();
         this.imgList = imgList;
         for (Img img : imgList) {
             img.setPost(this);
