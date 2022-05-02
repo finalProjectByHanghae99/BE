@@ -31,4 +31,6 @@ public class User {
     private String intro;
 
     private String profileImg;
+
+    private String link;
 }
