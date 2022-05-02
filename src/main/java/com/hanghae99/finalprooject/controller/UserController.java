@@ -80,7 +80,7 @@ public class UserController {
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
     //유저페이지 정보 API
-    @GetMapping("/api/userInfo/{userId}")
+    @GetMapping("/user/info/{userId}")
     public MyPageDto.ResponseDto userInfo(@PathVariable Long userId){
         return userService.findMyPage(userId);
     }

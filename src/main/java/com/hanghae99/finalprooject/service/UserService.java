@@ -183,7 +183,7 @@ public class UserService {
                 .nickname(user.getNickname())
                 .profileImg(user.getProfileImg())
                 .intro(user.getIntro())
-                .introImgList(user.getIntroImgList())
+//                .introImgList(user.getIntroImgList())
                 .build();
 
     }

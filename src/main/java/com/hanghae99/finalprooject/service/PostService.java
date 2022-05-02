@@ -62,7 +62,7 @@ public class PostService {
                 .content(requestDto.getContent())
                 .deadline(requestDto.getDeadline())
                 .currentStatus(requestDto.getCurrentStatus())
-                .region(requestDto.getRegion())
+                .region(requestDto.getRegion()) // key : region value : "서울시"
                 .category(requestDto.getCategory())
                 .imgList(imgList)
                 .user(user)

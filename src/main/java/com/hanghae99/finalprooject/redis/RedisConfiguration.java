@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -23,6 +24,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableRedisRepositories
+@PropertySource("classpath:application.yml")
 public class RedisConfiguration extends CachingConfigurerSupport {
 
     @Value("${spring.redis.port}")

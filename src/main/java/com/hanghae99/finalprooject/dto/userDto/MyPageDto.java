@@ -15,11 +15,14 @@ public class MyPageDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ResponseDto{ ;
+    public static class ResponseDto{
+        private Long userId;
         private String nickname;
-        private String profileImg;
+        private String profileImg; // 프로필 이미지 링크
         private String intro;
         private List<Img> introImgList;
+        private int projectCount;
+        private int likeCount;
 
 
     }

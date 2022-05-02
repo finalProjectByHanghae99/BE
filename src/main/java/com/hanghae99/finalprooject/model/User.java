@@ -28,9 +28,18 @@ public class User {
     @Column(nullable = false)
     private String major;
 
+    @Column
     private String intro;
 
+    @Column
     private String profileImg;
 
+    @Column
     private String link;
+
+    @Column
+    private int projectCount;
+
+    @Column
+    private int likeCount;
 }

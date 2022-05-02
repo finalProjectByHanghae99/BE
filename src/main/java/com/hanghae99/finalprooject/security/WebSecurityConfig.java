@@ -44,18 +44,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .configurationSource(corsConfigurationSource());
     http.csrf().disable().sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    http.headers().frameOptions().disable();
+    http.headers().frameOptions().sameOrigin().disable();
     http.authorizeRequests();
     // 회원 관리 처리 API (POST /user/**) 에 대해 CSRF 무시
 
     http.authorizeRequests()
         // login 없이 허용
         .antMatchers("/user/**").permitAll()
+        .antMatchers("/api/**").permitAll()
+        .antMatchers("/user/**").permitAll()
         .antMatchers("/api/posts").permitAll()
         .antMatchers("/webSocket").permitAll()
 
         //추가 - 메인 페이지 접근 허용
         .antMatchers("/").permitAll()
+        .antMatchers("/**").permitAll()
+
+
 
         // 그 외 어떤 요청이든 '인증'과정 필요
         .anyRequest().authenticated()
