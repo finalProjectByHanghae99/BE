@@ -35,4 +35,12 @@ public class CommentController {
         commentService.editComment(commentId, requestDto, userDetails);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
+
+    // 댓글 삭제 API
+    @DeleteMapping("/api/comment/{commentId}")
+    public ResponseEntity<ExceptionResponse> deletePost(@PathVariable Long commentId,
+                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.deleteComment(commentId, userDetails);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
 }

@@ -10,7 +10,6 @@ import com.hanghae99.finalprooject.repository.PostRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.security.SecurityUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,5 +64,23 @@ public class CommentService {
         }
 
         comment.updateComment(requestDto);
+    }
+
+    // comment 삭제
+    @Transactional
+    public void deleteComment(Long commentId, UserDetailsImpl userDetails) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new PrivateException(ErrorCode.COMMENT_NOT_FOUND)
+        );
+
+        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        // 본인 comment만 삭제 가능
+        if (!comment.getUser().equals(user)) {
+            throw new PrivateException(ErrorCode.COMMENT_DELETE_WRONG_ACCESS);
+        }
+        commentRepository.deleteById(commentId);
     }
 }
