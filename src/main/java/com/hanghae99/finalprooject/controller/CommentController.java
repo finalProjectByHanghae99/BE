@@ -23,11 +23,13 @@ public class CommentController {
     private final CommentService commentService;
 
     // 댓글 등록 API
-    @PostMapping("/api/post/{postId}/comment")
-    public ResponseEntity<ExceptionResponse> createComment(@PathVariable Long postId,
-                                                           @RequestBody CommentDto.RequestDto requestDto,
+    @PostMapping("/api/comment")
+    public ResponseEntity<ExceptionResponse> createComment(@RequestBody CommentDto.RequestDto requestDto,
                                                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        commentService.createComment(postId, requestDto, userDetails);
+        commentService.createComment(requestDto, userDetails);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
+
+    // 댓글 수정 API
+
 }

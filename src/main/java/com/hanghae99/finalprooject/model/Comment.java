@@ -32,13 +32,15 @@ public class Comment extends TimeStamped{
     private User user;
 
     // comment 등록
-    public Comment(Post post, CommentDto.RequestDto requestDto, User user) {
-        if (!StringUtils.hasText(requestDto.getComment())) {
+    public static Comment createComment(Post post, User user, String comment) {
+        if (!StringUtils.hasText(comment)) {
             throw new PrivateException(ErrorCode.COMMENT_WRONG_INPUT);
         }
 
-        this.post = post;
-        this.comment = requestDto.getComment();
-        this.user = user;
+        Comment comments = new Comment();
+        comments.post = post;
+        comments.user = user;
+        comments.comment = comment;
+        return comments;
     }
 }
