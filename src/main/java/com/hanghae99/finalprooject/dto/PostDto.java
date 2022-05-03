@@ -67,8 +67,8 @@ public class PostDto {
         private String title;
         private String content;
         private String deadline;
-        private CurrentStatus currentStatus;
         private String region;
+        private String link;
         private List<ImgUrlDto> imgUrl;
     }
 }
