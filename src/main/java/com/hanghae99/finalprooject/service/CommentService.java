@@ -4,6 +4,7 @@ import com.hanghae99.finalprooject.dto.CommentDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
 import com.hanghae99.finalprooject.model.Comment;
+import com.hanghae99.finalprooject.model.Post;
 import com.hanghae99.finalprooject.model.User;
 import com.hanghae99.finalprooject.repository.CommentRepository;
 import com.hanghae99.finalprooject.repository.PostRepository;
@@ -24,27 +25,16 @@ public class CommentService {
     // comment 등록
     @Transactional
     public void createComment(CommentDto.RequestDto requestDto, UserDetailsImpl userDetails) {
-
-        convertCommentDto(commentRepository.save(
-                Comment.createComment(
-                        postRepository.findById(requestDto.getPostId()).orElseThrow(
-                                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
-                        ),
-                        userRepository.findById(userDetails.getUser().getId()).orElseThrow(
-                                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
-                        ),
-                        requestDto.getComment()
-                ))
+        Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
         );
-    }
 
-    public static void convertCommentDto(Comment comment) {
-        new CommentDto.ResponseDto(
-                comment.getId(),
-                comment.getUser().getId(),
-                comment.getUser().getNickname(),
-                comment.getUser().getProfileImg(),
-                comment.getComment());
+        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        Comment comment = new Comment(post, requestDto, user);
+        commentRepository.save(comment);
     }
 
     // comment 수정

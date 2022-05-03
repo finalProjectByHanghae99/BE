@@ -72,8 +72,8 @@ public class Post extends TimeStamped {
         this.title = putRequestDto.getTitle();
         this.content = putRequestDto.getContent();
         this.deadline = putRequestDto.getDeadline();
-        this.currentStatus = putRequestDto.getCurrentStatus();
         this.region = putRequestDto.getRegion();
+        this.link = putRequestDto.getLink();
         this.imgList = imgList;
         for (Img img : imgList) {
             img.setPost(this);
