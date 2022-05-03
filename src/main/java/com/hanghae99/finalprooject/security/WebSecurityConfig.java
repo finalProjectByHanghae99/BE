@@ -5,6 +5,7 @@ import com.hanghae99.finalprooject.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,9 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
-    http
-            .cors()
-            .configurationSource(corsConfigurationSource());
+    http.cors().configurationSource(corsConfigurationSource());
     http.csrf().disable().sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     http.headers().frameOptions().disable();
@@ -51,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     http.authorizeRequests()
         // login 없이 허용
         .antMatchers("/user/**").permitAll()
-        .antMatchers("/api/posts").permitAll()
+        .antMatchers(HttpMethod.GET,"/api/post/**").permitAll()
         .antMatchers("/ws-stomp").permitAll()
 
         //추가 - 메인 페이지 접근 허용
