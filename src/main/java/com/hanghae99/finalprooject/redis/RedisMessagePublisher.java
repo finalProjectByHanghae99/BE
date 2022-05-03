@@ -15,7 +15,7 @@ public class RedisMessagePublisher {
         레디스에서는 공통 주제 [Topic] 에 대하여 구독자[sub]에게 메시지를 발행 [pub]
         할 수 있는 기능이 있다.
         통칭하여 sub/ pub 라고 하며 채팅방에서는 redis 의 topic 을 채팅방이라 생각하자!
-
+ff
         pub/ sub 은 대화를 하거나, 보는 행위
  */
 

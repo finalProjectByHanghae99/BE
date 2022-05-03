@@ -1,6 +1,7 @@
 package com.hanghae99.finalprooject.controller;
 
 import com.hanghae99.finalprooject.dto.userDto.LoginDto;
+import com.hanghae99.finalprooject.dto.userDto.MyPageDto;
 import com.hanghae99.finalprooject.dto.userDto.SignOutDto;
 import com.hanghae99.finalprooject.dto.userDto.SignupDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
@@ -15,15 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
 public class UserController {
-
+//
     private final UserService userService;
     private final UserRepository userRepository;
 
@@ -33,7 +31,7 @@ public class UserController {
         userService.registerUser(requestDto);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
-
+//
     // 이메일 중복검사 API
     @PostMapping("/user/emailCheck")
     public ResponseEntity<ExceptionResponse> emailCheck(@RequestBody SignupDto.RequestDto requestDto){
@@ -81,4 +79,12 @@ public class UserController {
         userService.deleteRefreshToken(tokenRequestDto);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
+
+
+
+
+
+
+
+
 }

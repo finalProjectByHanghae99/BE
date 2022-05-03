@@ -22,7 +22,7 @@ public class MessageController {
 
     // /pub/message -> StompConfig에서 설정한 prefix 값과 결합
     @MessageMapping("/message")
-    public void message(MessageDto messageDto){
+    public void message(@RequestBody MessageDto messageDto){
         messageService.sendMessage(messageDto);
 
     }

@@ -1,12 +1,15 @@
 package com.hanghae99.finalprooject.service;
 
 import com.hanghae99.finalprooject.dto.userDto.LoginDto;
+import com.hanghae99.finalprooject.dto.userDto.MyPageDto;
 import com.hanghae99.finalprooject.dto.userDto.SignOutDto;
 import com.hanghae99.finalprooject.dto.userDto.SignupDto;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
 import com.hanghae99.finalprooject.model.RefreshToken;
 import com.hanghae99.finalprooject.model.User;
+import com.hanghae99.finalprooject.model.UserPortfolioImg;
+import com.hanghae99.finalprooject.repository.PostRepository;
 import com.hanghae99.finalprooject.repository.RefreshTokenRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
 import com.hanghae99.finalprooject.security.UserDetailsImpl;
@@ -21,10 +24,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final PostRepository postRepository;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -45,7 +54,7 @@ public class UserService {
         String nickname = requestDto.getNickname();
         if (userRepository.existsByNickname(nickname)) {
             throw new PrivateException(ErrorCode.DUPLICATE_CHECK_SIGNUP_NICKNAME);
-        }
+        }//
 
         // 회원 비밀번호 암호화
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -63,7 +72,7 @@ public class UserService {
                         .major(requestDto.getMajor())
                         .intro("자기 소개를 입력해주세요")
                         .profileImg("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/basicProfile.png")
-                        .link("작성한 포트폴리오 URL이 없습니다")
+                        .portfolioLink("작성한 포트폴리오 URL이 없습니다")
                         .build()
         );
     }
@@ -165,4 +174,6 @@ public class UserService {
         );
         refreshTokenRepository.deleteById(refreshToken.getRefreshKey());
     }
+
+
 }
