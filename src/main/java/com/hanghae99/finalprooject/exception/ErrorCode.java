@@ -58,8 +58,11 @@ public enum ErrorCode {
     POST_UPDATE_WRONG_ACCESS(HttpStatus.BAD_REQUEST, "400", "본인의 게시물만 수정할 수 있습니다"),
     POST_DELETE_WRONG_ACCESS(HttpStatus.BAD_REQUEST, "400", "본인의 게시물만 삭제할 수 있습니다"),
 
-    //마이페이지
-    USER_UPDATE_WRONG_ACCESS(HttpStatus.BAD_REQUEST,"400","본인의 마이페이지만 수정할 수 있습니다.");
+    // comment
+    COMMENT_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "댓글을 입력해주세요"),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 댓글을 찾을 수 없습니다"),
+    COMMENT_UPDATE_WRONG_ACCESS(HttpStatus.BAD_REQUEST, "400", "본인의 댓글만 수정할 수 있습니다"),
+    COMMENT_DELETE_WRONG_ACCESS(HttpStatus.BAD_REQUEST, "400", "본인의 댓글만 삭제할 수 있습니다");
 
     private final HttpStatus status;
     private final String errorCode;

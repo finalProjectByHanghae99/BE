@@ -5,6 +5,7 @@ import com.hanghae99.finalprooject.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,28 +40,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
-    http
-            .cors()
-            .configurationSource(corsConfigurationSource());
+    http.cors().configurationSource(corsConfigurationSource());
     http.csrf().disable().sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    http.headers().frameOptions().sameOrigin().disable();
+    http.headers().frameOptions().disable();
     http.authorizeRequests();
     // 회원 관리 처리 API (POST /user/**) 에 대해 CSRF 무시
 
     http.authorizeRequests()
         // login 없이 허용
         .antMatchers("/user/**").permitAll()
-        .antMatchers("/api/**").permitAll()
-        .antMatchers("/user/**").permitAll()
-        .antMatchers("/api/posts").permitAll()
-        .antMatchers("/webSocket").permitAll()
+        .antMatchers(HttpMethod.GET,"/api/post/**").permitAll()
+        .antMatchers("/api/category").permitAll()
+        .antMatchers("/ws-stomp").permitAll()
 
         //추가 - 메인 페이지 접근 허용
         .antMatchers("/").permitAll()
-        .antMatchers("/**").permitAll()
-
-
 
         // 그 외 어떤 요청이든 '인증'과정 필요
         .anyRequest().authenticated()
