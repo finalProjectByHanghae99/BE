@@ -1,7 +1,7 @@
 package com.hanghae99.finalprooject.model;
 
 public enum CurrentStatus {
-    ONGOING,
-    RECRUITING_CLOSE,
-    RECRUITING_COMPLETE;
+    ONGOING, // 모집중
+    RECRUITING_CLOSE, // 정원 마감
+    RECRUITING_COMPLETE; // 모집완료
 }

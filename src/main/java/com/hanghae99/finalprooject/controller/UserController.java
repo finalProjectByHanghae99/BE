@@ -79,11 +79,6 @@ public class UserController {
         userService.deleteRefreshToken(tokenRequestDto);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
-    //유저페이지 정보 API
-    @GetMapping("/user/info/{userId}")
-    public MyPageDto.ResponseDto userInfo(@PathVariable Long userId){
-        return userService.findMyPage(userId);
-    }
 
 
 

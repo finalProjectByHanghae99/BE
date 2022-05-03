@@ -8,6 +8,7 @@ import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
 import com.hanghae99.finalprooject.model.RefreshToken;
 import com.hanghae99.finalprooject.model.User;
+import com.hanghae99.finalprooject.model.UserPortfolioImg;
 import com.hanghae99.finalprooject.repository.PostRepository;
 import com.hanghae99.finalprooject.repository.RefreshTokenRepository;
 import com.hanghae99.finalprooject.repository.UserRepository;
@@ -22,6 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -66,7 +72,7 @@ public class UserService {
                         .major(requestDto.getMajor())
                         .intro("자기 소개를 입력해주세요")
                         .profileImg("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/basicProfile.png")
-                        .link("작성한 포트폴리오 URL이 없습니다")
+                        .portfolioLink("작성한 포트폴리오 URL이 없습니다")
                         .build()
         );
     }
@@ -168,23 +174,6 @@ public class UserService {
         );
         refreshTokenRepository.deleteById(refreshToken.getRefreshKey());
     }
-    //마이페이지의 정보를 반환
-    @Transactional(readOnly = true)
-    public MyPageDto.ResponseDto findMyPage(Long userId) {
-        // 나 자신 or상대 유저의 pk를 받아와 존재여부 확인
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
-        );
 
 
-
-        // 닉네임/프로필 이미지/자기소개/ 등록한 포폴 이미지/ 내가 올린 글 목록
-        return MyPageDto.ResponseDto.builder()
-                .nickname(user.getNickname())
-                .profileImg(user.getProfileImg())
-                .intro(user.getIntro())
-//                .introImgList(user.getIntroImgList())
-                .build();
-
-    }
 }
