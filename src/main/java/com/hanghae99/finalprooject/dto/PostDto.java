@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 public class PostDto {
@@ -51,7 +52,11 @@ public class PostDto {
             this.region = post.getRegion();
             this.createdAt = formatter(post.getCreateAt());
             this.link = post.getLink();
-            this.imgList = imgList;
+            if (imgList.isEmpty()) {
+                this.imgList = Collections.singletonList("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/postDefaultImg.PNG");
+            } else {
+                this.imgList = imgList;
+            }
             this.commentList = commentList;
             this.majorList = majorList;
         }
