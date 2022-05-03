@@ -51,6 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // login 없이 허용
         .antMatchers("/user/**").permitAll()
         .antMatchers(HttpMethod.GET,"/api/post/**").permitAll()
+        .antMatchers("/api/category").permitAll()
         .antMatchers("/ws-stomp").permitAll()
 
         //추가 - 메인 페이지 접근 허용

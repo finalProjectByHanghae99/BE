@@ -24,6 +24,35 @@ public class PostDto {
     }
 
     @Getter
+    public static class ResponseDto {
+        private Long postId;
+        private Long userId;
+        private String nickname;
+        private String profileImg;
+        private String title;
+        private String deadline;
+        private CurrentStatus currentStatus;
+        private String region;
+        private String createdAt;
+        private String imgUrl;
+        private List<MajorDto.ResponseDto> majorList;
+
+        public ResponseDto(Post post, String imgUrl,List<MajorDto.ResponseDto> majorList) {
+            this.postId = post.getId();
+            this.userId = post.getUser().getId();
+            this.nickname = post.getUser().getNickname();
+            this.profileImg = post.getUser().getProfileImg();
+            this.title = post.getTitle();
+            this.deadline = post.getDeadline();
+            this.currentStatus = post.getCurrentStatus();
+            this.region = post.getRegion();
+            this.createdAt = formatter(post.getCreateAt());
+            this.imgUrl= imgUrl;
+            this.majorList = majorList;
+        }
+    }
+
+    @Getter
     public static class DetailDto {
         private Long postId;
         private Long userId;
@@ -60,10 +89,6 @@ public class PostDto {
             this.commentList = commentList;
             this.majorList = majorList;
         }
-
-        public String formatter(LocalDateTime localDateTime) {
-            return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(localDateTime);
-        }
     }
 
     @Setter
@@ -75,5 +100,9 @@ public class PostDto {
         private String region;
         private String link;
         private List<ImgUrlDto> imgUrl;
+    }
+
+    public static String formatter(LocalDateTime localDateTime) {
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(localDateTime);
     }
 }

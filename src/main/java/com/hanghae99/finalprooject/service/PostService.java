@@ -15,7 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,6 +33,36 @@ public class PostService {
 
     private final FileUploadService fileUploadService;
     private final AwsS3UploadService s3UploadService;
+
+    // post 전체 조회
+    public Map<String, List<PostDto.ResponseDto>> home() {
+        Map<String, List<PostDto.ResponseDto>> mapList = new HashMap<>();
+        List<PostDto.ResponseDto> list = new ArrayList<>();
+        for (Post post : postRepository.findAllByOrderByCreateAtDesc()) {
+
+            List<String> imgUrlList = imgRepository.findAllByPost(post)
+                .stream()
+                .map(Img::getImgUrl)
+                .collect(Collectors.toList());
+
+            String imgUrl;
+            if (imgUrlList.isEmpty()) {
+                imgUrl = "https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/postDefaultImg.PNG";
+            } else {
+                imgUrl = imgUrlList.get(0);
+            }
+
+            List<Major> findMajorByPost = majorRepository.findAllByPost(post);
+            List<MajorDto.ResponseDto> majorList = new ArrayList<>();
+            for (Major major : findMajorByPost) {
+                majorList.add(new MajorDto.ResponseDto(major));
+            }
+            PostDto.ResponseDto home = new PostDto.ResponseDto(post, imgUrl, majorList);
+            list.add(home);
+        }
+        mapList.put("date", list);
+        return mapList;
+    }
 
     // post 등록
     @Transactional
@@ -186,6 +218,8 @@ public class PostService {
             imgList.add(img);
         }
     }
+
+
 
     // post 삭제
     @Transactional
