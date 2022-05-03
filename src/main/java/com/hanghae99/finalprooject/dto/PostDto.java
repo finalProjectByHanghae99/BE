@@ -27,25 +27,33 @@ public class PostDto {
         private Long postId;
         private Long userId;
         private String nickname;
+        private String pofileImg;
         private String title;
         private String content;
         private String deadline;
         private CurrentStatus currentStatus;
         private String region;
         private String createdAt;
+        private String link;
         private List<String> imgList;
+        private List<CommentDto.ResponseDto> commentList;
+        private List<MajorDto.ResponseDto> majorList;
 
-        public DetailDto(Long postId, Post post, List<String> imgList) {
+        public DetailDto(Long postId, Post post, List<String> imgList, List<CommentDto.ResponseDto> commentList, List<MajorDto.ResponseDto> majorList) {
             this.postId = postId;
             this.userId = post.getUser().getId();
             this.nickname = post.getUser().getNickname();
+            this.pofileImg = post.getUser().getProfileImg();
             this.title = post.getTitle();
             this.content = post.getContent();
             this.deadline = post.getDeadline();
-//            this.currentStatus = post.getCurrentStatus();
+            this.currentStatus = post.getCurrentStatus();
             this.region = post.getRegion();
             this.createdAt = formatter(post.getCreateAt());
+            this.link = post.getLink();
             this.imgList = imgList;
+            this.commentList = commentList;
+            this.majorList = majorList;
         }
 
         public String formatter(LocalDateTime localDateTime) {

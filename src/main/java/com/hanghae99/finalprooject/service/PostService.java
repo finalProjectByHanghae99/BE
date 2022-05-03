@@ -1,16 +1,11 @@
 package com.hanghae99.finalprooject.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hanghae99.finalprooject.dto.ImgDto;
-import com.hanghae99.finalprooject.dto.ImgUrlDto;
-import com.hanghae99.finalprooject.dto.MajorDto;
-import com.hanghae99.finalprooject.dto.PostDto;
+import com.hanghae99.finalprooject.dto.*;
 import com.hanghae99.finalprooject.exception.ErrorCode;
 import com.hanghae99.finalprooject.exception.PrivateException;
 import com.hanghae99.finalprooject.model.*;
-import com.hanghae99.finalprooject.repository.ImgRepository;
-import com.hanghae99.finalprooject.repository.PostRepository;
-import com.hanghae99.finalprooject.repository.UserRepository;
+import com.hanghae99.finalprooject.repository.*;
 import com.hanghae99.finalprooject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +26,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final ImgRepository imgRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+    private final MajorRepository majorRepository;
 
     private final FileUploadService fileUploadService;
     private final AwsS3UploadService s3UploadService;
@@ -91,18 +88,38 @@ public class PostService {
     }
 
     // post 상세 조회
+    @Transactional
     public PostDto.DetailDto getDetail(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
         );
 
+        // imgList
         List<String> imgUrl = imgRepository.findAllByPost(post)
                 .stream()
                 .map(Img::getImgUrl)
                 .collect(Collectors.toList());
 
-        // 댓글 추후 추가
-        return new PostDto.DetailDto(postId, post, imgUrl);
+        // commentList
+        List<Comment> findCommentByPost = commentRepository.findAllByPost(post);
+        List<CommentDto.ResponseDto> commentList = new ArrayList<>();
+        for (Comment comment : findCommentByPost) {
+            commentList.add(new CommentDto.ResponseDto(
+                    comment,
+                    comment.getUser().getId(),
+                    comment.getUser().getNickname(),
+                    comment.getUser().getProfileImg()
+                    ));
+        }
+
+        // majortList
+        List<Major> findMajorByPost = majorRepository.findAllByPost(post);
+
+        List<MajorDto.ResponseDto> majorList = new ArrayList<>();
+        for (Major major : findMajorByPost) {
+            majorList.add(new MajorDto.ResponseDto(major));
+        }
+        return new PostDto.DetailDto(postId, post, imgUrl, commentList, majorList);
     }
 
     // post 수정
@@ -150,14 +167,12 @@ public class PostService {
         // 추가할 이미지 S3에 저장
         if (imgs != null) {
             for (MultipartFile img : imgs) {
-                log.info("이미지 존재 유무={}", img.isEmpty());
                 if(!img.isEmpty()) {
                     ImgDto imgDto = fileUploadService.uploadImage(img);
                     imgDtoList.add(imgDto);
                 }
             }
         }
-
         putDtoParser(imgList, imgDtoList);
         post.updatePost(putRequestDto, imgList);
     }
