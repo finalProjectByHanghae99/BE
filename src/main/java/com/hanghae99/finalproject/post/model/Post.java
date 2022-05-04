@@ -88,4 +88,9 @@ public class Post extends TimeStamped {
             img.setPost(this);
         }
     }
+
+    // 모집 마감시 CurrentStatus 변경(ONGOING → RECRUITING_COMPLETE)
+    public void updateStatus(CurrentStatus newStatus) {
+        this.currentStatus = newStatus;
+    }
 }

@@ -12,5 +12,7 @@ public interface UserApplyRepository extends JpaRepository<UserApply,Long> {
 
     List<UserApply> findUserApplyByUser(User user);
 
-    Optional<UserApply> findUserApplyByUserAndPost(User user, Post post);
+    boolean existsByPostIdAndUserId(Long postId, Long userId);
+
+    Optional<UserApply> findByUserAndPost(User user, Post post);
 }
