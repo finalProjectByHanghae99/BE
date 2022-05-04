@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hanghae99.finalproject.comment.dto.CommentDto;
 import com.hanghae99.finalproject.comment.model.Comment;
 import com.hanghae99.finalproject.comment.repository.CommentRepository;
-import com.hanghae99.finalproject.dto.*;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.PrivateException;
 import com.hanghae99.finalproject.img.Img;
@@ -16,8 +15,8 @@ import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.img.AwsS3UploadService;
 import com.hanghae99.finalproject.img.FileUploadService;
-import com.hanghae99.finalproject.user.dto.ImgDto;
-import com.hanghae99.finalproject.user.dto.ImgUrlDto;
+import com.hanghae99.finalproject.img.ImgDto;
+import com.hanghae99.finalproject.img.ImgUrlDto;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.model.Major;
 import com.hanghae99.finalproject.user.model.User;
@@ -54,7 +53,7 @@ public class PostService {
     public Map<String, List<PostDto.ResponseDto>> home() {
         Map<String, List<PostDto.ResponseDto>> mapList = new HashMap<>();
         List<PostDto.ResponseDto> list = new ArrayList<>();
-        for (Post post : postRepository.findAllByOrderByCreateAtDesc()) {
+        for (Post post : postRepository.findAllByOrderByCreatedAtDesc()) {
 
             List<String> imgUrlList = imgRepository.findAllByPost(post)
                 .stream()

@@ -38,4 +38,13 @@ public class UserApply {
     //지원하는 전공
     @Column
     private String applyMajor;
+
+    public UserApply(Post post, User user, String message, String applyMajor) {
+        this.post = post;
+        this.user = user;
+        this.message = message;
+        this.applyMajor = applyMajor;
+        post.getUserApplyList().add(this);
+        user.getUserApplyList().add(this);
+    }
 }
