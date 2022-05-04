@@ -161,7 +161,7 @@ public class MyPageService {
                     .postId(post.getId())
                     .nickname(post.getUser().getNickname())
                     .title(post.getTitle())
-                    .createAt(TimeConversion.timeConversion(post.getCreateAt()))
+                    .createAt(TimeConversion.timeConversion(post.getCreatedAt()))
                     .build();
             //리스트에 담아준다
             appliedResponseDtoList.add(appliedResponseDto);
@@ -190,7 +190,7 @@ public class MyPageService {
                     .postId(findPosts.getId())
                     .title(findPosts.getTitle())
                     .nickname(user.getNickname())
-                    .createAt(TimeConversion.timeConversion(findPosts.getCreateAt()))
+                    .createAt(TimeConversion.timeConversion(findPosts.getCreatedAt()))
                     .build();
 
             recruitResponseDtosList.add(recruitResponseDto);
@@ -248,40 +248,5 @@ public class MyPageService {
         );
 
         userApply.modifyAcceptedStatus(isAccepted);
-
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
