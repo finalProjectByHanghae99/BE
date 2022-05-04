@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -56,18 +57,15 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserPortfolioImg>userPortfolioImgList;
 
-    public void updateInfo( MyPageDto.RequestDto requestDto, List<UserPortfolioImg> userPortfolioImgs) {
+    @OneToMany(mappedBy = "user")
+    private List<UserApply> userApplyList = new ArrayList<>();
 
+    public void updateInfo( MyPageDto.RequestDto requestDto, List<UserPortfolioImg> userPortfolioImgs) {
         this.nickname = requestDto.getNickname();
         this.major = requestDto.getMajor();
         this.intro = requestDto.getIntro();
         this.profileImg = requestDto.getProfileImg();
         this.portfolioLink = requestDto.getPortfolioLink();
         this.userPortfolioImgList = userPortfolioImgs;
-
-
-
     }
-
-
 }

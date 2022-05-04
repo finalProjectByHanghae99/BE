@@ -63,7 +63,13 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 댓글을 찾을 수 없습니다"),
     COMMENT_UPDATE_WRONG_ACCESS(HttpStatus.BAD_REQUEST, "400", "본인의 댓글만 수정할 수 있습니다"),
     COMMENT_DELETE_WRONG_ACCESS(HttpStatus.BAD_REQUEST, "400", "본인의 댓글만 삭제할 수 있습니다"),
-    USER_UPDATE_WRONG_ACCESS(HttpStatus.BAD_REQUEST, "400", "본인이 아니면 수정할 수 없습니다");
+    USER_UPDATE_WRONG_ACCESS(HttpStatus.BAD_REQUEST, "400", "본인이 아니면 수정할 수 없습니다"),
+
+    // apply
+    APPLY_WRONG_ERROR(HttpStatus.BAD_REQUEST, "400", "본인의 프로젝트에 지원 신청 할 수 없습니다"),
+    ALREADY_STARTED_ERROR(HttpStatus.BAD_REQUEST, "400", "모집중인 프로젝트가 아닙니다"),
+    ALREADY_APPLY_POST_ERROR(HttpStatus.BAD_REQUEST,"400", "이미 지원한 프로젝트입니다"),
+    APPLY_MAJOR_WRONG_INPUT(HttpStatus.BAD_REQUEST,"400", "지원할 분야를 선택해주세요");
 
     private final HttpStatus status;
     private final String errorCode;
