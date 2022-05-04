@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hanghae99.finalproject.dto.MessageDto;
+import com.hanghae99.finalproject.chatRoom.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;

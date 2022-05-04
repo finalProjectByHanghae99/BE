@@ -2,7 +2,7 @@ package com.hanghae99.finalproject.security;
 
 import java.util.Collections;
 
-import com.hanghae99.finalproject.model.User;
+import com.hanghae99.finalproject.user.model.User;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;

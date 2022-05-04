@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.security;
 
-import com.hanghae99.finalproject.model.User;
-import com.hanghae99.finalproject.repository.UserRepository;
+import com.hanghae99.finalproject.user.model.User;
+import com.hanghae99.finalproject.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
