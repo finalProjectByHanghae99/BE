@@ -39,6 +39,7 @@ public class UserApply {
     @Column
     private String applyMajor;
 
+    // 모집 지원
     public UserApply(Post post, User user, String message, String applyMajor) {
         this.post = post;
         this.user = user;
@@ -46,5 +47,11 @@ public class UserApply {
         this.applyMajor = applyMajor;
         post.getUserApplyList().add(this);
         user.getUserApplyList().add(this);
+    }
+
+    // 모집 지원 취소
+    public void cancelApply() {
+        this.post.getUserApplyList().remove(this);
+        this.user.getUserApplyList().remove(this);
     }
 }

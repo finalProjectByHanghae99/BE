@@ -95,9 +95,12 @@ public class UserApplyService {
                 () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
-        // [예외 처리]
-//        UserApply userApply = userApplyRepository.findByUserAndPost(user, post).orElseThrow(
-//                () -> new PrivateException(ErrorCode)
-//        )
+        // [예외 처리] 모집 지원 정보가 없을 경우
+        UserApply userApply = userApplyRepository.findByUserAndPost(user, post).orElseThrow(
+                () -> new PrivateException(ErrorCode.APPLY_NOT_FOUND)
+        );
+
+        userApply.cancelApply();
+        userApplyRepository.delete(userApply);
     }
 }
