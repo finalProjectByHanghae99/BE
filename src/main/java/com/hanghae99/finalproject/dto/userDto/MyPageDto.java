@@ -7,8 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
 
 public class MyPageDto {
 
@@ -28,7 +30,6 @@ public class MyPageDto {
 
     }
 
-
     @Data
     @Builder
     @NoArgsConstructor
@@ -44,4 +45,38 @@ public class MyPageDto {
         private int likeCount; // 좋아요 갯수 .
 
     }
+
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor //마이페이지 신청중 Dto
+    public static class AppliedResponseDto{
+        private Long postId;
+        private Long userId;
+        private String nickname;
+        private String title;
+        private LocalDateTime createAt;
+
+
+
+    }
+//    @Data
+//    @Builder
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//
+//    public static class RecruitResponseDto{
+//        private Long postId;
+//        private Long userId;
+//        private String nickname;
+//        private String title;
+//        private LocalDateTime createAt;
+//        privaate List<>
+
+
+
+   // }
+
+
 }

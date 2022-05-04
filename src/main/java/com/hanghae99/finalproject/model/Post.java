@@ -48,6 +48,9 @@ public class Post extends TimeStamped {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<UserApply> userApplyList = new ArrayList<>();
+
     @Builder
     public Post(String title, String content, String deadline, CurrentStatus currentStatus, String region, String link, User user, List<Img> imgList, List<Major> majorList) {
         this.title = title;

@@ -5,8 +5,12 @@ import com.hanghae99.finalproject.dto.ImgUrlDto;
 import com.hanghae99.finalproject.dto.userDto.MyPageDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.PrivateException;
+import com.hanghae99.finalproject.model.Post;
 import com.hanghae99.finalproject.model.User;
+import com.hanghae99.finalproject.model.UserApply;
 import com.hanghae99.finalproject.model.UserPortfolioImg;
+import com.hanghae99.finalproject.repository.PostRepository;
+import com.hanghae99.finalproject.repository.UserApplyRepository;
 import com.hanghae99.finalproject.repository.UserPortfolioImgRepository;
 import com.hanghae99.finalproject.repository.UserRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
@@ -32,6 +36,8 @@ public class MyPageService {
     private final FileUploadService fileUploadService;
     private final UserPortfolioImgRepository userPortfolioImgRepository;
     private final AwsS3UploadService s3UploadService;
+    private final UserApplyRepository userApplyRepository;
+    private final PostRepository postRepository;
 
     //마이페이지의 정보를 반환
     @Transactional(readOnly = true)
@@ -130,5 +136,69 @@ public class MyPageService {
 
     }
 
+    // 마이페이지 내의 신청중 리스트 찾아오기 .
+    public List<MyPageDto.AppliedResponseDto> responseAppliedList(UserDetailsImpl userDetails) {
+        //최종적으로 보낼 값들을 담아줄 list 선언
+        List<MyPageDto.AppliedResponseDto> appliedResponseDtoList = new ArrayList<>();
 
+        // userPK -> 내가 지원한 모집글을 찾아온다.
+        User user = userDetails.getUser();
+        // 현재 유저가 참여[신청]하고 있는 게시글에 포함된 Apply정보를 전부 찾아온다.
+        List<UserApply> userApplyList= userApplyRepository.findUserApplyByUser(user);
+        // list {userApply1[postPk, userPk], userApply 2, }
+
+        // Apply pk 를 활용해서 현재 참여하고 있는 포스트 글을 가져온다 .
+
+        for(UserApply userApply :userApplyList){
+            //반복 roof ->  userApply -> 참여한 게시글 pk 를 통해 post 를 받아온다.
+            Post post = userApply.getPost(); // 현재 유저가 참여한 게시글 post
+            //post 에서 필요한 내용들을 빌더
+            MyPageDto.AppliedResponseDto appliedResponseDto = MyPageDto.AppliedResponseDto.builder()
+                    .userId(post.getUser().getId())
+                    .postId(post.getId())
+                    .nickname(post.getUser().getNickname())
+                    .title(post.getTitle())
+                    .createAt(post.getCreateAt())
+                    .build();
+            //리스트에 담아준다
+            appliedResponseDtoList.add(appliedResponseDto);
+        }
+
+        return appliedResponseDtoList;
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

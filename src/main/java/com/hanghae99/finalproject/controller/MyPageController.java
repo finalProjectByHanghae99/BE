@@ -27,7 +27,7 @@ public class MyPageController {
     //유저 정보 조회 및 수정
     //자신 or 타인의 유저 정보를 볼 수 있다 .
     @GetMapping("/user/info/{userId}")
-    public MyPageDto.ResponseDto UserInfo(@PathVariable Long userId){
+    public MyPageDto.ResponseDto userInfo(@PathVariable Long userId){
         return myPageService.findUserPage(userId);
     }
 
@@ -46,11 +46,18 @@ public class MyPageController {
     }
 
     //신청 / 모집 / 모집 완료 조회
-
     //신청한 모집글은 본인만 확인할 수 있다.
+    //유저 pk를 이용하여 해당 유저가 '신청' 한 게시글 목록을 가져와야한다.
+    @GetMapping("/user/applied")
+    public List<MyPageDto.AppliedResponseDto> userInfoApplied(@AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        return myPageService.responseAppliedList(userDetails);
+
+    }
+//
+//    @GetMapping("/user/recruiting/{userId}")
+//    public
 
 
-
-    // 유저 pk를 이용하여 해당 유저가 '신청' 한 게시글 목록을 가져와야한다.
 
 }

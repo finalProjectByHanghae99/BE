@@ -1,4 +1,4 @@
-//package com.hanghae99.finalprooject.redis;
+//package com.hanghae99.finalproject.redis;
 //
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.context.annotation.Configuration;
