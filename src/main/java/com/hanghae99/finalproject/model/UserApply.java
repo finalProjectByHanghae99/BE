@@ -1,6 +1,5 @@
 package com.hanghae99.finalproject.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,7 +37,4 @@ public class UserApply {
     //지원하는 전공
     @Column
     private String applyMajor;
-
-
-
 }
