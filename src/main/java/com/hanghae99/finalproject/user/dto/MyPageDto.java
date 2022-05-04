@@ -1,14 +1,16 @@
 package com.hanghae99.finalproject.user.dto;
 
+
 import com.hanghae99.finalproject.img.ImgUrlDto;
+import com.hanghae99.finalproject.post.model.Post;
+import com.hanghae99.finalproject.user.model.UserApply;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
 
 public class MyPageDto {
 
@@ -24,8 +26,8 @@ public class MyPageDto {
         private String portfolioLink; //포트폴리오 링크
         private String major;
         private List<ImgUrlDto> currentImgUrl; //변경[삭제]을 원하는 현재 ImgUrl list
-    }
 
+    }
     @Data
     @Builder
     @NoArgsConstructor
@@ -39,7 +41,9 @@ public class MyPageDto {
         private List<Map<Long,String>> userPortfolioImgList; //유저 포트폴리오 이미지리스트
         private int projectCount;// 해결한 프로젝트 카운트
         private int likeCount; // 좋아요 갯수 .
+
     }
+
 
     @Data
     @Builder
@@ -50,19 +54,44 @@ public class MyPageDto {
         private Long userId;
         private String nickname;
         private String title;
-        private LocalDateTime createdAt;
+        private String createAt;
+
+
+
     }
-//    @Data
-//    @Builder
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//
-//    public static class RecruitResponseDto{
-//        private Long postId;
-//        private Long userId;
-//        private String nickname;
-//        private String title;
-//        private LocalDateTime createdAt;
-//        privaate List<>
-   // }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor //마이페이지 모집중 Dto
+    public static class RecruitResponseDto{
+        private Long postId;
+        private Long userId;
+        private String nickname;
+        private String title;
+        private String createAt;
+        private List<UserApply> userApplyList;
+
+
+
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor //마이페이지 모집중 Dto
+    public static class ApplyUserList{
+        private Post post;
+        private Long userId;
+        private String nickname;
+        private String message;
+        private String applyMajor;
+        private int AcceptedStatus;
+
+
+
+    }
+
+
+
+
 }

@@ -1,5 +1,6 @@
 package com.hanghae99.finalproject.user.controller;
 
+import com.hanghae99.finalproject.user.dto.AcceptedDto;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.ExceptionResponse;
@@ -54,10 +55,28 @@ public class MyPageController {
         return myPageService.responseAppliedList(userDetails);
 
     }
-//
-//    @GetMapping("/user/recruiting/{userId}")
-//    public
 
+    //유저가 작성한 모집글 리스트들을 반환한다.
+    @GetMapping("/user/recruiting/{userId}")
+    public List<MyPageDto.RecruitResponseDto> userInfoRecruit(@PathVariable Long userId){
+
+        return myPageService.responsePostRecruitList(userId);
+
+    }
+    //유저가 작성한 모집글 리스트 에서 본 유저의 '모집글'에서 '신청하기'를 한 '신청자' 리스트들을 반환한다.
+    @GetMapping("/user/apply/{postId}")
+    public List<MyPageDto.ApplyUserList> userInfoApplyMyPost(@PathVariable Long postId,@RequestParam(value = "isAccepted") int isAccepted ){
+
+        return myPageService.responseApplyMyPostUserList(postId,isAccepted);
+    }
+
+    //유저가 수락 시 작성한 모집글의 신청자의 Accepted 상태를 = 1 로 변경해준다.
+    @PutMapping("/user/apply/accepted")
+    public void AcceptedApply(@RequestBody AcceptedDto acceptedDto){
+
+        myPageService.modifyAcceptedStatus(acceptedDto);
+
+    }
 
 
 }

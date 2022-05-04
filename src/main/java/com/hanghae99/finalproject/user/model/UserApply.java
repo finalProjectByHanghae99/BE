@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -32,19 +33,15 @@ public class UserApply {
     private String message;
 
     //신청 상태 '수락' 시 false -> true
-    @Column(columnDefinition = "boolean default false")
-    private boolean isAccepted;
+    @ColumnDefault("0")
+    private int isAccepted;
 
     //지원하는 전공
     @Column
     private String applyMajor;
 
-    public UserApply(Post post, User user, String message, String applyMajor) {
-        this.post = post;
-        this.user = user;
-        this.message = message;
-        this.applyMajor = applyMajor;
-        post.getUserApplyList().add(this);
-        user.getUserApplyList().add(this);
+    public void modifyAcceptedStatus(int isAccepted) {
+
+        this.isAccepted = isAccepted;
     }
 }
