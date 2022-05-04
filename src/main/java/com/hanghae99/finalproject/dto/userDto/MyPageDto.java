@@ -61,6 +61,22 @@ public class MyPageDto {
 
 
     }
+//    @Data
+//    @Builder
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//
+//    public static class RecruitResponseDto{
+//        private Long postId;
+//        private Long userId;
+//        private String nickname;
+//        private String title;
+//        private LocalDateTime createAt;
+//        privaate List<>
+
+
+
+   // }
 
 
 }
