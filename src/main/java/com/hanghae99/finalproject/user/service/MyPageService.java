@@ -1,7 +1,10 @@
 package com.hanghae99.finalproject.user.service;
 
-import com.hanghae99.finalproject.user.dto.ImgDto;
-import com.hanghae99.finalproject.user.dto.ImgUrlDto;
+import com.hanghae99.finalproject.img.ImgDto;
+import com.hanghae99.finalproject.img.ImgUrlDto;
+import com.hanghae99.finalproject.timeConversion.MessageTimeConversion;
+import com.hanghae99.finalproject.timeConversion.TimeConversion;
+import com.hanghae99.finalproject.user.dto.AcceptedDto;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.PrivateException;
@@ -23,10 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -139,6 +139,7 @@ public class MyPageService {
     }
 
     // 마이페이지 내의 신청중 리스트 찾아오기 .
+    @Transactional(readOnly = true)
     public List<MyPageDto.AppliedResponseDto> responseAppliedList(UserDetailsImpl userDetails) {
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.AppliedResponseDto> appliedResponseDtoList = new ArrayList<>();
@@ -160,13 +161,93 @@ public class MyPageService {
                     .postId(post.getId())
                     .nickname(post.getUser().getNickname())
                     .title(post.getTitle())
-                    .createAt(post.getCreateAt())
+                    .createAt(TimeConversion.timeConversion(post.getCreateAt()))
                     .build();
             //리스트에 담아준다
             appliedResponseDtoList.add(appliedResponseDto);
         }
 
         return appliedResponseDtoList;
+
+    }
+    //마이페이지 내의 모집중 리스트를 찾아온다.
+    @Transactional(readOnly = true)
+    public List<MyPageDto.RecruitResponseDto> responsePostRecruitList(Long userId) {
+        //최종적으로 보낼 값들을 담아줄 list 선언
+        List<MyPageDto.RecruitResponseDto> recruitResponseDtosList = new ArrayList<>();
+
+        //현재 유저 페이지 pk를 받아와서 유저 정보조회
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+        //현재 유저가 작성한 작성글을 찾아온다.
+        List<Post> findPostsByuser = postRepository.findPostsByUser(user);
+
+
+        for(Post findPosts : findPostsByuser){
+            MyPageDto.RecruitResponseDto recruitResponseDto = MyPageDto.RecruitResponseDto.builder()
+                    .userId(user.getId())
+                    .postId(findPosts.getId())
+                    .title(findPosts.getTitle())
+                    .nickname(user.getNickname())
+                    .createAt(TimeConversion.timeConversion(findPosts.getCreateAt()))
+                    .build();
+
+            recruitResponseDtosList.add(recruitResponseDto);
+        }
+
+        return recruitResponseDtosList;
+    }
+
+    //postPk를 받아와 해당 게시글에 '신청하기' 를 한 유저의 정보를 담아서 전달
+    public List<MyPageDto.ApplyUserList> responseApplyMyPostUserList(Long postId,int isAccecpted) {
+        //최종적으로 보낼 값들을 담아줄 list 선언
+        List<MyPageDto.ApplyUserList> applyUserListByMyPost = new ArrayList<>();
+
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+        );
+
+        //해당 모집글에 접근한 유저 정보들을 불러온다.
+        List<UserApply> userApplyLists = post.getUserApplyList();
+
+
+        //유저 정보들을 요청 response 값에 빌딩
+        for (UserApply AppliedList : userApplyLists) {
+            if (AppliedList.getIsAccepted() == isAccecpted) {
+                MyPageDto.ApplyUserList applyUserList = MyPageDto.ApplyUserList.builder()
+                        .post(post) // 해당 포스트 값에 담긴 정보 : ex )
+                        .userId(AppliedList.getUser().getId()) // 전달자
+                        .nickname(AppliedList.getUser().getNickname()) // 전달자 닉네임
+                        .message(AppliedList.getMessage()) // 전달 메시지
+                        .applyMajor(AppliedList.getApplyMajor()) // 지원한 전공
+                        .AcceptedStatus(AppliedList.getIsAccepted()) //default -> false
+                        .build();
+                applyUserListByMyPost.add(applyUserList);
+            }
+        }
+
+
+        return applyUserListByMyPost;
+
+    }
+
+    // 신청한 모집글의 유저 1이 현재 게시글 pk 와 자신의 유저 pk 를 전달
+    public void modifyAcceptedStatus(AcceptedDto acceptedDto) {
+
+        int isAccepted = 1;
+        Post post = postRepository.findById(acceptedDto.getPostId()).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+        );
+        User user = userRepository.findById(acceptedDto.getUserId()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        UserApply userApply = userApplyRepository.findUserApplyByUserAndPost(user, post).orElseThrow(
+                () -> new IllegalArgumentException("신청자가 존재하지 않습니다.")
+        );
+
+        userApply.modifyAcceptedStatus(isAccepted);
 
     }
 }

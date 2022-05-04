@@ -1,12 +1,13 @@
 package com.hanghae99.finalproject.user.dto;
 
 
+import com.hanghae99.finalproject.img.ImgUrlDto;
+import com.hanghae99.finalproject.post.model.Post;
+import com.hanghae99.finalproject.user.model.UserApply;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -26,9 +27,7 @@ public class MyPageDto {
         private String major;
         private List<ImgUrlDto> currentImgUrl; //변경[삭제]을 원하는 현재 ImgUrl list
 
-
     }
-
     @Data
     @Builder
     @NoArgsConstructor
@@ -55,27 +54,44 @@ public class MyPageDto {
         private Long userId;
         private String nickname;
         private String title;
-        private LocalDateTime createAt;
+        private String createAt;
 
 
 
     }
-//    @Data
-//    @Builder
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//
-//    public static class RecruitResponseDto{
-//        private Long postId;
-//        private Long userId;
-//        private String nickname;
-//        private String title;
-//        private LocalDateTime createAt;
-//        privaate List<>
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor //마이페이지 모집중 Dto
+    public static class RecruitResponseDto{
+        private Long postId;
+        private Long userId;
+        private String nickname;
+        private String title;
+        private String createAt;
+        private List<UserApply> userApplyList;
 
 
 
-   // }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor //마이페이지 모집중 Dto
+    public static class ApplyUserList{
+        private Post post;
+        private Long userId;
+        private String nickname;
+        private String message;
+        private String applyMajor;
+        private int AcceptedStatus;
+
+
+
+    }
+
+
 
 
 }

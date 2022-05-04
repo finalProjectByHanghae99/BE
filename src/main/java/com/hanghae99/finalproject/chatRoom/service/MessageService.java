@@ -187,7 +187,7 @@ public class MessageService {
                         .message(message.getContent())
                         .roomName(room.getRoomName())
                         .senderId(message.getUser().getId())
-                        // .receiverId(userDetails.getUser().getId())
+                        .receiverId(userDetails.getUser().getId())
                         .type(message.getMessageType())
                         .createdAt(MessageTimeConversion.timeConversion(message.getCreateAt()))
                         .build();

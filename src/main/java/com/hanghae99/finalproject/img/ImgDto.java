@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.user.dto;
+package com.hanghae99.finalproject.img;
 
 import lombok.*;
 
@@ -6,6 +6,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImgUrlDto {
+public class ImgDto {
+    private String imgName;
     private String imgUrl;
 }

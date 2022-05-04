@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.post.dto;
 
 import com.hanghae99.finalproject.comment.dto.CommentDto;
-import com.hanghae99.finalproject.user.dto.ImgUrlDto;
+import com.hanghae99.finalproject.img.ImgUrlDto;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.post.model.Post;
