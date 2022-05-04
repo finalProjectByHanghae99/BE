@@ -30,9 +30,9 @@ public class UserApplyService {
     private final UserRepository userRepository;
     private final UserApplyRepository userApplyRepository;
 
-    // 협업 신청
+    // 모집 지원
     @Transactional
-    public void apply(Long postId, UserDetailsImpl userDetails, UserApplyRequestDto userApplyRequestDto) {
+    public void apply(Long postId, UserApplyRequestDto userApplyRequestDto, UserDetailsImpl userDetails) {
 
         // [예외 처리] 조회하는 게시물이 존재하지 않을 경우
         Post post = postRepository.findById(postId).orElseThrow(
@@ -79,5 +79,25 @@ public class UserApplyService {
                 .build();
 
         userApplyRepository.save(userApply);
+    }
+
+    // 모집 지원 취소
+    @Transactional
+    public void cancelApply(Long postId, UserDetailsImpl userDetails) {
+
+        // [예외 처리] 조회하는 게시물이 존재하지 않을 경우
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+        );
+
+        // [예외 처리] 요청하는 유저 정보가 존재하지 않을 경우
+        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        // [예외 처리]
+//        UserApply userApply = userApplyRepository.findByUserAndPost(user, post).orElseThrow(
+//                () -> new PrivateException(ErrorCode)
+//        )
     }
 }
