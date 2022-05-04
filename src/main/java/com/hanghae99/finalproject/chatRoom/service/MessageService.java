@@ -189,7 +189,7 @@ public class MessageService {
                         .senderId(message.getUser().getId())
                         .receiverId(userDetails.getUser().getId())
                         .type(message.getMessageType())
-                        .createdAt(MessageTimeConversion.timeConversion(message.getCreateAt()))
+                        .createdAt(MessageTimeConversion.timeConversion(message.getCreatedAt()))
                         .build();
                 messageDtos.add(messageDto);
             }else{
@@ -200,7 +200,7 @@ public class MessageService {
                         .senderId(message.getUser().getId())
                         .receiverId(roomDto.getToUserId())
                         .type(message.getMessageType())
-                        .createdAt(MessageTimeConversion.timeConversion(message.getCreateAt()))
+                        .createdAt(MessageTimeConversion.timeConversion(message.getCreatedAt()))
                         .build();
                 messageDtos.add(messageDto);
             }

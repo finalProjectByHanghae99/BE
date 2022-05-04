@@ -53,7 +53,7 @@ public class PostService {
     public Map<String, List<PostDto.ResponseDto>> home() {
         Map<String, List<PostDto.ResponseDto>> mapList = new HashMap<>();
         List<PostDto.ResponseDto> list = new ArrayList<>();
-        for (Post post : postRepository.findAllByOrderByCreateAtDesc()) {
+        for (Post post : postRepository.findAllByOrderByCreatedAtDesc()) {
 
             List<String> imgUrlList = imgRepository.findAllByPost(post)
                 .stream()

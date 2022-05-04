@@ -133,13 +133,13 @@ public class RoomService {
             if (userRoom.getLastMessageId() == null) {
                 lastMessageDto = LastMessageDto.builder()
                         .content("방이 생성 되었습니다.")
-                        .createdAt(MessageTimeConversion.timeConversion(userRoom.getCreateAt()))
+                        .createdAt(MessageTimeConversion.timeConversion(userRoom.getCreatedAt()))
                         .build();
             } else {
                 Message message = messageRepository.getById(userRoom.getLastMessageId());
                 lastMessageDto = LastMessageDto.builder()
                         .content(message.getContent())
-                        .createdAt(MessageTimeConversion.timeConversion(message.getCreateAt()))
+                        .createdAt(MessageTimeConversion.timeConversion(message.getCreatedAt()))
                         .build();
             }
 
