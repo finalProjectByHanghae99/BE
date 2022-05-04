@@ -70,7 +70,9 @@ public enum ErrorCode {
     ALREADY_STARTED_ERROR(HttpStatus.BAD_REQUEST, "400", "모집중인 프로젝트가 아닙니다"),
     ALREADY_APPLY_POST_ERROR(HttpStatus.BAD_REQUEST,"400", "이미 지원한 프로젝트입니다"),
     APPLY_MAJOR_WRONG_INPUT(HttpStatus.BAD_REQUEST,"400", "지원할 분야를 선택해주세요"),
-    APPLY_NOT_FOUND(HttpStatus.BAD_REQUEST,"404", "해당 지원 정보를 찾을 수 없습니다");
+    APPLY_NOT_FOUND(HttpStatus.BAD_REQUEST,"404", "해당 지원 정보를 찾을 수 없습니다"),
+    APPLY_OVER_NO_AUTHORITY(HttpStatus.FORBIDDEN,"403", "권한이 없습니다"),
+    NO_DIFFERENCE_STATUS(HttpStatus.FORBIDDEN,"403", "Status 변경 사항이 없습니다");
 
     private final HttpStatus status;
     private final String errorCode;

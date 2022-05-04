@@ -1,26 +1,20 @@
 package com.hanghae99.finalproject.user.service;
 
-import com.hanghae99.finalproject.post.model.CurrentStatus;
-import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.PrivateException;
-import com.hanghae99.finalproject.user.dto.UserApplyRequestDto;
-import com.hanghae99.finalproject.user.model.Major;
+import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.post.model.Post;
-import com.hanghae99.finalproject.user.model.User;
-import com.hanghae99.finalproject.user.model.UserApply;
-import com.hanghae99.finalproject.user.repository.MajorRepository;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
+import com.hanghae99.finalproject.user.dto.UserApplyRequestDto;
+import com.hanghae99.finalproject.user.model.User;
+import com.hanghae99.finalproject.user.model.UserApply;
 import com.hanghae99.finalproject.user.repository.UserApplyRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -102,5 +96,42 @@ public class UserApplyService {
 
         userApply.cancelApply();
         userApplyRepository.delete(userApply);
+    }
+
+    // 모집 마감
+    /*
+    CurrentStatus 변경(ONGOING → RECRUITING_COMPLETE)
+     */
+    @Transactional
+    public void overApply(Long postId, UserDetailsImpl userDetails) {
+
+        CurrentStatus newStatus = CurrentStatus.RECRUITING_COMPLETE;
+
+        // [예외 처리] 조회하는 게시물이 존재하지 않을 경우
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+        );
+
+        // [예외 처리] 요청하는 유저 정보가 존재하지 않을 경우
+        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        // [예외 처리] 모집 글 쓴 유저가 아닌 유저가 모집 마감하려는 경우
+        Long writeId = post.getUser().getId();  // 모집 글 쓴 유저
+        Long userId = userDetails.getUser().getId();    // 현재 로그인 한 유저
+        if (!userId.equals(writeId)) {
+            throw new PrivateException(ErrorCode.APPLY_OVER_NO_AUTHORITY);
+        }
+
+        // CurrentStatus 변경하기
+        CurrentStatus currentStatus = post.getCurrentStatus();
+        System.out.println("currentStatus 현재 상태 = " + currentStatus);
+
+        if (newStatus.equals(currentStatus)) {
+            throw new PrivateException(ErrorCode.NO_DIFFERENCE_STATUS);
+        } else {
+            post.updateStatus(newStatus);
+        }
     }
 }

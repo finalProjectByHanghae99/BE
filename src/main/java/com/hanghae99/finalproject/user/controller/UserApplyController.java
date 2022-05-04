@@ -31,4 +31,11 @@ public class UserApplyController {
         userApplyService.cancelApply(postId, userDetails);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
+
+    // 모집 마감 API
+    @PatchMapping("/api/apply/{postId}/over")
+    public ResponseEntity<ExceptionResponse> overApply(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userApplyService.overApply(postId, userDetails);
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
 }
