@@ -1,7 +1,6 @@
 package com.hanghae99.finalproject.img;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.hanghae99.finalproject.user.dto.ImgDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.PrivateException;
 import lombok.RequiredArgsConstructor;

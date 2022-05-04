@@ -30,7 +30,7 @@ public class CommentDto {
             this.nickname = nickname;
             this.profileImg = profileImg;
             this.comment = comment.getComment();
-            this.createdAt = formatter(comment.getCreateAt());
+            this.createdAt = formatter(comment.getCreatedAt());
         }
 
         public String formatter(LocalDateTime localDateTime) {

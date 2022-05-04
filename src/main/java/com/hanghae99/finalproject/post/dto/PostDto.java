@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.post.dto;
 
 import com.hanghae99.finalproject.comment.dto.CommentDto;
-import com.hanghae99.finalproject.user.dto.ImgUrlDto;
+import com.hanghae99.finalproject.img.ImgUrlDto;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.post.model.Post;
@@ -49,7 +49,7 @@ public class PostDto {
             this.deadline = post.getDeadline();
             this.currentStatus = post.getCurrentStatus();
             this.region = post.getRegion();
-            this.createdAt = formatter(post.getCreateAt());
+            this.createdAt = formatter(post.getCreatedAt());
             this.imgUrl= imgUrl;
             this.majorList = majorList;
         }
@@ -82,7 +82,7 @@ public class PostDto {
             this.deadline = post.getDeadline();
             this.currentStatus = post.getCurrentStatus();
             this.region = post.getRegion();
-            this.createdAt = formatter(post.getCreateAt());
+            this.createdAt = formatter(post.getCreatedAt());
             this.link = post.getLink();
             if (imgList.isEmpty()) {
                 this.imgList = Collections.singletonList("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/postDefaultImg.PNG");

@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.user.service;
 
-import com.hanghae99.finalproject.user.dto.ImgDto;
-import com.hanghae99.finalproject.user.dto.ImgUrlDto;
+import com.hanghae99.finalproject.img.ImgDto;
+import com.hanghae99.finalproject.img.ImgUrlDto;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.PrivateException;
@@ -39,7 +39,6 @@ public class MyPageService {
     private final UserPortfolioImgRepository userPortfolioImgRepository;
     private final AwsS3UploadService s3UploadService;
     private final UserApplyRepository userApplyRepository;
-    private final PostRepository postRepository;
 
     //마이페이지의 정보를 반환
     @Transactional(readOnly = true)
@@ -134,8 +133,6 @@ public class MyPageService {
         List<UserPortfolioImg> userPortfolioImgList = userPortfolioImgRepository.findAllByUserId(user.getId());
         // 업데이트 한다.
         user.updateInfo(requestDto,userPortfolioImgList);
-
-
     }
 
     // 마이페이지 내의 신청중 리스트 찾아오기 .
@@ -160,47 +157,12 @@ public class MyPageService {
                     .postId(post.getId())
                     .nickname(post.getUser().getNickname())
                     .title(post.getTitle())
-                    .createAt(post.getCreateAt())
+                    .createdAt(post.getCreatedAt())
                     .build();
             //리스트에 담아준다
             appliedResponseDtoList.add(appliedResponseDto);
         }
 
         return appliedResponseDtoList;
-
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
