@@ -54,9 +54,10 @@ public class UserApply {
         user.getUserApplyList().add(this);
     }
 
-    // 모집 지원 취소
-    public void cancelApply() {
-        this.post.getUserApplyList().remove(this);
-        this.user.getUserApplyList().remove(this);
+
+        // 모집 지원 취소
+        public void cancelApply () {
+            this.post.getUserApplyList().remove(this);
+            this.user.getUserApplyList().remove(this);
+        }
     }
-}

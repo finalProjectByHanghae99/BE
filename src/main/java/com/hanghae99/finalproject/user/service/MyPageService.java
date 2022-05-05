@@ -2,7 +2,7 @@ package com.hanghae99.finalproject.user.service;
 
 import com.hanghae99.finalproject.img.ImgDto;
 import com.hanghae99.finalproject.img.ImgUrlDto;
-import com.hanghae99.finalproject.timeConversion.MessageTimeConversion;
+import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import com.hanghae99.finalproject.user.dto.AcceptedDto;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
@@ -248,5 +248,117 @@ public class MyPageService {
         );
 
         userApply.modifyAcceptedStatus(isAccepted);
+
+    }
+
+    //모집 마감 목록 조회
+    //신청한 글들과 모집한 글들을 전부 찾아와 스테이터스가 모집마감인 상태의 글들을 반환해준다.
+    @Transactional(readOnly = true)
+    public List<MyPageDto.RecruitOverList> findRecruitOverList(Long userId) {
+        //최종적으로 보낼 값들을 담아줄 list 선언
+        List<MyPageDto.RecruitOverList> recruitOverLists = new ArrayList<>();
+
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+        // 모집글 list를 전부 가져온다
+        List<Post> recruitPostLists = postRepository.findPostsByUser(user);
+
+        //유저가 신청한 모집글 list 를 전부 가져온다.
+        List<UserApply> userApplyLists = userApplyRepository.findUserApplyByUser(user);
+
+        // 유저가 모집한 글들의 리스트 -> roof
+        for(Post StatusOverByPost :recruitPostLists){
+            if(StatusOverByPost.getCurrentStatus() == CurrentStatus.RECRUITING_COMPLETE){
+                MyPageDto.RecruitOverList recruitOverList = MyPageDto.RecruitOverList.builder()
+                        .post(StatusOverByPost)
+                        .nickname(StatusOverByPost.getUser().getNickname())
+                        .createdAt(TimeConversion.timeConversion(StatusOverByPost.getCreatedAt()))
+                        .userApplyList(StatusOverByPost.getUserApplyList())
+                        .build();
+                recruitOverLists.add(recruitOverList);
+            }
+        }
+        // 연관관계를 통해 신청자가 신청한 게시글들을 가져온다 .
+        for(UserApply PostByAppliedUser :userApplyLists){
+            if(PostByAppliedUser.getPost().getCurrentStatus() == CurrentStatus.RECRUITING_COMPLETE){
+                MyPageDto.RecruitOverList recruitOverList = MyPageDto.RecruitOverList.builder()
+                        .post(PostByAppliedUser.getPost())
+                        .nickname(PostByAppliedUser.getUser().getNickname())
+                        .createdAt(TimeConversion.timeConversion(PostByAppliedUser.getPost().getCreatedAt()))
+                        .userApplyList(PostByAppliedUser.getPost().getUserApplyList())
+                        .build();
+                recruitOverLists.add(recruitOverList);
+            }
+        }
+
+        return recruitOverLists;
+    }
+
+    //모집 마감 list에서 특정 게시글 pk에 접근하여 참여한 user정보들을 반환받아온다.
+    public List<MyPageDto.RecruitUserList> findRecruitUserList(Long postId) {
+        //최종적으로 보낼 값들을 담아줄 list 선언
+        List<MyPageDto.RecruitUserList> recruitUserLists = new ArrayList<>();
+
+        // 팀원 리뷰 클릭 시 모집마감 list에서 postId를 전달  EX: 1
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+        );
+        // 1번 모집글에 참여한 유저 정보들을 가져온다.
+        List<UserApply> userApplyList= post.getUserApplyList();
+
+        // roof -> 필요한 정보들을 가공하여 list에 담아준다.
+        for(UserApply userApply :userApplyList){
+            MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
+                    .userId(userApply.getUser().getId())
+                    .nickname(userApply.getUser().getNickname())
+                    .profileImg(userApply.getUser().getProfileImg())
+                    .build();
+            recruitUserLists.add(recruitUserList);
+        }
+
+        return recruitUserLists;
+    }
+
+    //모집 마감 list에서 특정 게시글 pk에 접근해서 가져온 유저 list에서 특정 유저에게 평점을 준다.
+    public void EvaluationUser() {
+
+
+
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

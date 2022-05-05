@@ -78,7 +78,7 @@ public class MyPageDto {
     @Data
     @Builder
     @NoArgsConstructor
-    @AllArgsConstructor //마이페이지 모집중 Dto
+    @AllArgsConstructor //마이페이지 모집중 신청자 Dto
     public static class ApplyUserList{
         private Post post;
         private Long userId;
@@ -88,6 +88,37 @@ public class MyPageDto {
         private int AcceptedStatus;
 
 
+
+    }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor //마이페이지 모집마감 Dto
+    public static class RecruitOverList{
+        private Post post;
+        private String nickname;
+        private String createdAt;
+        private List<UserApply> userApplyList;
+
+
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor // 팀원 리뷰 -> 팀원명단
+    public static class RecruitUserList{
+        private Long userId;
+        private String nickname;
+        private String profileImg;
+
+    }
+
+    @Data
+    public static class RequestUserRate{
+        private Long point;
+        private Long receiverId;
+        private Long postId;
 
     }
 
