@@ -53,10 +53,7 @@ public class UserApply {
         post.getUserApplyList().add(this);
         user.getUserApplyList().add(this);
     }
-        public void modifyAcceptedStatus ( int isAccepted){
 
-            this.isAccepted = isAccepted;
-        }
 
         // 모집 지원 취소
         public void cancelApply () {
