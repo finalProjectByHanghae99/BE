@@ -17,4 +17,6 @@ public interface UserApplyRepository extends JpaRepository<UserApply,Long> {
     Optional<UserApply> findUserApplyByUserAndPost( User user,Post post);
 
     Optional<UserApply> findByUserAndPost(User user, Post post);
+
+    Optional<UserApply> findUserApplyByUserAndPost(User user, Post post);
 }

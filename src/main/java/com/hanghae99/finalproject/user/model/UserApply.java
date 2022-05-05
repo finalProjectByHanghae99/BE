@@ -40,6 +40,9 @@ public class UserApply {
     @Column
     private String applyMajor;
 
+    public void modifyAcceptedStatus(int isAccepted) {
+        this.isAccepted = isAccepted;
+    }
 
     // 모집 지원
     public UserApply(Post post, User user, String message, String applyMajor) {
