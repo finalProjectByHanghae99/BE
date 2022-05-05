@@ -78,5 +78,27 @@ public class MyPageController {
 
     }
 
+    //모집마감 목록
+    //해당 유저 ID를 가진 post글들을 전부가져온다.
+    @GetMapping("/user/over/{userId}")
+    public List<MyPageDto.RecruitOverList> userInfoRecruitOverList(@PathVariable Long userId){
 
+        return myPageService.findRecruitOverList(userId);
+    }
+
+    // 모집 마감 -> 팀원 리뷰 -> 모집글 pk 를 받아와 해당 모집글의 참여자들 명단을 반환해준다.
+    @GetMapping("/user/recruiting/evaluation/{postId}")
+    public List<MyPageDto.RecruitUserList> userInfoRecruitUserList(@PathVariable Long postId){
+
+        return myPageService.findRecruitUserList(postId);
+    }
+
+    // 참여자 유저 리스트에서 특정 유저에게 평점을 내려준다.
+    @PostMapping("/user/recruiting/evaluation")
+    public ResponseEntity<ExceptionResponse> userInfoRecruitUserEvaluation() {
+
+        myPageService.EvaluationUser();
+
+        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+    }
 }

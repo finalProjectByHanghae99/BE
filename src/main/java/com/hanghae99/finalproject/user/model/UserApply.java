@@ -49,15 +49,15 @@ public class UserApply {
         this.applyMajor = applyMajor;
         post.getUserApplyList().add(this);
         user.getUserApplyList().add(this);
-
-    public void modifyAcceptedStatus(int isAccepted) {
-
-        this.isAccepted = isAccepted;
     }
+        public void modifyAcceptedStatus ( int isAccepted){
 
-    // 모집 지원 취소
-    public void cancelApply() {
-        this.post.getUserApplyList().remove(this);
-        this.user.getUserApplyList().remove(this);
+            this.isAccepted = isAccepted;
+        }
+
+        // 모집 지원 취소
+        public void cancelApply () {
+            this.post.getUserApplyList().remove(this);
+            this.user.getUserApplyList().remove(this);
+        }
     }
-}
