@@ -57,6 +57,7 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserPortfolioImg>userPortfolioImgList;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<UserApply> userApplyList = new ArrayList<>();
 

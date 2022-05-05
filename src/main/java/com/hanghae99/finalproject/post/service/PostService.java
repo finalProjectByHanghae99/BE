@@ -20,7 +20,9 @@ import com.hanghae99.finalproject.img.ImgUrlDto;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.model.Major;
 import com.hanghae99.finalproject.user.model.User;
+import com.hanghae99.finalproject.user.model.UserApply;
 import com.hanghae99.finalproject.user.repository.MajorRepository;
+import com.hanghae99.finalproject.user.repository.UserApplyRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +47,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final MajorRepository majorRepository;
+    private final UserApplyRepository userApplyRepository;
 
     private final FileUploadService fileUploadService;
     private final AwsS3UploadService s3UploadService;
@@ -136,10 +139,20 @@ public class PostService {
 
     // post 상세 조회
     @Transactional
-    public PostDto.DetailDto getDetail(Long postId) {
+    public PostDto.DetailDto getDetail(Long postId, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
         );
+
+        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+
+//        UserApply userApply = userApplyRepository.findByUserAndPost(user, post).orElseThrow(
+//                () -> new PrivateException(ErrorCode.APPLY_NOT_FOUND)
+//        );
+
+//        UserApply userApply = userApplyRepository.findByUserAndPost(user, post).ifPresent();
 
         // imgList
         List<String> imgUrl = imgRepository.findAllByPost(post)
