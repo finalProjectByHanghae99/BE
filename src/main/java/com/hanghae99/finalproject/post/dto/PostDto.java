@@ -40,6 +40,7 @@ public class PostDto {
         private String imgUrl;
         private List<MajorDto.ResponseDto> majorList;
 
+
         public ResponseDto(Post post, String imgUrl,List<MajorDto.ResponseDto> majorList) {
             this.postId = post.getId();
             this.userId = post.getUser().getId();

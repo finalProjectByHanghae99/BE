@@ -2,12 +2,12 @@ package com.hanghae99.finalproject.user.dto;
 
 
 import com.hanghae99.finalproject.img.ImgUrlDto;
+import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.post.model.Post;
+import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import com.hanghae99.finalproject.user.model.UserApply;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +81,7 @@ public class MyPageDto {
     @NoArgsConstructor
     @AllArgsConstructor //마이페이지 모집중 신청자 Dto
     public static class ApplyUserList{
-        private Post post;
+        private ResponseEntityToPost post;
         private Long userId;
         private String nickname;
         private String message;
@@ -126,6 +126,35 @@ public class MyPageDto {
     }
 
 
+    @Setter
+    @Getter
+    public static class ResponseEntityToPost {
+
+        private Long postId;
+        private Long userId;
+        private String nickname;
+        private String profileImg;
+        private String title;
+        private String deadline;
+        private CurrentStatus currentStatus;
+        private String region;
+        private String createdAt;
+        private List<MajorDto.ResponseDto> majorList;
+
+        public ResponseEntityToPost(Post post) {
+            this.postId = post.getId();
+            this.userId = post.getUser().getId();
+            this.nickname = post.getUser().getNickname();
+            this.profileImg = post.getUser().getProfileImg();
+            this.title = post.getTitle();
+            this.deadline = post.getDeadline();
+            this.currentStatus = post.getCurrentStatus();
+            this.region = post.getRegion();
+            this.createdAt = TimeConversion.timeConversion(post.getCreatedAt());
+        }
+
+
+    }
 
 
 }
