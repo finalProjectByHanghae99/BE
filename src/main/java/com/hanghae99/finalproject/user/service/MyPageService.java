@@ -60,10 +60,6 @@ public class MyPageService {
             }
             //List[{"1":"1.png"},{"2":"2.png"}]
 
-        } else {
-
-            userPortfolio.put(0L, "본인의 포트폴리오 이미지를 넣어주세요");
-            userPortfolioImgList.add(userPortfolio);
         }
 
         // 닉네임/프로필 이미지/자기소개/ 등록한 포폴 이미지/ 내가 올린 글 목록
@@ -319,7 +315,9 @@ public class MyPageService {
 
         // roof -> 필요한 정보들을 가공하여 list에 담아준다.
         // 조건을 달아준다. -> 별점을 받은 인원은 안보이게끔!!
-        for(UserApply userApply :userApplyList) {
+
+        for(UserApply userApply :userApplyList){
+
             if(userApply.getUser().getRateStatus() == null) {
                 MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
                         .userId(userApply.getUser().getId())

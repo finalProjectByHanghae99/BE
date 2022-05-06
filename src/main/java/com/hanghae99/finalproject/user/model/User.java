@@ -1,18 +1,16 @@
 package com.hanghae99.finalproject.user.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -62,11 +60,10 @@ public class User {
     private int likeCount;
 
     @Column
-    @ColumnDefault("false")
     private Boolean rateStatus;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnoreProperties({"user"})
     private List<UserPortfolioImg>userPortfolioImgList;
 
     @Builder.Default
