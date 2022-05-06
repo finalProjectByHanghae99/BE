@@ -30,7 +30,7 @@ public class UserPortfolioImg {
     private String portfolioImgUrl;
 
 
-//    public void updatePortfolioImg(User user, ){
-//
-//    }
+    public void updateUser(User user){
+        this.user = user;
+    }
 }

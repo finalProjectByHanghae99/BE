@@ -80,6 +80,9 @@ public class User {
         this.profileImg = requestDto.getProfileImg();
         this.portfolioLink = requestDto.getPortfolioLink();
         this.userPortfolioImgList = userPortfolioImgList;
+        for(UserPortfolioImg userPortfolioImg : userPortfolioImgList){
+            userPortfolioImg.updateUser(this);
+        }
     }
 
     //평점을 받는다면 likeCount가 +1 -> 평가완료 !
