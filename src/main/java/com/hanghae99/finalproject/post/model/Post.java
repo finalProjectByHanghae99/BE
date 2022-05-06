@@ -90,6 +90,8 @@ public class Post extends TimeStamped {
         }
     }
 
+
+
     // 모집 마감시 CurrentStatus 변경(ONGOING → RECRUITING_COMPLETE)
     public void updateStatus(CurrentStatus newStatus) {
         this.currentStatus = newStatus;

@@ -10,15 +10,9 @@ import com.hanghae99.finalproject.user.dto.MyPageDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.PrivateException;
 import com.hanghae99.finalproject.post.model.Post;
-import com.hanghae99.finalproject.user.model.User;
-import com.hanghae99.finalproject.user.model.UserApply;
-import com.hanghae99.finalproject.user.model.UserPortfolioImg;
+import com.hanghae99.finalproject.user.model.*;
 import com.hanghae99.finalproject.post.repository.PostRepository;
-import com.hanghae99.finalproject.user.model.UserRate;
-import com.hanghae99.finalproject.user.repository.UserApplyRepository;
-import com.hanghae99.finalproject.user.repository.UserPortfolioImgRepository;
-import com.hanghae99.finalproject.user.repository.UserRateRepository;
-import com.hanghae99.finalproject.user.repository.UserRepository;
+import com.hanghae99.finalproject.user.repository.*;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +35,7 @@ public class MyPageService {
     private final UserApplyRepository userApplyRepository;
     private final PostRepository postRepository;
     private final UserRateRepository userRateRepository;
+    private final MajorRepository majorRepository;
 
     //마이페이지의 정보를 반환
     @Transactional
@@ -212,10 +207,8 @@ public class MyPageService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
         );
-
-
+        //entity to dto
         MyPageDto.ResponseEntityToPost responseEntityToPost = new MyPageDto.ResponseEntityToPost(post);
-
         //해당 모집글에 접근한 유저 정보들을 불러온다.
         List<UserApply> userApplyLists = post.getUserApplyList();
 
@@ -236,6 +229,7 @@ public class MyPageService {
             }
         }
         //만약 0인 상태가 없다면 ? 1인 상태가 없다면 ?
+
         return applyUserListByMyPost;
     }
 
@@ -255,7 +249,18 @@ public class MyPageService {
                 () -> new IllegalArgumentException("신청자가 존재하지 않습니다.")
         );
 
+        //수락을 받는 유저가 참여한 포스트에는 요청 전공들이 존재하고
+        List<Major> majorList = post.getMajorList();
+        //userApply 지원자는 그 중의 하나를 선택한다.
+
+        for(Major major:majorList){
+            if(major.getMajorName().equals(userApply.getApplyMajor())){
+                major.updateApplyCount();
+            }
+        }
+
         int isAccepted = 1;
+
         userApply.modifyAcceptedStatus(isAccepted);
     }
 
@@ -280,7 +285,7 @@ public class MyPageService {
         for(Post StatusOverByPost :recruitPostLists){
             if(StatusOverByPost.getCurrentStatus() == CurrentStatus.RECRUITING_COMPLETE){
                 MyPageDto.RecruitOverList recruitOverList = MyPageDto.RecruitOverList.builder()
-                        .post(StatusOverByPost)
+                        .postId(StatusOverByPost.getId())
                         .nickname(StatusOverByPost.getUser().getNickname())
                         .createdAt(TimeConversion.timeConversion(StatusOverByPost.getCreatedAt()))
                         .userApplyList(StatusOverByPost.getUserApplyList())
@@ -293,7 +298,7 @@ public class MyPageService {
         for(UserApply PostByAppliedUser :userApplyLists){
             if(PostByAppliedUser.getPost().getCurrentStatus() == CurrentStatus.RECRUITING_COMPLETE){
                 MyPageDto.RecruitOverList recruitOverList = MyPageDto.RecruitOverList.builder()
-                        .post(PostByAppliedUser.getPost())
+                        .postId(PostByAppliedUser.getPost().getId())
                         .nickname(PostByAppliedUser.getUser().getNickname())
                         .createdAt(TimeConversion.timeConversion(PostByAppliedUser.getPost().getCreatedAt()))
                         .userApplyList(PostByAppliedUser.getPost().getUserApplyList())

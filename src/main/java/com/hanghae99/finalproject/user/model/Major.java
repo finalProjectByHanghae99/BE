@@ -27,4 +27,8 @@ public class Major {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Post post;
+
+    public void updateApplyCount() {
+        this.numOfPeopleApply+=1;
+    }
 }
