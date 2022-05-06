@@ -72,6 +72,7 @@ public class MyPageService {
 
         // 닉네임/프로필 이미지/자기소개/ 등록한 포폴 이미지/ 내가 올린 글 목록
         return MyPageDto.ResponseDto.builder()
+                .userId(user.getId())
                 .nickname(user.getNickname())
                 .profileImg(user.getProfileImg()) // default or 수정 이미지
                 .intro(user.getIntro()) // default 값 or 수정 소개글
@@ -92,9 +93,9 @@ public class MyPageService {
                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
         );
         //접근한 유저정보와 토큰의 유저정보를 비교하여 일치할 때 유저 수정권한을 가능하게 한다.
-        if(!user.equals(userDetails.getUser())){
-            throw new PrivateException(ErrorCode.USER_UPDATE_WRONG_ACCESS);
-        }
+//        if(!user.equals(userDetails.getUser())){
+//            throw new PrivateException(ErrorCode.USER_UPDATE_WRONG_ACCESS);
+//        }
 
 
 
