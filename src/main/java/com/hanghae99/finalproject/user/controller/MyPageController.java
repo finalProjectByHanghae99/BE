@@ -95,9 +95,11 @@ public class MyPageController {
 
     // 참여자 유저 리스트에서 특정 유저에게 평점을 내려준다.
     @PostMapping("/user/recruiting/evaluation")
-    public ResponseEntity<ExceptionResponse> userInfoRecruitUserEvaluation() {
+    public ResponseEntity<ExceptionResponse> userInfoRecruitUserEvaluation(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody MyPageDto.RequestUserRate requestUserRate) {
 
-        myPageService.EvaluationUser();
+        myPageService.EvaluationUser(requestUserRate,userDetails);
 
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }

@@ -10,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.util.annotation.Nullable;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,6 +36,8 @@ public class PostController {
     public ResponseEntity<ExceptionResponse> createPost(@RequestPart("data") String jsonString,
                                                         @RequestPart(value = "img", required = false) List<MultipartFile> imgs,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+
+
         postService.createPost(jsonString, imgs, userDetails);
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }

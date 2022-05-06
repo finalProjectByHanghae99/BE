@@ -16,7 +16,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableRedisRepositories
-@PropertySource("classpath:application.yml")
+@PropertySource("classpath:application.properties")
 public class RedisConfiguration extends CachingConfigurerSupport {
 
     @Value("${spring.redis.port}")

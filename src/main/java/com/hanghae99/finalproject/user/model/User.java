@@ -54,10 +54,14 @@ public class User {
     @Column
     private int likeCount;
 
+    @Column
+    private boolean rateStatus;
+
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserPortfolioImg>userPortfolioImgList;
 
-    @OneToMany(mappedBy = "user")
+    @Builder.Default
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserApply> userApplyList = new ArrayList<>();
 
     public void updateInfo( MyPageDto.RequestDto requestDto, List<UserPortfolioImg> userPortfolioImgs) {
@@ -67,5 +71,10 @@ public class User {
         this.profileImg = requestDto.getProfileImg();
         this.portfolioLink = requestDto.getPortfolioLink();
         this.userPortfolioImgList = userPortfolioImgs;
+    }
+    //평점을 받는다면 likeCount가 +1 -> 평가완료 !
+    public void updateRateStatus(int point) {
+        this.likeCount +=point;
+        this.rateStatus = true;
     }
 }
