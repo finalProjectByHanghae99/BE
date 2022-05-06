@@ -234,7 +234,9 @@ public class PostService {
         List<Img> imgList = post.getImgList();
         List<ImgDto> imgDtoList = new ArrayList<>();
         List<Img> removeImgList = new ArrayList<>();
+
         // 수정할 이미지 S3, 이미지 DB에서 삭제하기
+
         for (Img img : imgList) {
             for (ImgUrlDto imgUrlDto : putRequestDto.getImgUrl()) {
                 if (img.getImgUrl().equals(imgUrlDto.getImgUrl())) {

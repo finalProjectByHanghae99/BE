@@ -1,6 +1,7 @@
 package com.hanghae99.finalproject.user.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ public class UserPortfolioImg {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
+    @JsonBackReference
     private User user;
 
     @Column
@@ -28,7 +30,7 @@ public class UserPortfolioImg {
     private String portfolioImgUrl;
 
 
-//    public void updatePortfolioImg(User user, ){
-//
-//    }
+    public void updateUser(User user){
+        this.user = user;
+    }
 }
