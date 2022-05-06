@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserApplyService {
@@ -98,9 +101,10 @@ public class UserApplyService {
         userApplyRepository.delete(userApply);
     }
 
-    // 모집 마감
     /*
+    모집 마감
     CurrentStatus 변경(ONGOING → RECRUITING_COMPLETE)
+    프로젝트 참가 유저 ProjectCount += 1
      */
     @Transactional
     public void overApply(Long postId, UserDetailsImpl userDetails) {
@@ -129,6 +133,31 @@ public class UserApplyService {
             throw new PrivateException(ErrorCode.NO_DIFFERENCE_STATUS);
         } else {
             post.updateStatus(newStatus);
+        }
+
+        /*
+        모집 마감 시  유저의 projectCount 올리기
+        1) 모집한 유저의 projectCount 올리기
+        2) 참여한 유저의 projectCount 올리기
+         */
+        // 해당 프로젝트에 지원한 user list에 담기
+        List<UserApply> userApplyList = userApplyRepository.findAllByPost(post);
+
+        int newProjectCount = post.getUser().getProjectCount() + 1;
+
+        if (post.getCurrentStatus() == CurrentStatus.RECRUITING_COMPLETE) {
+            // 1)
+            user.updateProjectCount(newProjectCount);
+            // 2)
+            for (UserApply userApply : userApplyList) {
+                if (userApply.getIsAccepted() == 1) {   // 지원 유저 중 프로젝트 수락된 유저만 해당
+                    Long memberId = userApply.getUser().getId();
+                    // 수락 유저의 userId로 현재 존재하는 유저인지 확인
+                    Optional<User> member = userRepository.findById(memberId);
+                    // 존재한다면 projectCount += 1
+                    member.ifPresent(value -> value.updateProjectCount(newProjectCount));
+                }
+            }
         }
     }
 
