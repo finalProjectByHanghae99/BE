@@ -55,8 +55,8 @@ public class User {
     @Column
     private int likeCount;
 
-    @Column
-    private boolean rateStatus;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean rateStatus;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserPortfolioImg>userPortfolioImgList;
