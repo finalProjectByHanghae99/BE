@@ -61,6 +61,7 @@ public class MyPageService {
             //List[{"1":"1.png"},{"2":"2.png"}]
 
         }
+
         // 닉네임/프로필 이미지/자기소개/ 등록한 포폴 이미지/ 내가 올린 글 목록
         return MyPageDto.ResponseDto.builder()
                 .userId(user.getId())
@@ -126,10 +127,8 @@ public class MyPageService {
                 }
             }
         }
-
         updateImgParser(portfolioImgList,imgDtoList);
         user.updateInfo(requestDto,portfolioImgList);
-
     }
 
     private void updateImgParser(List<UserPortfolioImg> imgList, List<ImgDto> imgDtoList) {
@@ -141,7 +140,6 @@ public class MyPageService {
             imgList.add(img);
         }
     }
-
 
     // 마이페이지 내의 신청중 리스트 찾아오기 .
     @Transactional
@@ -173,8 +171,8 @@ public class MyPageService {
         }
 
         return appliedResponseDtoList;
-
     }
+
     //마이페이지 내의 모집중 리스트를 찾아온다.
     @Transactional
     public List<MyPageDto.RecruitResponseDto> responsePostRecruitList(Long userId) {
@@ -200,7 +198,6 @@ public class MyPageService {
 
             recruitResponseDtosList.add(recruitResponseDto);
         }
-
         return recruitResponseDtosList;
     }
 
@@ -216,7 +213,6 @@ public class MyPageService {
 
         //해당 모집글에 접근한 유저 정보들을 불러온다.
         List<UserApply> userApplyLists = post.getUserApplyList();
-
 
         //유저 정보들을 요청 response 값에 빌딩
         for (UserApply AppliedList : userApplyLists) {
@@ -235,17 +231,13 @@ public class MyPageService {
             }
         }
         //만약 0인 상태가 없다면 ? 1인 상태가 없다면 ?
-
-
         return applyUserListByMyPost;
-
     }
 
     // 신청한 모집글의 유저 1이 현재 게시글 pk 와 자신의 유저 pk 를 전달
     // '요청 수락' 시 acceted 가 0 -> 1 로 변경
     @Transactional
     public void modifyAcceptedStatus(AcceptedDto acceptedDto) {
-
 
         Post post = postRepository.findById(acceptedDto.getPostId()).orElseThrow(
                 () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
@@ -260,7 +252,6 @@ public class MyPageService {
 
         int isAccepted = 1;
         userApply.modifyAcceptedStatus(isAccepted);
-
     }
 
     //모집 마감 목록 조회
@@ -292,6 +283,7 @@ public class MyPageService {
                 recruitOverLists.add(recruitOverList);
             }
         }
+
         // 연관관계를 통해 신청자가 신청한 게시글들을 가져온다 .
         for(UserApply PostByAppliedUser :userApplyLists){
             if(PostByAppliedUser.getPost().getCurrentStatus() == CurrentStatus.RECRUITING_COMPLETE){
@@ -323,7 +315,9 @@ public class MyPageService {
 
         // roof -> 필요한 정보들을 가공하여 list에 담아준다.
         // 조건을 달아준다. -> 별점을 받은 인원은 안보이게끔!!
+
         for(UserApply userApply :userApplyList){
+
             if(userApply.getUser().getRateStatus() == null) {
                 MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
                         .userId(userApply.getUser().getId())
@@ -333,7 +327,6 @@ public class MyPageService {
                 recruitUserLists.add(recruitUserList);
             }
         }
-
         return recruitUserLists;
     }
 
@@ -357,40 +350,5 @@ public class MyPageService {
                     .build();
 
             receiver.updateRateStatus(requestUserRate.getPoint());
-
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
