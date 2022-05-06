@@ -71,6 +71,7 @@ public class MyPageController {
     }
 
     //유저가 수락 시 작성한 모집글의 신청자의 Accepted 상태를 = 1 로 변경해준다.
+
     @PostMapping("/user/apply/accepted")
     public void AcceptedApply(@RequestBody AcceptedDto acceptedDto){
 
