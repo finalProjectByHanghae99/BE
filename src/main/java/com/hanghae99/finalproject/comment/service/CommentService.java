@@ -24,6 +24,21 @@ public class CommentService {
 
     // comment 등록
     @Transactional
+//    public CommentDto.CreateResponseDto createComment(CommentDto.RequestDto requestDto, UserDetailsImpl userDetails) {
+//        Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(
+//                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+//        );
+//
+//        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+//                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+//        );
+//
+//        Comment comment = new Comment(post, requestDto, user);
+//        commentRepository.save(comment);
+//        Comment findCommentByPost = commentRepository.findByPostAndUser(post, user);
+//        Long commentId = findCommentByPost.getId();
+//        return new CommentDto.CreateResponseDto(commentId);
+//    }
     public void createComment(CommentDto.RequestDto requestDto, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(
                 () -> new PrivateException(ErrorCode.POST_NOT_FOUND)

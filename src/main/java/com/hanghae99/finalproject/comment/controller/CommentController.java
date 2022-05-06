@@ -3,6 +3,7 @@ package com.hanghae99.finalproject.comment.controller;
 import com.hanghae99.finalproject.comment.dto.CommentDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.ExceptionResponse;
+import com.hanghae99.finalproject.exception.StatusResponseDto;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,11 @@ public class CommentController {
 
     // 댓글 등록 API
     @PostMapping("/api/comment")
+//    public ResponseEntity<Object> createComment(@RequestBody CommentDto.RequestDto requestDto,
+//                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        CommentDto.CreateResponseDto responseDto = commentService.createComment(requestDto, userDetails);
+//        return new ResponseEntity<>(new StatusResponseDto("댓글 등록 성공", responseDto), HttpStatus.OK);
+//    }
     public ResponseEntity<ExceptionResponse> createComment(@RequestBody CommentDto.RequestDto requestDto,
                                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         commentService.createComment(requestDto, userDetails);
