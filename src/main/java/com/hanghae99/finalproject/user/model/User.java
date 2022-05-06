@@ -1,8 +1,13 @@
 package com.hanghae99.finalproject.user.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
 import lombok.*;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,6 +19,7 @@ import java.util.function.Consumer;
 @Getter
 @Builder
 @Entity
+@DynamicUpdate // null 값인 field 를 DB에서 설정된 default을 줌
 public class User {
 
     @Id
@@ -55,23 +61,25 @@ public class User {
     @Column
     private int likeCount;
 
-    @Column(columnDefinition = "boolean default false")
+    @Column
+    @ColumnDefault("false")
     private Boolean rateStatus;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<UserPortfolioImg>userPortfolioImgList;
 
     @Builder.Default
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserApply> userApplyList = new ArrayList<>();
 
-    public void updateInfo( MyPageDto.RequestDto requestDto, List<UserPortfolioImg> userPortfolioImgs) {
+    public void updateInfo( MyPageDto.RequestDto requestDto, List<UserPortfolioImg> userPortfolioImgList) {
         this.nickname = requestDto.getNickname();
         this.major = requestDto.getMajor();
         this.intro = requestDto.getIntro();
         this.profileImg = requestDto.getProfileImg();
         this.portfolioLink = requestDto.getPortfolioLink();
-        this.userPortfolioImgList = userPortfolioImgs;
+        this.userPortfolioImgList = userPortfolioImgList;
     }
 
     //평점을 받는다면 likeCount가 +1 -> 평가완료 !
