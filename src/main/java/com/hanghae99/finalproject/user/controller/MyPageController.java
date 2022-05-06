@@ -33,10 +33,10 @@ public class MyPageController {
     }
 
 
-    @PutMapping("/user/info/{userId}/modify")
+    @PatchMapping("/user/info/{userId}/modify")
     public ResponseEntity<ExceptionResponse> userInfoModify(@PathVariable Long userId,
                                                             @RequestPart MyPageDto.RequestDto requestDto,
-                                                            @RequestPart List<MultipartFile> imgs,
+                                                            @RequestPart(required = false) List<MultipartFile> imgs,
                                                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
         // userId를 받아와 수정하는 유저 정보를 반환받는다.
@@ -71,7 +71,8 @@ public class MyPageController {
     }
 
     //유저가 수락 시 작성한 모집글의 신청자의 Accepted 상태를 = 1 로 변경해준다.
-    @PatchMapping("/user/apply/accepted")
+
+    @PostMapping("/user/apply/accepted")
     public void AcceptedApply(@RequestBody AcceptedDto acceptedDto){
 
         myPageService.modifyAcceptedStatus(acceptedDto);

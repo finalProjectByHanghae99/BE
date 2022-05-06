@@ -1,7 +1,6 @@
 package com.hanghae99.finalproject.user.service;
 
-import com.hanghae99.finalproject.img.ImgDto;
-import com.hanghae99.finalproject.img.ImgUrlDto;
+import com.hanghae99.finalproject.img.*;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import com.hanghae99.finalproject.user.dto.AcceptedDto;
@@ -16,8 +15,6 @@ import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.user.model.UserRate;
 import com.hanghae99.finalproject.user.repository.UserApplyRepository;
 import com.hanghae99.finalproject.user.repository.UserPortfolioImgRepository;
-import com.hanghae99.finalproject.img.AwsS3UploadService;
-import com.hanghae99.finalproject.img.FileUploadService;
 import com.hanghae99.finalproject.user.repository.UserRateRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
@@ -96,48 +93,56 @@ public class MyPageService {
 //            throw new PrivateException(ErrorCode.USER_UPDATE_WRONG_ACCESS);
 //        }
 
+
         // 현재 유저가 가지고 있는 사진들을 전체 roof
-        if(requestDto.getCurrentImgUrl() != null) {
-            //User 에 들어있는 이미지 정보들을 가져온다.
-            List<UserPortfolioImg> portfolioImgList = user.getUserPortfolioImgList();
-            for (UserPortfolioImg userPortfolioImg : portfolioImgList) {
-                // requestDto 에서 요청[삭제] url을 받아온다.
-                for (ImgUrlDto imgUrlDto : requestDto.getCurrentImgUrl()) {
-                    // 현재 유저에게 저장된 url과 삭제 요청받은 url 이 같다면
-                    if (userPortfolioImg.getPortfolioImgUrl().equals(imgUrlDto.getImgUrl())) {
-                        //s3에서 삭제
-                        s3UploadService.deleteFile(userPortfolioImg.getPortfolioImgName());
-                        //해당 유저와 연관관계가 맺어진 포트폴리오 이미지 레포에서도 해당 이미지들을 지운다.
-                        userPortfolioImgRepository.deleteById(userPortfolioImg.getId());
-                    }
+        //User 에 들어있는 이미지 정보들을 가져온다.
+        List<UserPortfolioImg> portfolioImgList = user.getUserPortfolioImgList();
+
+        List<UserPortfolioImg> removeImgList = new ArrayList<>();
+        List<ImgDto> imgDtoList = new ArrayList<>();
+
+        for (UserPortfolioImg userPortfolioImg : portfolioImgList) {
+            // requestDto 에서 요청[삭제] url을 받아온다.
+            for (ImgUrlDto imgUrlDto : requestDto.getCurrentImgUrl()) {
+                // 현재 유저에게 저장된 url과 삭제 요청받은 url 이 같다면
+                if (userPortfolioImg.getPortfolioImgUrl().equals(imgUrlDto.getImgUrl())) {
+                    //s3에서 삭제
+                    s3UploadService.deleteFile(userPortfolioImg.getPortfolioImgName());
+                    //해당 유저와 연관관계가 맺어진 포트폴리오 이미지 레포에서도 해당 이미지들을 지운다.
+                    userPortfolioImgRepository.deleteById(userPortfolioImg.getId());
+                    removeImgList.add(userPortfolioImg);
                 }
             }
         }
-        // 현재 변경 요청된 url이 해당 유저의 포폴 이미지에서 사라짐
-        // 새롭게 받아온 이미지들을 해당 유저에게 전달해야함.
+
+        // / removeImgList에 담긴 수정 이미지 찾아온 portfolioImgList 에서 제거
+        for (UserPortfolioImg userPortfolioImg : removeImgList) {
+            portfolioImgList.remove(userPortfolioImg);
+        }
+
 
         //이미지가 Null 값이 아니라면
         if(imgs != null){
             for(MultipartFile img : imgs){
-                log.info("이미지 존재유무={}",imgs.isEmpty());
                 if(!imgs.isEmpty()){
                     // 파일 name과 url을 dto에 빌드
                     ImgDto imgDto = fileUploadService.uploadImage(img);
-                    // 새로운 이미지를 저장 -> 유저와 연관관계
-                    UserPortfolioImg userPortfolioImg = UserPortfolioImg.builder()
-                            .user(user)
-                            .portfolioImgName(imgDto.getImgName())
-                            .portfolioImgUrl(imgDto.getImgUrl())
-                            .build();
-                    userPortfolioImgRepository.save(userPortfolioImg);
+                    imgDtoList.add(imgDto);
                 }
-
             }
         }
-        // 영속 컨텍스트에 저장된 값을 유저 pk로 찾아와
-        List<UserPortfolioImg> userPortfolioImgList = userPortfolioImgRepository.findAllByUserId(user.getId());
-        // 업데이트 한다.
-        user.updateInfo(requestDto,userPortfolioImgList);
+        updateImgParser(portfolioImgList,imgDtoList);
+        user.updateInfo(requestDto,portfolioImgList);
+    }
+
+    private void updateImgParser(List<UserPortfolioImg> imgList, List<ImgDto> imgDtoList) {
+        for (ImgDto imgDto : imgDtoList) {
+            UserPortfolioImg img = UserPortfolioImg.builder()
+                    .portfolioImgName(imgDto.getImgName())
+                    .portfolioImgUrl(imgDto.getImgUrl())
+                    .build();
+            imgList.add(img);
+        }
     }
 
     // 마이페이지 내의 신청중 리스트 찾아오기 .
