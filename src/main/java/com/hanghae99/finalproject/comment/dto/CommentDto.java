@@ -1,6 +1,7 @@
 package com.hanghae99.finalproject.comment.dto;
 
 import com.hanghae99.finalproject.comment.model.Comment;
+import com.hanghae99.finalproject.post.model.Post;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,15 @@ public class CommentDto {
     public static class RequestDto {
         private Long postId;
         private String comment;
+    }
+
+    @Getter
+    public static class CreateResponseDto {
+        private Long commentId;
+
+        public CreateResponseDto(Long commentId) {
+            this.commentId = commentId;
+        }
     }
 
     @Getter
