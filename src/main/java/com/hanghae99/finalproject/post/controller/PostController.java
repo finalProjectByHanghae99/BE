@@ -42,9 +42,10 @@ public class PostController {
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
 
+    // post 상세 조회 API
     @GetMapping("/api/post/{postId}")
-    public ResponseEntity<Object> getDetailPost(@PathVariable Long postId) {
-        PostDto.DetailDto detailDto = postService.getDetail(postId);
+    public ResponseEntity<Object> getDetailPost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        PostDto.DetailDto detailDto = postService.getDetail(postId, userDetails);
         return new ResponseEntity<>(new StatusResponseDto("게시물 상세 조회 성공", detailDto), HttpStatus.OK);
     }
 
