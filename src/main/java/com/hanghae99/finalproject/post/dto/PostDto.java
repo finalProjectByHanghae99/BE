@@ -57,6 +57,7 @@ public class PostDto {
 
     @Getter
     public static class DetailDto {
+        private String userStatus;
         private Long postId;
         private Long userId;
         private String nickname;
@@ -72,7 +73,8 @@ public class PostDto {
         private List<CommentDto.ResponseDto> commentList;
         private List<MajorDto.ResponseDto> majorList;
 
-        public DetailDto(Long postId, Post post, List<String> imgList, List<CommentDto.ResponseDto> commentList, List<MajorDto.ResponseDto> majorList) {
+        public DetailDto(String userStatus , Long postId, Post post, List<String> imgList, List<CommentDto.ResponseDto> commentList, List<MajorDto.ResponseDto> majorList) {
+            this.userStatus = userStatus;
             this.postId = postId;
             this.userId = post.getUser().getId();
             this.nickname = post.getUser().getNickname();

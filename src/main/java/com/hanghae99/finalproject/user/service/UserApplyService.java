@@ -118,20 +118,24 @@ public class UserApplyService {
         );
 
         // [예외 처리] 모집 글 쓴 유저가 아닌 유저가 모집 마감하려는 경우
-        Long writeId = post.getUser().getId();  // 모집 글 쓴 유저
-        Long userId = userDetails.getUser().getId();    // 현재 로그인 한 유저
-        if (!userId.equals(writeId)) {
+        if (!isStarter(post, user)) {
             throw new PrivateException(ErrorCode.APPLY_OVER_NO_AUTHORITY);
         }
 
         // CurrentStatus 변경하기
         CurrentStatus currentStatus = post.getCurrentStatus();
-        System.out.println("currentStatus 현재 상태 = " + currentStatus);
 
         if (newStatus.equals(currentStatus)) {
             throw new PrivateException(ErrorCode.NO_DIFFERENCE_STATUS);
         } else {
             post.updateStatus(newStatus);
         }
+    }
+
+    // 모집 글 쓴 유저와 로그인한 유저 정보 일치 여부 확인
+    public boolean isStarter(Post post, User user) {
+        Long starterId = post.getUser().getId();    // 모집 글 쓴 유저
+        Long loginUserId = user.getId();    // 현재 로그인 한 유저
+        return starterId.equals(loginUserId);
     }
 }

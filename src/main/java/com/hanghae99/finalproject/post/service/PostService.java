@@ -20,8 +20,12 @@ import com.hanghae99.finalproject.img.ImgUrlDto;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.model.Major;
 import com.hanghae99.finalproject.user.model.User;
+import com.hanghae99.finalproject.user.model.UserApply;
+import com.hanghae99.finalproject.user.model.UserStatus;
 import com.hanghae99.finalproject.user.repository.MajorRepository;
+import com.hanghae99.finalproject.user.repository.UserApplyRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
+import com.hanghae99.finalproject.user.service.UserApplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,10 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -45,9 +47,11 @@ public class PostService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final MajorRepository majorRepository;
+    private final UserApplyRepository userApplyRepository;
 
     private final FileUploadService fileUploadService;
     private final AwsS3UploadService s3UploadService;
+    private final UserApplyService userApplyService;
 
     // post 전체 조회
     public Map<String, List<PostDto.ResponseDto>> home() {
@@ -75,7 +79,7 @@ public class PostService {
             PostDto.ResponseDto home = new PostDto.ResponseDto(post, imgUrl, majorList);
             list.add(home);
         }
-        mapList.put("date", list);
+        mapList.put("data", list);
         return mapList;
     }
 
@@ -136,10 +140,33 @@ public class PostService {
 
     // post 상세 조회
     @Transactional
-    public PostDto.DetailDto getDetail(Long postId) {
+    public PostDto.DetailDto getDetail(Long postId, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
         );
+        
+        /*
+        1) 모집 글 쓴 유저와 로그인 유저가 같은 경우 : userStatus - starter
+        2) 모집 지원한 유저와 로그인 유저가 같은 경우 : userStatus - applicant
+        3) 모집 지원 후 수락된 유저와 로그인 유저가 같은 경우 : userStatus - member
+        4) 로그인 유저(지원도, 팀원도 아님) : userStatus - user
+        5) 로그인하지 않은 경우 : userStatus - anonymous
+         */
+        String userStatus;
+        if (userDetails != null) {
+            User user = userDetails.getUser();
+            if (userApplyService.isStarter(post, user)) {   // 1)
+                userStatus = UserStatus.USER_STATUS_TEAM_STARTER.getUserStatus();
+            } else if (isMember(user, post) == 0) {   // 2)
+                userStatus = UserStatus.USER_STATUS_APPLICANT.getUserStatus();
+            } else if (isMember(user, post) == 1) { // 3
+                userStatus = UserStatus.USER_STATUS_MEMBER.getUserStatus();
+            } else {    // 4)
+                userStatus = UserStatus.USER_STATUS_USER.getUserStatus();
+            }
+        } else {    // 5)
+            userStatus = UserStatus.USER_STATUS_ANONYMOUS.getUserStatus();
+        }
 
         // imgList
         List<String> imgUrl = imgRepository.findAllByPost(post)
@@ -166,7 +193,20 @@ public class PostService {
         for (Major major : findMajorByPost) {
             majorList.add(new MajorDto.ResponseDto(major));
         }
-        return new PostDto.DetailDto(postId, post, imgUrl, commentList, majorList);
+        return new PostDto.DetailDto(userStatus, postId, post, imgUrl, commentList, majorList);
+    }
+
+    /*
+    지원한 정보가 없을 경우 isAccepted = -1
+    지원한 정보가 있을 경우 isAccepted = userApply.getIsAccepted
+    userApply.getIsAccepted = 0 : 모집 지원 상태
+    userApply.getIsAccepted = 1 : 모집 지원 후 수락된 상태
+     */
+    private int isMember(User user, Post post) {
+        Optional<UserApply> userApplyOptional = userApplyRepository.findUserApplyByUserAndPost(user, post);
+        int isAccepted = 0;
+        isAccepted = userApplyOptional.map(UserApply::getIsAccepted).orElse(-1);
+        return isAccepted;
     }
 
     // post 수정
@@ -233,8 +273,6 @@ public class PostService {
             imgList.add(img);
         }
     }
-
-
 
     // post 삭제
     @Transactional
