@@ -36,9 +36,9 @@ public class UserController {
     public ResponseEntity<ExceptionResponse> emailCheck(@RequestBody SignupDto.RequestDto requestDto){
         UserValidator.validateInputEmail(requestDto);
         if(userRepository.existsByEmail(requestDto.getEmail())) {
-            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.DUPLICATE_SIGNUP_EMAIL), HttpStatus.OK);
+            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_EMAIL_DUPLICATE), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.CORRECT_SIGNUP_EMAIL), HttpStatus.OK);
+            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_EMAIL_CORRECT), HttpStatus.OK);
         }
     }
 
@@ -47,9 +47,9 @@ public class UserController {
     public ResponseEntity<ExceptionResponse> nicknameCheck(@RequestBody SignupDto.RequestDto requestDto){
         UserValidator.validateInputNickname(requestDto);
         if(userRepository.existsByNickname(requestDto.getNickname())) {
-            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.DUPLICATE_SIGNUP_NICKNAME), HttpStatus.OK);
+            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_NICKNAME_DUPLICATE), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.CORRECT_SIGNUP_NICKNAME), HttpStatus.OK);
+            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_NICKNAME_CORRECT), HttpStatus.OK);
         }
     }
 

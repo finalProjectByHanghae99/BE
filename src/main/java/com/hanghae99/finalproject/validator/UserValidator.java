@@ -1,5 +1,6 @@
 package com.hanghae99.finalproject.validator;
 
+import com.hanghae99.finalproject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalproject.user.dto.LoginDto;
 import com.hanghae99.finalproject.user.dto.SignupDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
@@ -16,7 +17,7 @@ public class UserValidator {
 
         // 이메일 설정 유효성 검사
         if (email == null || !Pattern.matches(patternEmail, email)) {
-            throw new PrivateException(ErrorCode.WRONG_INPUT_SIGNUP_EMAIL);
+            throw new PrivateException(ErrorCode.SIGNUP_EMAIL_WRONG_INPUT);
         }
     }
 
@@ -29,12 +30,12 @@ public class UserValidator {
 
         // 비밀번호 설정 유효성 검사
         if (password == null || !Pattern.matches(patternPw, password)) {
-            throw new PrivateException(ErrorCode.WRONG_INPUT_SIGNUP_PASSWORD);
+            throw new PrivateException(ErrorCode.SIGNUP_PASSWORD_WRONG_INPUT);
         }
 
         // 비밀번호 확인 유효성 검사
         if (!password.equals(pwCheck)) {
-            throw new PrivateException(ErrorCode.WRONG_INPUT_SIGNUP_PWCHECK);
+            throw new PrivateException(ErrorCode.SIGNUP_PWCHECK_WRONG_INPUT);
         }
     }
 
@@ -46,7 +47,16 @@ public class UserValidator {
 
         // 닉네임 설정 유효성 검사
         if (nickname == null || !Pattern.matches(patternNickname, nickname)) {
-            throw new PrivateException(ErrorCode.WRONG_INPUT_SIGNUP_NICKNAME);
+            throw new PrivateException(ErrorCode.SIGNUP_NICKNAME_WRONG_INPUT);
+        }
+    }
+
+    public static void validateInputMajor(SignupDto.RequestDto requestDto) {
+
+        String major = requestDto.getMajor();
+
+        if (major.isEmpty()) {
+            throw new PrivateException(ErrorCode.SIGNUP_MAJOR_WRONG_INPUT);
         }
     }
 
@@ -65,6 +75,17 @@ public class UserValidator {
 
         if (password.isEmpty()) {
             throw new PrivateException(ErrorCode.LOGIN_PASSWORD_EMPTY);
+        }
+    }
+
+    public static void validateRefreshTokenReissue(TokenRequestDto tokenRequestDto) {
+
+        String accessToken = tokenRequestDto.getAccessToken();
+        String refreshToken = tokenRequestDto.getRefreshToken();
+        Long userId = tokenRequestDto.getUserId();
+
+        if (accessToken == null || refreshToken == null || userId == null) {
+            throw new PrivateException(ErrorCode.REFRESH_TOKEN_REISSUE_WRONG_INPUT);
         }
     }
 }
