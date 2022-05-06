@@ -33,13 +33,11 @@ public class PostController {
 
     // post 등록 API
     @PostMapping("/api/post")
-    public ResponseEntity<ExceptionResponse> createPost(@RequestPart("data") String jsonString,
+    public ResponseEntity<Object> createPost(@RequestPart("data") String jsonString,
                                                         @RequestPart(value = "img", required = false) List<MultipartFile> imgs,
                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-
-
         postService.createPost(jsonString, imgs, userDetails);
-        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+        return new ResponseEntity<>(new StatusResponseDto("게시물 등록 성공", ""), HttpStatus.OK);
     }
 
     // post 상세 조회 API
@@ -51,23 +49,18 @@ public class PostController {
 
     // post 수정 API
     @PutMapping("/api/post/{postId}")
-    public ResponseEntity<ExceptionResponse> editPost(@PathVariable Long postId,
+    public ResponseEntity<Object> editPost(@PathVariable Long postId,
                                                       @RequestPart(value = "data") String jsonString,
                                                       @RequestPart(value = "img", required = false) List<MultipartFile> imgs,
                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         postService.editPost(postId, jsonString, imgs, userDetails);
-        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+        return new ResponseEntity<>(new StatusResponseDto("게시물 수정 성공", ""), HttpStatus.OK);
     }
 
     // post 삭제 API
     @DeleteMapping("/api/post/{postId}")
-    public ResponseEntity<ExceptionResponse> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Object> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postService.deletePost(postId, userDetails);
-        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
-    }
-
-    @GetMapping("/api/test/getERRr")
-    public void getPosts(){
-        throw new RuntimeException();
+        return new ResponseEntity<>(new StatusResponseDto("게시물 삭제 성공", ""), HttpStatus.OK);
     }
 }
