@@ -37,6 +37,7 @@ public class MyPageDto {
         private String nickname; //닉네임
         private String profileImg; // 프로필 이미지 링크 -> Default 이미지 전달.
         private String intro; // 자기 소개
+        private String major;
         private String portfolioLink; //포트폴리오 링크
         private List<Map<Long,String>> userPortfolioImgList; //유저 포트폴리오 이미지리스트
         private int projectCount;// 해결한 프로젝트 카운트

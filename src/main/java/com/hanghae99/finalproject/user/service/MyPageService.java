@@ -33,7 +33,6 @@ import java.util.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class MyPageService {
 
     private final UserRepository userRepository;
@@ -45,7 +44,7 @@ public class MyPageService {
     private final UserRateRepository userRateRepository;
 
     //마이페이지의 정보를 반환
-    @Transactional(readOnly = true)
+    @Transactional
     public MyPageDto.ResponseDto findUserPage(Long userId) {
         // 나 자신 or상대 유저의 pk를 받아와 존재여부 확인
         User user = userRepository.findById(userId).orElseThrow(
@@ -62,11 +61,11 @@ public class MyPageService {
                 userPortfolio.put(portfolioImgList.getId(), portfolioImgList.getPortfolioImgUrl());
                 userPortfolioImgList.add(userPortfolio);
             }
-            //List{{"1":"1.png"},{"2":"2.png"}}
+            //List[{"1":"1.png"},{"2":"2.png"}]
 
         } else {
 
-            userPortfolio.put(0L, "나의 포트폴리오 이미지를 넣어주세요.");
+            userPortfolio.put(0L, "본인의 포트폴리오 이미지를 넣어주세요");
             userPortfolioImgList.add(userPortfolio);
         }
 
@@ -77,6 +76,7 @@ public class MyPageService {
                 .profileImg(user.getProfileImg()) // default or 수정 이미지
                 .intro(user.getIntro()) // default 값 or 수정 소개글
                 .portfolioLink(user.getPortfolioLink())
+                .major(user.getMajor())
                 .userPortfolioImgList(userPortfolioImgList)
                 .projectCount(user.getProjectCount()) //연관관계 메서드 설정 필요
                 .likeCount(user.getLikeCount())
@@ -84,6 +84,7 @@ public class MyPageService {
     }
 
     //마이페이지 수정
+    @Transactional
     public void modifyUserInfo(Long userId, MyPageDto.RequestDto requestDto, List<MultipartFile> imgs,UserDetailsImpl userDetails) throws IOException{
         log.info("이미지={}",imgs);
         // '수정'에 접근한 유저의 정보를 불러온다.
@@ -94,15 +95,14 @@ public class MyPageService {
         if(!user.equals(userDetails.getUser())){
             throw new PrivateException(ErrorCode.USER_UPDATE_WRONG_ACCESS);
         }
-        //User 에 들어있는 이미지 정보들을 가져온다.
-        Optional<List<UserPortfolioImg>> portfolioImgList = Optional.ofNullable(user.getUserPortfolioImgList());
-        // 해당 부분 수정이 필요함!!
-        if(!portfolioImgList.isPresent()) throw new IllegalArgumentException("USER_NOT_HAVE_PORTFOLIO_IMG");
+
 
 
         // 현재 유저가 가지고 있는 사진들을 전체 roof
         if(requestDto.getCurrentImgUrl() != null) {
-            for (UserPortfolioImg userPortfolioImg : portfolioImgList.get()) {
+            //User 에 들어있는 이미지 정보들을 가져온다.
+            List<UserPortfolioImg> portfolioImgList = user.getUserPortfolioImgList();
+            for (UserPortfolioImg userPortfolioImg : portfolioImgList) {
                 // requestDto 에서 요청[삭제] url을 받아온다.
                 for (ImgUrlDto imgUrlDto : requestDto.getCurrentImgUrl()) {
                     // 현재 유저에게 저장된 url과 삭제 요청받은 url 이 같다면
@@ -145,7 +145,7 @@ public class MyPageService {
     }
 
     // 마이페이지 내의 신청중 리스트 찾아오기 .
-    @Transactional(readOnly = true)
+    @Transactional
     public List<MyPageDto.AppliedResponseDto> responseAppliedList(UserDetailsImpl userDetails) {
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.AppliedResponseDto> appliedResponseDtoList = new ArrayList<>();
@@ -177,7 +177,7 @@ public class MyPageService {
 
     }
     //마이페이지 내의 모집중 리스트를 찾아온다.
-    @Transactional(readOnly = true)
+    @Transactional
     public List<MyPageDto.RecruitResponseDto> responsePostRecruitList(Long userId) {
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.RecruitResponseDto> recruitResponseDtosList = new ArrayList<>();
@@ -206,6 +206,7 @@ public class MyPageService {
     }
 
     //postPk를 받아와 해당 게시글에 '신청하기' 를 한 유저의 정보를 담아서 전달
+    @Transactional
     public List<MyPageDto.ApplyUserList> responseApplyMyPostUserList(Long postId,int isAccecpted) {
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.ApplyUserList> applyUserListByMyPost = new ArrayList<>();
@@ -220,18 +221,21 @@ public class MyPageService {
 
         //유저 정보들을 요청 response 값에 빌딩
         for (UserApply AppliedList : userApplyLists) {
-            if (AppliedList.getIsAccepted() == isAccecpted) {
+            // 받아온 reqeust 요청 : 0 ==  기본값 : 0 [수락전]
+            // reqeust 요청 : 1 == 0 인 상태의 값만 보여준다.
+            if (isAccecpted == AppliedList.getIsAccepted()) {
                 MyPageDto.ApplyUserList applyUserList = MyPageDto.ApplyUserList.builder()
                         .post(post) // 해당 포스트 값에 담긴 정보 : ex )
                         .userId(AppliedList.getUser().getId()) // 전달자
                         .nickname(AppliedList.getUser().getNickname()) // 전달자 닉네임
                         .message(AppliedList.getMessage()) // 전달 메시지
                         .applyMajor(AppliedList.getApplyMajor()) // 지원한 전공
-                        .AcceptedStatus(AppliedList.getIsAccepted()) //default -> false
+                        .AcceptedStatus(AppliedList.getIsAccepted()) //default -> 0
                         .build();
                 applyUserListByMyPost.add(applyUserList);
             }
         }
+        //만약 0인 상태가 없다면 ? 1인 상태가 없다면 ?
 
 
         return applyUserListByMyPost;
@@ -239,9 +243,11 @@ public class MyPageService {
     }
 
     // 신청한 모집글의 유저 1이 현재 게시글 pk 와 자신의 유저 pk 를 전달
+    // '요청 수락' 시 acceted 가 0 -> 1 로 변경
+    @Transactional
     public void modifyAcceptedStatus(AcceptedDto acceptedDto) {
 
-        int isAccepted = 1;
+
         Post post = postRepository.findById(acceptedDto.getPostId()).orElseThrow(
                 () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
         );
@@ -253,13 +259,14 @@ public class MyPageService {
                 () -> new IllegalArgumentException("신청자가 존재하지 않습니다.")
         );
 
+        int isAccepted = 1;
         userApply.modifyAcceptedStatus(isAccepted);
 
     }
 
     //모집 마감 목록 조회
     //신청한 글들과 모집한 글들을 전부 찾아와 스테이터스가 모집마감인 상태의 글들을 반환해준다.
-    @Transactional(readOnly = true)
+    @Transactional
     public List<MyPageDto.RecruitOverList> findRecruitOverList(Long userId) {
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.RecruitOverList> recruitOverLists = new ArrayList<>();
@@ -303,7 +310,7 @@ public class MyPageService {
     }
 
     //모집 마감 list에서 특정 게시글 pk에 접근하여 참여한 user정보들을 반환받아온다.
-    @Transactional(readOnly = true)
+    @Transactional
     public List<MyPageDto.RecruitUserList> findRecruitUserList(Long postId) {
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.RecruitUserList> recruitUserLists = new ArrayList<>();
@@ -318,7 +325,7 @@ public class MyPageService {
         // roof -> 필요한 정보들을 가공하여 list에 담아준다.
         // 조건을 달아준다. -> 별점을 받은 인원은 안보이게끔!!
         for(UserApply userApply :userApplyList){
-            if(userApply.getUser().isRateStatus() == false) {
+            if(userApply.getUser().getRateStatus() == false) {
                 MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
                         .userId(userApply.getUser().getId())
                         .nickname(userApply.getUser().getNickname())
@@ -332,6 +339,7 @@ public class MyPageService {
     }
 
     //모집 마감 list에서 특정 게시글 pk에 접근해서 가져온 유저 list에서 특정 유저에게 평점을 준다.
+    @Transactional
     public void EvaluationUser(MyPageDto.RequestUserRate requestUserRate,UserDetailsImpl userDetails) {
             //담겨온 유저 정보[평가를받는 ]를 조회한다.
             User receiver = userRepository.findById(requestUserRate.getReceiverId()).orElseThrow(
