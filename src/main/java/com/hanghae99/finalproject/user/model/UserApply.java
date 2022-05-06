@@ -41,7 +41,7 @@ public class UserApply {
     private String applyMajor;
 
     public void modifyAcceptedStatus(int isAccepted) {
-        this.isAccepted = isAccepted;
+        this.isAccepted = isAccepted; // default 0 -> 1 변경
     }
 
     // 모집 지원
