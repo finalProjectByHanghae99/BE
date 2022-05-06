@@ -2,6 +2,7 @@ package com.hanghae99.finalproject.user.controller;
 
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.ExceptionResponse;
+import com.hanghae99.finalproject.exception.StatusResponseDto;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.user.dto.UserApplyRequestDto;
 import com.hanghae99.finalproject.user.service.UserApplyService;
@@ -19,23 +20,23 @@ public class UserApplyController {
 
     // 모집 지원 API
     @PostMapping("/api/apply/{postId}")
-    public ResponseEntity<ExceptionResponse> apply(@PathVariable Long postId, @RequestBody UserApplyRequestDto userApplyRequestDto,
+    public ResponseEntity<Object> apply(@PathVariable Long postId, @RequestBody UserApplyRequestDto userApplyRequestDto,
                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userApplyService.apply(postId, userApplyRequestDto, userDetails);
-        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+        return new ResponseEntity<>(new StatusResponseDto("신청 성공", ""), HttpStatus.OK);
     }
 
     // 모집 지원 취소 API
     @DeleteMapping("/api/apply/{postId}")
-    public ResponseEntity<ExceptionResponse> cancelApply(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Object> cancelApply(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userApplyService.cancelApply(postId, userDetails);
-        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+        return new ResponseEntity<>(new StatusResponseDto("신청 취소 성공", ""), HttpStatus.OK);
     }
 
     // 모집 마감 API
     @PatchMapping("/api/apply/{postId}/over")
-    public ResponseEntity<ExceptionResponse> overApply(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Object> overApply(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userApplyService.overApply(postId, userDetails);
-        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+        return new ResponseEntity<>(new StatusResponseDto("모집 마감 성공", ""), HttpStatus.OK);
     }
 }
