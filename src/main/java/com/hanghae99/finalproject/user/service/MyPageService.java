@@ -13,10 +13,12 @@ import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.model.UserApply;
 import com.hanghae99.finalproject.user.model.UserPortfolioImg;
 import com.hanghae99.finalproject.post.repository.PostRepository;
+import com.hanghae99.finalproject.user.model.UserRate;
 import com.hanghae99.finalproject.user.repository.UserApplyRepository;
 import com.hanghae99.finalproject.user.repository.UserPortfolioImgRepository;
 import com.hanghae99.finalproject.img.AwsS3UploadService;
 import com.hanghae99.finalproject.img.FileUploadService;
+import com.hanghae99.finalproject.user.repository.UserRateRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,7 @@ public class MyPageService {
     private final AwsS3UploadService s3UploadService;
     private final UserApplyRepository userApplyRepository;
     private final PostRepository postRepository;
+    private final UserRateRepository userRateRepository;
 
     //마이페이지의 정보를 반환
     @Transactional(readOnly = true)
@@ -92,20 +95,23 @@ public class MyPageService {
             throw new PrivateException(ErrorCode.USER_UPDATE_WRONG_ACCESS);
         }
         //User 에 들어있는 이미지 정보들을 가져온다.
-        List<UserPortfolioImg> portfolioImgList = user.getUserPortfolioImgList();
+        Optional<List<UserPortfolioImg>> portfolioImgList = Optional.ofNullable(user.getUserPortfolioImgList());
+        // 해당 부분 수정이 필요함!!
+        if(!portfolioImgList.isPresent()) throw new IllegalArgumentException("USER_NOT_HAVE_PORTFOLIO_IMG");
 
 
         // 현재 유저가 가지고 있는 사진들을 전체 roof
-        for(UserPortfolioImg userPortfolioImg : portfolioImgList){
-            // requestDto 에서 요청[삭제] url을 받아온다.
-            for(ImgUrlDto imgUrlDto : requestDto.getCurrentImgUrl()){
-                // 현재 유저에게 저장된 url과 삭제 요청받은 url 이 같다면
-                if(userPortfolioImg.getPortfolioImgUrl().equals(imgUrlDto.getImgUrl())){
-                    //s3에서 삭제
-                    s3UploadService.deleteFile(userPortfolioImg.getPortfolioImgName());
-                    //해당 유저와 연관관계가 맺어진 포트폴리오 이미지 레포에서도 해당 이미지들을 지운다.
-                    userPortfolioImgRepository.deleteById(userPortfolioImg.getId());
-                    // 삭제요청된 리스트들을 담아준다.
+        if(requestDto.getCurrentImgUrl() != null) {
+            for (UserPortfolioImg userPortfolioImg : portfolioImgList.get()) {
+                // requestDto 에서 요청[삭제] url을 받아온다.
+                for (ImgUrlDto imgUrlDto : requestDto.getCurrentImgUrl()) {
+                    // 현재 유저에게 저장된 url과 삭제 요청받은 url 이 같다면
+                    if (userPortfolioImg.getPortfolioImgUrl().equals(imgUrlDto.getImgUrl())) {
+                        //s3에서 삭제
+                        s3UploadService.deleteFile(userPortfolioImg.getPortfolioImgName());
+                        //해당 유저와 연관관계가 맺어진 포트폴리오 이미지 레포에서도 해당 이미지들을 지운다.
+                        userPortfolioImgRepository.deleteById(userPortfolioImg.getId());
+                    }
                 }
             }
         }
@@ -297,6 +303,7 @@ public class MyPageService {
     }
 
     //모집 마감 list에서 특정 게시글 pk에 접근하여 참여한 user정보들을 반환받아온다.
+    @Transactional(readOnly = true)
     public List<MyPageDto.RecruitUserList> findRecruitUserList(Long postId) {
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.RecruitUserList> recruitUserLists = new ArrayList<>();
@@ -309,22 +316,40 @@ public class MyPageService {
         List<UserApply> userApplyList= post.getUserApplyList();
 
         // roof -> 필요한 정보들을 가공하여 list에 담아준다.
+        // 조건을 달아준다. -> 별점을 받은 인원은 안보이게끔!!
         for(UserApply userApply :userApplyList){
-            MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
-                    .userId(userApply.getUser().getId())
-                    .nickname(userApply.getUser().getNickname())
-                    .profileImg(userApply.getUser().getProfileImg())
-                    .build();
-            recruitUserLists.add(recruitUserList);
+            if(userApply.getUser().isRateStatus() == false) {
+                MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
+                        .userId(userApply.getUser().getId())
+                        .nickname(userApply.getUser().getNickname())
+                        .profileImg(userApply.getUser().getProfileImg())
+                        .build();
+                recruitUserLists.add(recruitUserList);
+            }
         }
 
         return recruitUserLists;
     }
 
     //모집 마감 list에서 특정 게시글 pk에 접근해서 가져온 유저 list에서 특정 유저에게 평점을 준다.
-    public void EvaluationUser() {
+    public void EvaluationUser(MyPageDto.RequestUserRate requestUserRate,UserDetailsImpl userDetails) {
+            //담겨온 유저 정보[평가를받는 ]를 조회한다.
+            User receiver = userRepository.findById(requestUserRate.getReceiverId()).orElseThrow(
+                    () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+            );
 
+            //어떤 모집글에서의 평가가 이루어졌는지 확인
+            Post post = postRepository.findById(requestUserRate.getPostId()).orElseThrow(
+                    () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+            );
 
+            UserRate userRate = UserRate.builder()
+                    .sender(userDetails.getUser())
+                    .receiver(receiver)
+                    .post(post)
+                    .build();
+
+            receiver.updateRateStatus(requestUserRate.getPoint());
 
     }
 }

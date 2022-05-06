@@ -115,8 +115,11 @@ public class MyPageDto {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RequestUserRate{
-        private Long point;
+        private int point;
         private Long receiverId;
         private Long postId;
 
