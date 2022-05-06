@@ -96,7 +96,7 @@ public class MyPageDto {
     @NoArgsConstructor
     @AllArgsConstructor //마이페이지 모집마감 Dto
     public static class RecruitOverList{
-        private Post post;
+        private Long postId;
         private String nickname;
         private String createdAt;
         private List<UserApply> userApplyList;
