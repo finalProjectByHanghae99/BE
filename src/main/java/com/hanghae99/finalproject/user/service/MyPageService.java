@@ -1,9 +1,11 @@
 package com.hanghae99.finalproject.user.service;
 
 import com.hanghae99.finalproject.img.*;
+import com.hanghae99.finalproject.post.dto.PostDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import com.hanghae99.finalproject.user.dto.AcceptedDto;
+import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.PrivateException;
@@ -211,6 +213,9 @@ public class MyPageService {
                 () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
         );
 
+
+        MyPageDto.ResponseEntityToPost responseEntityToPost = new MyPageDto.ResponseEntityToPost(post);
+
         //해당 모집글에 접근한 유저 정보들을 불러온다.
         List<UserApply> userApplyLists = post.getUserApplyList();
 
@@ -220,7 +225,7 @@ public class MyPageService {
             // reqeust 요청 : 1 == 0 인 상태의 값만 보여준다.
             if (isAccecpted == AppliedList.getIsAccepted()) {
                 MyPageDto.ApplyUserList applyUserList = MyPageDto.ApplyUserList.builder()
-                        .post(post) // 해당 포스트 값에 담긴 정보 : ex )
+                        .post(responseEntityToPost) // 해당 포스트 값에 담긴 정보 : ex )
                         .userId(AppliedList.getUser().getId()) // 전달자
                         .nickname(AppliedList.getUser().getNickname()) // 전달자 닉네임
                         .message(AppliedList.getMessage()) // 전달 메시지
