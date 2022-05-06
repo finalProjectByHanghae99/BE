@@ -111,7 +111,6 @@ public class MyPageDto {
         private Long userId;
         private String nickname;
         private String profileImg;
-
     }
 
     @Data

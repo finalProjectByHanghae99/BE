@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -72,9 +73,15 @@ public class User {
         this.portfolioLink = requestDto.getPortfolioLink();
         this.userPortfolioImgList = userPortfolioImgs;
     }
+
     //평점을 받는다면 likeCount가 +1 -> 평가완료 !
     public void updateRateStatus(int point) {
         this.likeCount +=point;
         this.rateStatus = true;
+    }
+
+    // 모집 마감시 ProjectCount 변경(projectCount += 1)
+    public void updateProjectCount(int newProjectCount) {
+        this.projectCount = newProjectCount;
     }
 }
