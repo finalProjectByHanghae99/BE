@@ -201,6 +201,7 @@ public class MyPageService {
     //'모집글' 리스트에서 특정 모집글에서 '명단보기 ' 클릭 시...
     @Transactional
     public List<MyPageDto.ApplyUserList> responseApplyMyPostUserList(Long postId, int isAccecpted) {
+
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.ApplyUserList> applyUserListByMyPost = new ArrayList<>();
         //post에 들어갈 MajorList entity -> dto
@@ -227,7 +228,6 @@ public class MyPageService {
             // reqeust 요청 : 1 == 0 인 상태의 값만 보여준다.
             if (isAccecpted == AppliedList.getIsAccepted()) {
                 MyPageDto.ApplyUserList applyUserList = MyPageDto.ApplyUserList.builder()
-                        .post(responseEntityToPost) // 해당 포스트 값에 담긴 정보 : ex )
                         .userId(AppliedList.getUser().getId()) // 전달자
                         .nickname(AppliedList.getUser().getNickname()) // 전달자 닉네임
                         .profileImg(AppliedList.getUser().getProfileImg()) // 유저의 프로필 이미지
@@ -246,6 +246,7 @@ public class MyPageService {
 
     // 신청한 모집글의 유저 1이 현재 게시글 pk 와 자신의 유저 pk 를 전달
     // '요청 수락' 시 acceted 가 0 -> 1 로 변경
+    // 모집 전공 수가 충족된다면 해당 게시글 상태 변화
     @Transactional
     public void modifyAcceptedStatus(AcceptedDto acceptedDto) {
 
@@ -264,17 +265,21 @@ public class MyPageService {
         List<Major> majorList = post.getMajorList();
         //userApply 지원자는 그 중의 하나를 선택한다.
 
+        // SET : 2 / APPLY : 0 -> SET : 2 /APPLY : 1
         for (Major major : majorList) {
             if (major.getMajorName().equals(userApply.getApplyMajor())) {
-                major.updateApplyCount();
+                major.increaseApplyCount();
+            }
+            // IF SET : 2 == APPLY : 2 -> post- status '마감'변경
+            if(Objects.equals(major.getNumOfPeopleSet(), major.getNumOfPeopleApply())){
+                post.updateStatus(CurrentStatus.RECRUITING_CLOSE);
             }
         }
-
         int isAccepted = 1;
-
         userApply.modifyAcceptedStatus(isAccepted);
     }
     //신청한 모집글에서 유저명단 -> 해당 인원의 요청을 거절 시.
+    //팀원명단에서 해당 인원을 강퇴 시 같이 사용 .
     @Transactional
     public void rejectUserApply(RejectDto rejectDto) {
         Post post = postRepository.findById(rejectDto.getPostId()).orElseThrow(
@@ -287,7 +292,20 @@ public class MyPageService {
                 () -> new IllegalArgumentException("신청자가 존재하지 않습니다.")
         );
 
-        userApplyRepository.deleteById(userApply.getId());
+        if(userApply.getIsAccepted() == 0) {
+            userApplyRepository.deleteById(userApply.getId());
+        }
+        //isAccepted가 == 1 이라면[현재 팀원 목록에 존재하는 참가자]
+        //해당 전공에서 지원수를 1 차감한다.
+        if(userApply.getIsAccepted() == 1){
+            List<Major> majorList = post.getMajorList();
+            for(Major major : majorList){
+                if (major.getMajorName().equals(userApply.getApplyMajor())) {
+                    major.decreaseApplyCount();
+                }
+            }
+            userApplyRepository.deleteById(userApply.getId());
+        }
     }
 
     //모집 마감 목록 조회

@@ -28,7 +28,11 @@ public class Major {
     @JoinColumn
     private Post post;
 
-    public void updateApplyCount() {
+    public void increaseApplyCount() {
         this.numOfPeopleApply+=1;
+    }
+    public void decreaseApplyCount(){
+        if(numOfPeopleApply < 0) throw new IllegalArgumentException("지원자가 없습니다.");
+        this.numOfPeopleApply-=1;
     }
 }
