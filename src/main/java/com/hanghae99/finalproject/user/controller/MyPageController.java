@@ -5,6 +5,7 @@ import com.hanghae99.finalproject.user.dto.MyPageDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.ExceptionResponse;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
+import com.hanghae99.finalproject.user.dto.RejectDto;
 import com.hanghae99.finalproject.user.service.MyPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -77,6 +78,12 @@ public class MyPageController {
 
         myPageService.modifyAcceptedStatus(acceptedDto);
 
+    }
+
+    @PostMapping("/user/apply/reject")
+    public void rejectApply(@RequestBody RejectDto rejectDto){
+
+        myPageService.rejectUserApply(rejectDto);
     }
 
     //모집마감 목록
