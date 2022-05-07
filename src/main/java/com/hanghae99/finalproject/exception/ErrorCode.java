@@ -60,6 +60,7 @@ public enum ErrorCode {
     POST_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "비어있는 항목을 채워주세요"),
     POST_MAJOR_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "모집 분야를 선택해주세요"),
     POST_TITLE_INPUT_LENGTH_ERROR(HttpStatus.BAD_REQUEST, "400", "제목을 공백 포함 15자 이내로 작성해주세요"),
+    POST_CONTENT_INPUT_LENGTH_ERROR(HttpStatus.BAD_REQUEST, "400", "내용을 공백 포함 300자 이내로 작성해주세요"),
 
     // comment
     COMMENT_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "댓글을 입력해주세요"),

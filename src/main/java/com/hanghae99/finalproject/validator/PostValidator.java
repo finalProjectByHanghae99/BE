@@ -25,6 +25,10 @@ public class PostValidator {
             throw new PrivateException(ErrorCode.POST_TITLE_INPUT_LENGTH_ERROR);
         }
 
+        if (content.length() > 300) {
+            throw  new PrivateException(ErrorCode.POST_CONTENT_INPUT_LENGTH_ERROR);
+        }
+
         if (majorList.isEmpty()) {
             throw new PrivateException(ErrorCode.POST_MAJOR_WRONG_INPUT);
         }
