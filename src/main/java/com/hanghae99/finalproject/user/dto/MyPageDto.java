@@ -5,8 +5,10 @@ import com.hanghae99.finalproject.img.ImgUrlDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.timeConversion.TimeConversion;
+import com.hanghae99.finalproject.user.model.Major;
 import com.hanghae99.finalproject.user.model.UserApply;
 import lombok.*;
+import org.hibernate.procedure.spi.ParameterRegistrationImplementor;
 
 import java.util.List;
 import java.util.Map;
@@ -83,9 +85,11 @@ public class MyPageDto {
     public static class ApplyUserList{
         private ResponseEntityToPost post;
         private Long userId;
+        private String profileImg;
         private String nickname;
         private String message;
         private String applyMajor;
+        private int likePoint;
         private int AcceptedStatus;
 
 
@@ -97,9 +101,10 @@ public class MyPageDto {
     @AllArgsConstructor //마이페이지 모집마감 Dto
     public static class RecruitOverList{
         private Long postId;
+        private String profileImg;
         private String nickname;
         private String createdAt;
-        private List<UserApply> userApplyList;
+        private List<MyPageDto.ResponseEntityToUserApply> userApplyList;
 
 
     }
@@ -141,7 +146,7 @@ public class MyPageDto {
         private String createdAt;
         private List<MajorDto.ResponseDto> majorList;
 
-        public ResponseEntityToPost(Post post) {
+        public ResponseEntityToPost(Post post, List<MajorDto.ResponseDto> majorList) {
             this.postId = post.getId();
             this.userId = post.getUser().getId();
             this.nickname = post.getUser().getNickname();
@@ -151,10 +156,42 @@ public class MyPageDto {
             this.currentStatus = post.getCurrentStatus();
             this.region = post.getRegion();
             this.createdAt = TimeConversion.timeConversion(post.getCreatedAt());
+            this.majorList = majorList;
         }
 
 
     }
 
 
-}
+    @Getter
+    @Builder
+    public static class ResponseEntityToUserApply{
+
+        private Long id;
+        private Long postId;
+        private Long userId;
+        private String profileImg;
+        private String nickname;
+        private String message;
+        private int isAccepted;
+        private String applyMajor;
+
+        public ResponseEntityToUserApply(UserApply userApply){
+            this.id = userApply.getId();
+            this.postId = userApply.getPost().getId();
+            this.userId = userApply.getUser().getId();
+            this.message = userApply.getMessage();
+            this.isAccepted = userApply.getIsAccepted();
+            this.applyMajor = userApply.getApplyMajor();
+        }
+
+
+    }
+
+
+    }
+
+
+
+
+
