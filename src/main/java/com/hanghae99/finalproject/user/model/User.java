@@ -63,7 +63,6 @@ public class User {
     private Boolean rateStatus;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    @JsonIgnoreProperties({"user"})
     private List<UserPortfolioImg>userPortfolioImgList;
 
     @Builder.Default
