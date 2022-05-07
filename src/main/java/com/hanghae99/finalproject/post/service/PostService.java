@@ -26,6 +26,7 @@ import com.hanghae99.finalproject.user.repository.MajorRepository;
 import com.hanghae99.finalproject.user.repository.UserApplyRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import com.hanghae99.finalproject.user.service.UserApplyService;
+import com.hanghae99.finalproject.validator.PostValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -105,6 +106,17 @@ public class PostService {
 
         User user = userDetails.getUser();
         dtoParser(imgList, imgDtoList, majorList, requestDto);
+
+        // [유효성 검사] 제목, 내용, 기한, 지역, 모집 분야 입력 필수
+        PostValidator.validateInputPost(requestDto);
+
+        System.out.println("제목 확인 = " + requestDto.getTitle());
+        if (requestDto.getContent().isEmpty()) {
+            System.out.println("내용 없음 = " + requestDto.getContent());
+        } else {
+            System.out.println("내용 뭔데 = " + requestDto.getContent() );
+        }
+
         Post post = Post.builder()
                 .title(requestDto.getTitle())
                 .content(requestDto.getContent())
@@ -291,7 +303,6 @@ public class PostService {
         if (!post.getUser().equals(user)) {
             throw new PrivateException(ErrorCode.POST_DELETE_WRONG_ACCESS);
         }
-
         postRepository.deleteById(postId);
     }
 }
