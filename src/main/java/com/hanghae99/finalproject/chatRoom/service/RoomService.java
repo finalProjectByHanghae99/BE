@@ -28,7 +28,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RoomService {
 
-    private final RoomRepository roomRepository;
+   private final RoomRepository roomRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final UserRoomRepository userRoomRepository;
