@@ -6,9 +6,12 @@ import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
+import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.dto.UserApplyRequestDto;
+import com.hanghae99.finalproject.user.model.Major;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.model.UserApply;
+import com.hanghae99.finalproject.user.repository.MajorRepository;
 import com.hanghae99.finalproject.user.repository.UserApplyRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +29,7 @@ public class UserApplyService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final MajorRepository majorRepository;
     private final UserApplyRepository userApplyRepository;
 
     // 모집 지원
@@ -60,6 +65,23 @@ public class UserApplyService {
         String applyMajor = userApplyRequestDto.getApplyMajor();
         if (!StringUtils.hasText(applyMajor)) {
             throw new PrivateException(ErrorCode.APPLY_MAJOR_WRONG_INPUT);
+        }
+
+        List<Major> findMajorByPost = majorRepository.findAllByPost(post);
+        List<String> majorList = new ArrayList<>();
+        for (Major major : findMajorByPost) {
+            majorList.add(major.getMajorName());
+        }
+
+        // [유효성 검사] 선택한 지원 분야가 모집하는 지원 분야와 일치하지 않을 경우
+        if (!majorList.contains(applyMajor)) {
+            throw new PrivateException(ErrorCode.APPLY_MAJOR_NOT_EXIST);
+        }
+
+        // [유효성 검사] 선택한 지원 분야의 정원이 이미 다 찼을 경우
+        Major findMajor = majorRepository.findByPostAndMajorName(post, applyMajor);
+        if (findMajor.getNumOfPeopleApply() == findMajor.getNumOfPeopleSet()) {
+            throw new PrivateException(ErrorCode.APPLY_PEOPLE_SET_CLOSED);
         }
 
         // [Default] 지원 메시지 비었을 경우 Default 메시지 설정
