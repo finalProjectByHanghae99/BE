@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface MajorRepository extends JpaRepository<Major, Long> {
     List<Major> findAllByPost(Post postId);
+
+    Major findByPostAndMajorName(Post post, String applyMajor);
 }
