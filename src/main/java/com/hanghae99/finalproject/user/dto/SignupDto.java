@@ -3,11 +3,13 @@ package com.hanghae99.finalproject.user.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class SignupDto {
 
     @Getter
     @Builder
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class RequestDto {
         private String email;
