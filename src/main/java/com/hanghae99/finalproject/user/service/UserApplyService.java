@@ -165,19 +165,21 @@ public class UserApplyService {
         // 해당 프로젝트에 지원한 user list에 담기
         List<UserApply> userApplyList = userApplyRepository.findAllByPost(post);
 
-        int newProjectCount = post.getUser().getProjectCount() + 1;
+        int startNewProjectCount = post.getUser().getProjectCount() + 1;
 
         if (post.getCurrentStatus() == CurrentStatus.RECRUITING_COMPLETE) {
             // 1)
-            user.updateProjectCount(newProjectCount);
+            user.updateProjectCount(startNewProjectCount);
             // 2)
             for (UserApply userApply : userApplyList) {
                 if (userApply.getIsAccepted() == 1) {   // 지원 유저 중 프로젝트 수락된 유저만 해당
                     Long memberId = userApply.getUser().getId();
                     // 수락 유저의 userId로 현재 존재하는 유저인지 확인
                     Optional<User> member = userRepository.findById(memberId);
-                    // 존재한다면 projectCount += 1
-                    member.ifPresent(value -> value.updateProjectCount(newProjectCount));
+                    int memberNewProjectCount = member.get().getProjectCount() + 1;
+
+                            // 존재한다면 projectCount += 1
+                    member.ifPresent(value -> value.updateProjectCount(memberNewProjectCount));
                 }
             }
         }
