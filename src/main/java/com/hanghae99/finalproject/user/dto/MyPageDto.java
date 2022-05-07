@@ -163,8 +163,10 @@ public class MyPageDto {
     }
 
 
-    @Getter
+    @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ResponseEntityToUserApply{
 
         private Long id;
@@ -175,15 +177,6 @@ public class MyPageDto {
         private String message;
         private int isAccepted;
         private String applyMajor;
-
-        public ResponseEntityToUserApply(UserApply userApply){
-            this.id = userApply.getId();
-            this.postId = userApply.getPost().getId();
-            this.userId = userApply.getUser().getId();
-            this.message = userApply.getMessage();
-            this.isAccepted = userApply.getIsAccepted();
-            this.applyMajor = userApply.getApplyMajor();
-        }
 
 
     }
