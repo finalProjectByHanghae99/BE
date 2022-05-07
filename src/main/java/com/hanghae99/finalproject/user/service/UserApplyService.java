@@ -67,6 +67,11 @@ public class UserApplyService {
             throw new PrivateException(ErrorCode.APPLY_MAJOR_WRONG_INPUT);
         }
 
+        // [유효성 검사] 에러 메시지 글자수 (띄어쓰기 제외 20자 이내)
+        if (applyMajor.trim().length() > 20) {
+            throw new PrivateException(ErrorCode.APPLY_MESSAGE_INPUT_LENGTH_ERROR);
+        }
+
         List<Major> findMajorByPost = majorRepository.findAllByPost(post);
         List<String> majorList = new ArrayList<>();
         for (Major major : findMajorByPost) {
