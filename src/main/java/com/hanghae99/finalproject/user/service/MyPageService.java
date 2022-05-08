@@ -1,7 +1,6 @@
 package com.hanghae99.finalproject.user.service;
 
 import com.hanghae99.finalproject.img.*;
-import com.hanghae99.finalproject.post.dto.PostDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import com.hanghae99.finalproject.user.dto.AcceptedDto;
@@ -217,10 +216,11 @@ public class MyPageService {
             postMajorListDto.add(majorListDto);
         }
         // 무한참조 방지를 위해 entity 를 dto에 담아 전달
-        MyPageDto.ResponseEntityToPost responseEntityToPost = new MyPageDto.ResponseEntityToPost(post, postMajorListDto);
+        //MyPageDto.ResponseEntityToPost responseEntityToPost = new MyPageDto.ResponseEntityToPost(post, postMajorListDto);
 
         //해당 모집글에 접근한 유저 정보들을 불러온다.
         List<UserApply> userApplyLists = post.getUserApplyList();
+
 
         //유저 정보들을 요청 response 값에 빌딩
         for (UserApply AppliedList : userApplyLists) {
@@ -228,6 +228,7 @@ public class MyPageService {
             // reqeust 요청 : 1 == 0 인 상태의 값만 보여준다.
             if (isAccecpted == AppliedList.getIsAccepted()) {
                 MyPageDto.ApplyUserList applyUserList = MyPageDto.ApplyUserList.builder()
+                        .postMajorList(postMajorListDto)
                         .userId(AppliedList.getUser().getId()) // 전달자
                         .nickname(AppliedList.getUser().getNickname()) // 전달자 닉네임
                         .profileImg(AppliedList.getUser().getProfileImg()) // 유저의 프로필 이미지
@@ -239,7 +240,6 @@ public class MyPageService {
                 applyUserListByMyPost.add(applyUserList);
             }
         }
-        //만약 0인 상태가 없다면 ? 1인 상태가 없다면 ?
 
         return applyUserListByMyPost;
     }
