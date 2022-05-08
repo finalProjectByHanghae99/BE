@@ -83,6 +83,7 @@ public class MyPageDto {
     @NoArgsConstructor
     @AllArgsConstructor //마이페이지 모집중 신청자 Dto
     public static class ApplyUserList{
+        private List<MajorDto.ResponseDto> postMajorList;
         private Long userId;
         private String profileImg;
         private String nickname;
@@ -92,8 +93,8 @@ public class MyPageDto {
         private int AcceptedStatus;
 
 
-
     }
+
     @Data
     @Builder
     @NoArgsConstructor

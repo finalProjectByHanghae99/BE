@@ -80,6 +80,7 @@ public class MyPageController {
 
     }
 
+    // 신청자/ 팀원 목록에서 거절 or 퇴장
     @PostMapping("/user/apply/reject")
     public void rejectApply(@RequestBody RejectDto rejectDto){
 
@@ -111,9 +112,4 @@ public class MyPageController {
 
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
-
-
-
-
-
 }
