@@ -1,5 +1,9 @@
 package com.hanghae99.finalproject.redis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
@@ -30,14 +34,14 @@ public class RedisConfiguration extends CachingConfigurerSupport {
         return new LettuceConnectionFactory(host, port);
     }
 
-    // jackson LocalDateTime mapper
-//    @Bean
-//    public ObjectMapper objectMapper() {
-//        ObjectMapper mapper = new ObjectMapper();
-//        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // timestamp 형식 안따르도록 설정
-//        mapper.registerModules(new JavaTimeModule(), new Jdk8Module()); // LocalDateTime 매핑을 위해 모듈 활성화
-//        return mapper;
-//    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // timestamp 형식 안따르도록 설정
+        mapper.registerModules(new JavaTimeModule(), new Jdk8Module()); // LocalDateTime 매핑을 위해 모듈 활성화
+        return mapper;
+    }
 
     @Bean
     public RedisMessageListenerContainer container(RedisConnectionFactory redisConnectionFactory){

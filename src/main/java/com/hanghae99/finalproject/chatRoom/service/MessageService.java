@@ -50,7 +50,7 @@ public class MessageService {
 
         // 전달받는 메시지 타입을 체크 ,
         // 메시지 시작.
-        if (Message.MessageType.Start.equals(messageDto.getType())) {
+        if (Message.MessageType.START.equals(messageDto.getType())) {
             sendMessageDto = MessageDto.builder()
                     .message(sender.getNickname() + "님이 입장 하셨습니다.")
                     .senderId(sender.getId()) //ex : 게시물에 접근한 유저 / 채팅을 시작
@@ -62,7 +62,7 @@ public class MessageService {
 
                     .build();
             // 채팅방을 나갈 시에 메시지
-        } else if (Message.MessageType.Exit.equals(messageDto.getType())) {
+        } else if (Message.MessageType.EXIT.equals(messageDto.getType())) {
             sendMessageDto = MessageDto.builder()
                     .message(sender.getNickname() + "님이 퇴장 하셨습니다.")
                     .senderId(sender.getId())
@@ -76,7 +76,7 @@ public class MessageService {
             check = roomOut(sendMessageDto); // 채팅 방 유무 확인
 
             //채팅
-        } else if (Message.MessageType.Talk.equals(messageDto.getType())) {
+        } else if (Message.MessageType.TALK.equals(messageDto.getType())) {
             sendMessageDto = MessageDto.builder()
                     .message(messageDto.getMessage())
                     .senderId(sender.getId())
