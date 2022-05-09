@@ -2,13 +2,8 @@ package com.hanghae99.finalproject.user.dto;
 
 
 import com.hanghae99.finalproject.img.ImgUrlDto;
-import com.hanghae99.finalproject.post.model.CurrentStatus;
-import com.hanghae99.finalproject.post.model.Post;
-import com.hanghae99.finalproject.timeConversion.TimeConversion;
-import com.hanghae99.finalproject.user.model.Major;
 import com.hanghae99.finalproject.user.model.UserApply;
 import lombok.*;
-import org.hibernate.procedure.spi.ParameterRegistrationImplementor;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +36,7 @@ public class MyPageDto {
         private String intro; // 자기 소개
         private String major;
         private String portfolioLink; //포트폴리오 링크
-        private List<Map<Long,String>> userPortfolioImgList; //유저 포트폴리오 이미지리스트
+        private List<String> userPortfolioImgList; //유저 포트폴리오 이미지리스트
         private int projectCount;// 해결한 프로젝트 카운트
         private int likeCount; // 좋아요 갯수 .
 
@@ -133,26 +128,15 @@ public class MyPageDto {
 
     @Setter
     @Getter
-    public static class ResponseEntityToPost {
+    public static class ResponseEntityToDto {
 
-        private Long postId;
-        private Long userId;
-        private String nickname;
-        private String profileImg;
-        private String title;
-        private String deadline;
-        private CurrentStatus currentStatus;
-        private String region;
-        private String createdAt;
         private List<MajorDto.ResponseDto> majorList;
         private List<MyPageDto.ApplyUserList> applyUserLists;
 
-        public ResponseEntityToPost(List<MajorDto.ResponseDto> majorList,List<MyPageDto.ApplyUserList> appliedResponseDtoList) {
+        public ResponseEntityToDto(List<MajorDto.ResponseDto> majorList,List<MyPageDto.ApplyUserList> appliedResponseDtoList) {
             this.majorList = majorList;
             this.applyUserLists = appliedResponseDtoList;
         }
-
-
     }
 
 

@@ -42,22 +42,15 @@ public class MyPageService {
                 () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
-        // 키와 밸류가 한쌍인 값들을 list에 담는다.
-        List<Map<Long, String>> userPortfolioImgList = new ArrayList<>();
+       List<String> imgUrlDtoList = new ArrayList<>();
+
         //유저의 포트폴리오 이미지 리스트에서
         if (!user.getUserPortfolioImgList().isEmpty()) {
-            // Map에 id , url을 한쌍으로 리스트 타입으로 담아준다.
             for (UserPortfolioImg portfolioImgList : user.getUserPortfolioImgList()) {
-                // 유저 정보 조회 시 포트폴리오 이미지가 존재한다면 key/value 값으로 map 에 담준다.
-                Map<Long, String> userPortfolio = new HashMap<>();
-                userPortfolio.put(portfolioImgList.getId(), portfolioImgList.getPortfolioImgUrl());
-                userPortfolioImgList.add(userPortfolio);
+                imgUrlDtoList.add(portfolioImgList.getPortfolioImgUrl());
             }
-            //List[{"1":"1.png"},{"2":"2.png"}]
         }
         //이미지가 없다면 ,Default 값 전달해야함. 디자이너분들과 상의 후 변경필요
-
-
 
         // 닉네임/프로필 이미지/자기소개/ 등록한 포폴 이미지/ 내가 올린 글 목록
         return MyPageDto.ResponseDto.builder()
@@ -67,7 +60,7 @@ public class MyPageService {
                 .intro(user.getIntro()) // default 값 or 수정 소개글
                 .portfolioLink(user.getPortfolioLink())
                 .major(user.getMajor())
-                .userPortfolioImgList(userPortfolioImgList)
+                .userPortfolioImgList(imgUrlDtoList)
                 .projectCount(user.getProjectCount()) //연관관계 메서드 설정 필요
                 .likeCount(user.getLikeCount())
                 .build();
@@ -82,9 +75,9 @@ public class MyPageService {
                 () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
         );
         //접근한 유저정보와 토큰의 유저정보를 비교하여 일치할 때 유저 수정권한을 가능하게 한다.
-        if(!user.equals(userDetails.getUser())){
-            throw new PrivateException(ErrorCode.USER_UPDATE_WRONG_ACCESS);
-        }
+//        if(!user.equals(userDetails.getUser())){
+//            throw new PrivateException(ErrorCode.USER_UPDATE_WRONG_ACCESS);
+//        }
         // 현재 유저가 가지고 있는 사진들을 전체 roof
         //User 에 들어있는 이미지 정보들을 가져온다.
         List<UserPortfolioImg> portfolioImgList = user.getUserPortfolioImgList();
@@ -199,7 +192,7 @@ public class MyPageService {
     //postPk를 받아와 해당 게시글에 '신청하기' 를 한 유저의 정보를 담아서 전달
     //'모집글' 리스트에서 특정 모집글에서 '명단보기 ' 클릭 시...
     @Transactional
-    public MyPageDto.ResponseEntityToPost responseApplyMyPostUserList(Long postId, int isAccecpted) {
+    public MyPageDto.ResponseEntityToDto responseApplyMyPostUserList(Long postId, int isAccecpted) {
 
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.ApplyUserList> applyUserListByMyPost = new ArrayList<>();
@@ -237,7 +230,7 @@ public class MyPageService {
             }
         }
         // 무한참조 방지를 위해 entity 를 dto에 담아 전달
-        return new MyPageDto.ResponseEntityToPost(postMajorListDto,applyUserListByMyPost);
+        return new MyPageDto.ResponseEntityToDto(postMajorListDto,applyUserListByMyPost);
     }
 
     // 신청한 모집글의 유저 1이 현재 게시글 pk 와 자신의 유저 pk 를 전달
