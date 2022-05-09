@@ -62,7 +62,7 @@ public class PostDto {
         private Long postId;
         private Long userId;
         private String nickname;
-        private String pofileImg;
+        private String profileImg;
         private String title;
         private String content;
         private String deadline;
@@ -79,7 +79,7 @@ public class PostDto {
             this.postId = postId;
             this.userId = post.getUser().getId();
             this.nickname = post.getUser().getNickname();
-            this.pofileImg = post.getUser().getProfileImg();
+            this.profileImg = post.getUser().getProfileImg();
             this.title = post.getTitle();
             this.content = post.getContent();
             this.deadline = post.getDeadline();

@@ -66,7 +66,7 @@ public class MyPageController {
     }
     //유저가 작성한 모집글 리스트 에서 본 유저의 '모집글'에서 '신청하기'를 한 '신청자' 리스트들을 반환한다.
     @GetMapping("/user/apply/{postId}")
-    public List<MyPageDto.ApplyUserList> userInfoApplyMyPost(@PathVariable Long postId,@RequestParam(value = "isAccepted") int isAccepted ){
+    public MyPageDto.ResponseEntityToPost userInfoApplyMyPost(@PathVariable Long postId,@RequestParam(value = "isAccepted") int isAccepted ){
 
         return myPageService.responseApplyMyPostUserList(postId,isAccepted);
     }
