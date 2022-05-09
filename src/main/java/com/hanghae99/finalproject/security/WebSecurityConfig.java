@@ -48,14 +48,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     // 회원 관리 처리 API (POST /user/**) 에 대해 CSRF 무시
 
     http.authorizeRequests()
-        // login 없이 허용
-        .antMatchers("/user/**").permitAll()
-        .antMatchers(HttpMethod.GET,"/api/post/**").permitAll()
-        .antMatchers("/api/category").permitAll()
-        .antMatchers("/ws-stomp").permitAll()
+            // login 없이 허용
+            .antMatchers("/user/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/post/**").permitAll()
+            .antMatchers("/api/category").permitAll()
+            .antMatchers("/ws-stomp").permitAll()
+            .antMatchers("/webSocket").permitAll()
 
-        //추가 - 메인 페이지 접근 허용
-        .antMatchers("/").permitAll()
+            //추가 - 메인 페이지 접근 허용
+            .antMatchers("/").permitAll()
 
         // 그 외 어떤 요청이든 '인증'과정 필요
         .anyRequest().authenticated()
