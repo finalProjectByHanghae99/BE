@@ -22,6 +22,7 @@ public class MessageController {
 
     // /pub/message -> StompConfig에서 설정한 prefix 값과 결합
     @MessageMapping("/message")
+    // stompConfig에서 설정한 applicationDestinationPrefixes와 @MessageMapping 경로가 병합됨
     public void message(@RequestBody MessageDto messageDto){
         messageService.sendMessage(messageDto);
 

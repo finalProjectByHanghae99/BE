@@ -34,7 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     // h2-console 사용에 대한 허용 (CSRF, FrameOptions 무시)
     web
         .ignoring()
-        .antMatchers("/h2-console/**");
+        .antMatchers("/h2-console/**","/webSocket/**");
   }
 
   @Override
@@ -52,8 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/user/**").permitAll()
             .antMatchers(HttpMethod.GET, "/api/post/**").permitAll()
             .antMatchers("/api/category").permitAll()
-            .antMatchers("/ws-stomp").permitAll()
-            .antMatchers("/webSocket").permitAll()
+            .antMatchers("/webSocket/**").permitAll()
 
             //추가 - 메인 페이지 접근 허용
             .antMatchers("/").permitAll()

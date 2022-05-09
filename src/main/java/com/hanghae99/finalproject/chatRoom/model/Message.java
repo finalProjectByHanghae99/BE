@@ -18,7 +18,7 @@ public class Message extends TimeStamped {
 
     //대화 상태
     public enum MessageType {
-        Talk, Exit, Start //대문자 수정
+        TALK, EXIT, START //대문자 수정
     }
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
