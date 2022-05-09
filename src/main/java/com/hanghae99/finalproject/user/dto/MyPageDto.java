@@ -83,7 +83,6 @@ public class MyPageDto {
     @NoArgsConstructor
     @AllArgsConstructor //마이페이지 모집중 신청자 Dto
     public static class ApplyUserList{
-        private List<MajorDto.ResponseDto> postMajorList;
         private Long userId;
         private String profileImg;
         private String nickname;
@@ -91,6 +90,7 @@ public class MyPageDto {
         private String applyMajor;
         private int likePoint;
         private int AcceptedStatus;
+        private int projectCount;
 
 
     }
@@ -145,18 +145,11 @@ public class MyPageDto {
         private String region;
         private String createdAt;
         private List<MajorDto.ResponseDto> majorList;
+        private List<MyPageDto.ApplyUserList> applyUserLists;
 
-        public ResponseEntityToPost(Post post, List<MajorDto.ResponseDto> majorList) {
-            this.postId = post.getId();
-            this.userId = post.getUser().getId();
-            this.nickname = post.getUser().getNickname();
-            this.profileImg = post.getUser().getProfileImg();
-            this.title = post.getTitle();
-            this.deadline = post.getDeadline();
-            this.currentStatus = post.getCurrentStatus();
-            this.region = post.getRegion();
-            this.createdAt = TimeConversion.timeConversion(post.getCreatedAt());
+        public ResponseEntityToPost(List<MajorDto.ResponseDto> majorList,List<MyPageDto.ApplyUserList> appliedResponseDtoList) {
             this.majorList = majorList;
+            this.applyUserLists = appliedResponseDtoList;
         }
 
 

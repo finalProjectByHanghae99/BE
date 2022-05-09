@@ -54,8 +54,10 @@ public class MyPageService {
                 userPortfolioImgList.add(userPortfolio);
             }
             //List[{"1":"1.png"},{"2":"2.png"}]
-
         }
+        //이미지가 없다면 ,Default 값 전달해야함. 디자이너분들과 상의 후 변경필요
+
+
 
         // 닉네임/프로필 이미지/자기소개/ 등록한 포폴 이미지/ 내가 올린 글 목록
         return MyPageDto.ResponseDto.builder()
@@ -80,11 +82,9 @@ public class MyPageService {
                 () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
         );
         //접근한 유저정보와 토큰의 유저정보를 비교하여 일치할 때 유저 수정권한을 가능하게 한다.
-//        if(!user.equals(userDetails.getUser())){
-//            throw new PrivateException(ErrorCode.USER_UPDATE_WRONG_ACCESS);
-//        }
-
-
+        if(!user.equals(userDetails.getUser())){
+            throw new PrivateException(ErrorCode.USER_UPDATE_WRONG_ACCESS);
+        }
         // 현재 유저가 가지고 있는 사진들을 전체 roof
         //User 에 들어있는 이미지 정보들을 가져온다.
         List<UserPortfolioImg> portfolioImgList = user.getUserPortfolioImgList();
@@ -199,7 +199,7 @@ public class MyPageService {
     //postPk를 받아와 해당 게시글에 '신청하기' 를 한 유저의 정보를 담아서 전달
     //'모집글' 리스트에서 특정 모집글에서 '명단보기 ' 클릭 시...
     @Transactional
-    public List<MyPageDto.ApplyUserList> responseApplyMyPostUserList(Long postId, int isAccecpted) {
+    public MyPageDto.ResponseEntityToPost responseApplyMyPostUserList(Long postId, int isAccecpted) {
 
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.ApplyUserList> applyUserListByMyPost = new ArrayList<>();
@@ -210,38 +210,34 @@ public class MyPageService {
                 () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
         );
         //entity to dto
-
         for (Major postMajor : post.getMajorList()) {
             MajorDto.ResponseDto majorListDto = new MajorDto.ResponseDto(postMajor);
             postMajorListDto.add(majorListDto);
         }
-        // 무한참조 방지를 위해 entity 를 dto에 담아 전달
-        //MyPageDto.ResponseEntityToPost responseEntityToPost = new MyPageDto.ResponseEntityToPost(post, postMajorListDto);
-
         //해당 모집글에 접근한 유저 정보들을 불러온다.
         List<UserApply> userApplyLists = post.getUserApplyList();
 
-
+        // .postMajorList(postMajorListDto) << 어떻게줄까?
         //유저 정보들을 요청 response 값에 빌딩
         for (UserApply AppliedList : userApplyLists) {
             // 받아온 reqeust 요청 : 0 ==  기본값 : 0 [수락전]
             // reqeust 요청 : 1 == 0 인 상태의 값만 보여준다.
             if (isAccecpted == AppliedList.getIsAccepted()) {
                 MyPageDto.ApplyUserList applyUserList = MyPageDto.ApplyUserList.builder()
-                        .postMajorList(postMajorListDto)
                         .userId(AppliedList.getUser().getId()) // 전달자
                         .nickname(AppliedList.getUser().getNickname()) // 전달자 닉네임
                         .profileImg(AppliedList.getUser().getProfileImg()) // 유저의 프로필 이미지
                         .message(AppliedList.getMessage()) // 전달 메시지
                         .applyMajor(AppliedList.getApplyMajor()) // 지원한 전공
                         .AcceptedStatus(AppliedList.getIsAccepted()) //default -> 0
+                        .projectCount(AppliedList.getUser().getProjectCount()) //해당 인원의 프로젝트 카운트수
                         .likePoint(AppliedList.getUser().getLikeCount()) // 지원자의 평점
                         .build();
                 applyUserListByMyPost.add(applyUserList);
             }
         }
-
-        return applyUserListByMyPost;
+        // 무한참조 방지를 위해 entity 를 dto에 담아 전달
+        return new MyPageDto.ResponseEntityToPost(postMajorListDto,applyUserListByMyPost);
     }
 
     // 신청한 모집글의 유저 1이 현재 게시글 pk 와 자신의 유저 pk 를 전달
