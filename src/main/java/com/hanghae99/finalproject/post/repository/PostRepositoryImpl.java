@@ -1,14 +1,14 @@
 package com.hanghae99.finalproject.post.repository;
 
-import com.hanghae99.finalproject.img.Img;
 import com.hanghae99.finalproject.img.ImgUrlDto;
-import com.hanghae99.finalproject.img.QImg;
 import com.hanghae99.finalproject.img.QImgUrlDto;
 import com.hanghae99.finalproject.post.dto.PostCategoryRequestDto;
 import com.hanghae99.finalproject.post.dto.PostCategoryResponseDto;
 import com.hanghae99.finalproject.post.dto.QPostCategoryResponseDto;
 import com.hanghae99.finalproject.post.model.Post;
-import com.querydsl.core.types.Predicate;
+import com.hanghae99.finalproject.user.dto.MajorDto;
+import com.hanghae99.finalproject.user.dto.QMajorDto_ResponseDto;
+import com.hanghae99.finalproject.user.model.QMajor;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,6 +21,7 @@ import java.util.List;
 
 import static com.hanghae99.finalproject.img.QImg.img;
 import static com.hanghae99.finalproject.post.model.QPost.post;
+import static com.hanghae99.finalproject.user.model.QMajor.major;
 import static com.hanghae99.finalproject.user.model.QUser.user;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -45,14 +46,12 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         post.currentStatus,
                         post.region,
                         post.createdAt
-//                        (Expression<? extends List<String>>) post.imgList,
-//                        (Expression<? extends List<MajorDto.ResponseDto>>) post.majorList
                 ))
                 .from(post)
-                .leftJoin(post.user, user)
+                .leftJoin(post.majorList, major)
                 .where(
-                        regionEq(postCategoryRequestDto.getRegion())
-//                        majorNameEq(postCategoryRequestDto.getRecruitmentMajor())
+                        regionContain(postCategoryRequestDto.getRegion()),
+                        majorNameContain(postCategoryRequestDto.getMajor())
                 )
                 .orderBy(post.createdAt.desc())     // 작성시간 기준 최신순 정렬
                 .offset(pageable.getOffset())
@@ -64,17 +63,18 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .from(post)
                 .leftJoin(post.user, user)
                 .where(
-                        regionEq(postCategoryRequestDto.getRegion())
-//                        majorNameEq(postCategoryRequestDto.getRecruitmentMajor())
+                        regionContain(postCategoryRequestDto.getRegion()),
+                        majorNameContain(postCategoryRequestDto.getMajor())
                 )
                 .orderBy(post.createdAt.desc());
         return PageableExecutionUtils.getPage(result, pageable, count::fetchCount);
     }
 
-    // 이미지 조회
+    // postId에 맞는 이미지 조회
     public List<ImgUrlDto> imgFilter(List<Long> postIdCollect) {
         return queryFactory
                 .select(new QImgUrlDto(
+                        post.id,
                         img.imgUrl
                 ))
                 .from(img)
@@ -83,26 +83,35 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetch();
     }
 
+    // postId에 맞는 분야 조회
+    public List<MajorDto.ResponseDto> majorFilter(List<Long> postIdCollect) {
+        return queryFactory
+                .select(new QMajorDto_ResponseDto(
+                        post.id,
+                        major.id,
+                        major.majorName,
+                        major.numOfPeopleSet,
+                        major.numOfPeopleApply
+                ))
+                .from(major)
+                .leftJoin(major.post, post)
+                .where(post.id.in(postIdCollect))
+                .fetch();
+    }
+
     // 지역별 조회
-    private BooleanExpression regionEq(String region) {
+    private BooleanExpression regionContain(String region) {
         if (hasText(region)) {
-            return post.region.eq(region);
+            return post.region.contains(region);
         }
         return null;
     }
 
-
     // 분야별 조회
-//    private Predicate majorNameEq(String recruitmentMajor) {
-//        if (hasText(recruitmentMajor)) {
-//
-//
-//
-//
-//            return post.majorList.contains()
-//        }
-//        return null;
-//    }
-
-
+    private BooleanExpression majorNameContain(String major) {
+        if (hasText(major)) {
+            return QMajor.major.majorName.contains(major);
+        }
+        return null;
+    }
 }

@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostCategoryRequestDto {
     private String region;
-    private String recruitmentMajor;
+    private String major;
 }

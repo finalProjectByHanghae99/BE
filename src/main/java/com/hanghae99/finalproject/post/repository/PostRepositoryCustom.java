@@ -3,6 +3,7 @@ package com.hanghae99.finalproject.post.repository;
 import com.hanghae99.finalproject.img.ImgUrlDto;
 import com.hanghae99.finalproject.post.dto.PostCategoryRequestDto;
 import com.hanghae99.finalproject.post.dto.PostCategoryResponseDto;
+import com.hanghae99.finalproject.user.dto.MajorDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,4 +14,6 @@ public interface PostRepositoryCustom {
     Page<PostCategoryResponseDto> filterPagePost(PostCategoryRequestDto postCategoryRequestDto, Pageable pageable);
 
     List<ImgUrlDto> imgFilter(List<Long> postIdCollect);
+
+    List<MajorDto.ResponseDto> majorFilter(List<Long> postIdCollect);
 }
