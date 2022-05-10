@@ -8,7 +8,6 @@ public class MessageTimeConversion {
     public static String timeConversion(LocalDateTime modifiedAt){
         //현재시간
         LocalDateTime currentTime = LocalDateTime.now();
-        //현재 시간과 수정 시간의 차이를 구함.
         Long timeDiff = Duration.between(modifiedAt, currentTime).getSeconds();
         String resultConversion = "";
 

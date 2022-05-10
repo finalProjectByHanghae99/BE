@@ -67,7 +67,7 @@ public class MyPageDto {
         private String nickname;
         private String title;
         private String createAt;
-        private List<UserApply> userApplyList;
+        private List<MyPageDto.ResponseEntityToUserApply> userApplyList;
 
 
 
@@ -96,7 +96,7 @@ public class MyPageDto {
     @AllArgsConstructor //마이페이지 모집마감 Dto
     public static class RecruitOverList{
         private Long postId;
-        private String profileImg;
+        private String title;
         private String nickname;
         private String createdAt;
         private List<MyPageDto.ResponseEntityToUserApply> userApplyList;
@@ -155,11 +155,18 @@ public class MyPageDto {
         private int isAccepted;
         private String applyMajor;
 
+        }
 
     }
 
 
-    }
+
+
+
+
+
+
+
 
 
 

@@ -27,13 +27,15 @@ public class RoomController {
     private final Map<String, ChannelTopic> topics;
     private final RoomService roomService;
 
-    //chat room create
+
+    //1. 방 생성 api -> '모집글' pk 와 '모집글'작성 유저의 pk를 받아온다.
     @PostMapping("/api/room")
     public RoomDto.Response roomCreate(@RequestBody RoomDto.Request roomDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return roomService.createRoomService(roomDto, userDetails);
 
     }
 
+    //채팅방 리스트 api -> 현재 유저의 방생성 목록
     @GetMapping("/api/room")
     public List<ChatRoomDto> showRoomList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return roomService.showRoomListService(userDetails);
@@ -45,6 +47,7 @@ public class RoomController {
         ChannelTopic topic = topics.get(roomId2);
         if (topic == null) {
             topic = new ChannelTopic(roomId2);
+            //채팅방 접속 경우 해당 채팅방을 구독한다는 정보를 redisMessageListener에 등록
             redisMessageListenerContainer.addMessageListener(redisMessageSubscriber, topic);
         }
     }
