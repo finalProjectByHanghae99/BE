@@ -21,8 +21,8 @@ public class MessageController {
     private final MessageService messageService;
 
     // /pub/message -> StompConfig에서 설정한 prefix 값과 결합
+    // pub[메시지발행 ] -> topic 생성 -> sub 구독
     @MessageMapping("/message")
-    // stompConfig에서 설정한 applicationDestinationPrefixes와 @MessageMapping 경로가 병합됨
     public void message(@RequestBody MessageDto messageDto){
         messageService.sendMessage(messageDto);
 
@@ -33,7 +33,7 @@ public class MessageController {
         messageService.updateRoomMessageCount(updateCountDto);
     }
 
-    //메시지 발행
+    //발행된 메시지 조회
     @PostMapping("/api/message")
     public MessageListDto showMessageList(@RequestBody RoomDto.findRoomDto roomDto,
                                           @PageableDefault(size = 200, sort = "createdAt") Pageable pageable,

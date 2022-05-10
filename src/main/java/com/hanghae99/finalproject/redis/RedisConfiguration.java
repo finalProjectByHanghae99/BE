@@ -43,15 +43,14 @@ public class RedisConfiguration extends CachingConfigurerSupport {
         return mapper;
     }
 
-    @Bean
+    @Bean // redis pub/sub 메시지를 처리하는 리스너 설정
     public RedisMessageListenerContainer container(RedisConnectionFactory redisConnectionFactory){
         RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
         redisMessageListenerContainer.setConnectionFactory(redisConnectionFactory);
-//        redisMessageListenerContainer.addMessageListener(messageListenerAdapter,topic());
         return redisMessageListenerContainer;
     }
 
-    @Bean
+    @Bean // 어플리케이션에 사용할 redisTemplate 설정
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory){
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
@@ -59,33 +58,6 @@ public class RedisConfiguration extends CachingConfigurerSupport {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
         return redisTemplate;
     }
-
-//    @Bean
-//    public RedisTemplate<String, List<CategoryQueryDto>> redisTemplateList(RedisConnectionFactory redisConnectionFactory){
-//        RedisTemplate<String, List<CategoryQueryDto>> redisTemplate = new RedisTemplate<>();
-//        redisTemplate.setConnectionFactory(redisConnectionFactory);
-//        redisTemplate.setKeySerializer(new StringRedisSerializer());
-//        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(CategoryQueryDto.class));
-//        return redisTemplate;
-//    }
-
-//    //레디스 캐시
-//    @Bean
-//    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
-//        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-//                .serializeKeysWith(RedisSerializationContext
-//                        .SerializationPair.fromSerializer(new StringRedisSerializer()))
-//                .serializeValuesWith(RedisSerializationContext
-//                        .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
-//
-//
-//        return RedisCacheManager
-//                .RedisCacheManagerBuilder
-//                .fromConnectionFactory(redisConnectionFactory)
-//                .cacheDefaults(redisCacheConfiguration)
-//                .build();
-//    }
-
 
 
 }

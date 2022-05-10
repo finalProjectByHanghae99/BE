@@ -48,7 +48,7 @@ public class MessageService {
         );
 
 
-        // 전달받는 메시지 타입을 체크 ,
+        // 전달 메시지 타입을 체크 ,
         // 메시지 시작.
         if (Message.MessageType.START.equals(messageDto.getType())) {
             sendMessageDto = MessageDto.builder()
@@ -73,7 +73,7 @@ public class MessageService {
 
                     .build();
 
-            check = roomOut(sendMessageDto); // 채팅 방 유무 확인
+            check = roomOut(sendMessageDto); // roomOut ->true 반환 시
 
             //채팅
         } else if (Message.MessageType.TALK.equals(messageDto.getType())) {
@@ -88,13 +88,13 @@ public class MessageService {
 
         }
 
-        if(!check){  // 메시지 전달 유저가 존재할 시,
-            // 채팅방의 유무 확인
+        if(check == false){
+            // TALK / START
             Room room = roomRepository.findByRoomName(sendMessageDto.getRoomName()).orElseThrow(
                     () -> new IllegalArgumentException("해당하는 방이 존재하지 않습니다.")
             );
-            // 있다면 ,
-            // 해당 유저의 채팅방에서
+
+            // 방을 공유하는 유저룸 리스트를 가져온다.
             List<UserRoom> userRoomList = userRoomRepository.findByRoom(room);
 
             // 메시지/타입/sender/게시글 작성자 정보 + 유저와 방 repo = 해당 메시지를 저장
@@ -107,31 +107,29 @@ public class MessageService {
 
             }
 
-            // pub -> 메시지를 방에 전달
+            // pub -> 채널 구독자에게 전달
             redisMessagePublisher.publish(sendMessageDto);
         }
     }
 
     // 유저가 방을 나간다면
     public boolean roomOut(MessageDto sendMessageDto) {
-
+        //현재 방을 찾는다.
         Room room = roomRepository.findByRoomName(sendMessageDto.getRoomName()).orElseThrow(
                 () -> new IllegalArgumentException("해당 방이 존재하지 않습니다.")
         );
-
+        //방을 찾아와 유저룸 리스트를 반환
         List<UserRoom> userRoomList = userRoomRepository.findByRoom(room);
 
-        //자신의 USERROOM 삭제
+        //현재 유저룸 리스트에서 자신의 유저룸 삭제
         for(UserRoom userRoom : userRoomList){
             //현재 게시글에 접근한 유저와 해당 방의 userRoom의 pk값이 같다면 방을 삭제.
             if(userRoom.getUser().getId() == sendMessageDto.getSenderId()){
                 userRoomRepository.deleteById(userRoom.getId());
             }
         }
-
-
-
-        if(userRoomList.size() == 1 ){ // 마지막으로 나가는 사람 -> room 삭제
+        // 반대편 유저룸에서는 메시지를 삭제 하고 , 마지막으로 방정보도 같이 삭제하여준다.
+        if(userRoomList.size() == 1 ){
             messageRepository.deleteAllByRoom(room);
             roomRepository.deleteById(room.getId());
             return true;
@@ -141,6 +139,7 @@ public class MessageService {
     }
 
 
+    //방의 메시지 리스트를 조회  / 방 이름, 모집글 PK , 유저 PK , 상대방 PK , 내 정보
     @Transactional
     public MessageListDto showMessageList(RoomDto.findRoomDto roomDto, Pageable pageable, UserDetailsImpl userDetails){
 
@@ -153,17 +152,18 @@ public class MessageService {
         //특정 방에 해당하는 메시지 정보 가져오기
         PageImpl<Message> messages = messageRepository.findByRoom(room,pageable);
 
-        // 게시물 작성자 입장 / 게시물에 접근한 유저 입장에서 보낸 메시지 인지 판별
+        //메시지를 리스트에 담아준다 [나와 상대방의 채팅 리스트를 나눈다 ]
         List<MessageDto> messageDtos = DiscriminationWhoSentMessage(roomDto, userDetails, room, messages);
 
-
+        // 메시지가 담긴 리스트 반환 ,
         return MessageListDto.builder()
                 .message(messageDtos)
-                .build();
+                .build();//
     }
 
+
     private Room userRoomCount(RoomDto.findRoomDto roomDto){
-        //메시지를 담고 있을 방을 찾는다.
+       // 방 이름, 모집글 PK , 유저 PK , 상대방 PK
         Room room = roomRepository.findByRoomNameAndRoomPostId(roomDto.getRoomName(), roomDto.getPostId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 방이 존재하지 않습니다."));
         //게시물 작성 유저의 정보 조회
