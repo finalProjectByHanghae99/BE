@@ -1,6 +1,6 @@
 package com.hanghae99.finalproject.post.dto;
 
-import com.hanghae99.finalproject.img.ImgUrlDto;
+import com.hanghae99.finalproject.img.ImgResponseDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.querydsl.core.annotations.QueryProjection;
@@ -22,7 +22,7 @@ public class PostCategoryResponseDto {
     private CurrentStatus currentStatus;
     private String region;
     private String createdAt;
-    private List<ImgUrlDto> imgUrl;
+    private List<ImgResponseDto> imgUrl;
     private List<MajorDto.ResponseDto> majorList;
 
     @QueryProjection
@@ -37,11 +37,6 @@ public class PostCategoryResponseDto {
         this.currentStatus = currentStatus;
         this.region = region;
         this.createdAt = formatter(createdAt);
-//        if (imgUrl.isEmpty()) {
-//            this.imgUrl = "https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/postDefaultImg.PNG";
-//        } else {
-//            this.imgUrl = imgUrl;
-//        }
     }
 
     public static String formatter(LocalDateTime localDateTime) {
