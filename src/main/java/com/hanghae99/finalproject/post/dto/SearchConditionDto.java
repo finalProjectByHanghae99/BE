@@ -13,4 +13,9 @@ import lombok.NoArgsConstructor;
 public class SearchConditionDto {
     private String searchKey; // 타입과
     private String searchValue;   //내용
+
+    public SearchConditionDto(String searchKey, String searchValue) {
+        this.searchKey = searchKey;
+        this.searchValue = searchValue;
+    }
 }
