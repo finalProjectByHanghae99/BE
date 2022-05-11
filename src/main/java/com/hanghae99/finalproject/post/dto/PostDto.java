@@ -1,10 +1,10 @@
 package com.hanghae99.finalproject.post.dto;
 
-import com.hanghae99.finalproject.comment.dto.CommentDto;
+import com.hanghae99.finalproject.comment.dto.CommentResponseDto;
 import com.hanghae99.finalproject.img.ImgUrlDto;
-import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.post.model.Post;
+import com.hanghae99.finalproject.user.dto.MajorDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -71,10 +71,10 @@ public class PostDto {
         private String createdAt;
         private String link;
         private List<String> imgList;
-        private List<CommentDto.ResponseDto> commentList;
+        private List<CommentResponseDto> commentList;
         private List<MajorDto.ResponseDto> majorList;
 
-        public DetailDto(String userStatus , Long postId, Post post, List<String> imgList, List<CommentDto.ResponseDto> commentList, List<MajorDto.ResponseDto> majorList) {
+        public DetailDto(String userStatus , Long postId, Post post, List<String> imgList, List<CommentResponseDto> commentList, List<MajorDto.ResponseDto> majorList) {
             this.userStatus = userStatus;
             this.postId = postId;
             this.userId = post.getUser().getId();

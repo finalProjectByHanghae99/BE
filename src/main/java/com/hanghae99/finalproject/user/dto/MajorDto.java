@@ -25,8 +25,8 @@ public class MajorDto {
         private Integer numOfPeopleSet;
         private Integer numOfPeopleApply;
 
-
         public ResponseDto(Major major) {
+            this.postId = major.getPost().getId();
             this.majorId = major.getId();
             this.majorName = major.getMajorName();
             this.numOfPeopleSet = major.getNumOfPeopleSet();
