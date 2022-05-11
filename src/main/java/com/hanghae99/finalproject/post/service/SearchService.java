@@ -2,6 +2,7 @@ package com.hanghae99.finalproject.post.service;
 
 import com.hanghae99.finalproject.post.dto.PostDto;
 import com.hanghae99.finalproject.post.dto.SearchConditionDto;
+import com.hanghae99.finalproject.post.dto.SearchPostDto;
 import com.hanghae99.finalproject.post.repository.PostSearchRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,7 +17,7 @@ public class SearchService {
 
     private final PostSearchRepositoryCustom postSearchRepositoryCustom;
 
-    public Page<PostDto.ResponseDto> searchList(SearchConditionDto searchConditionDto,int page){
+    public Page<SearchPostDto> searchList(SearchConditionDto searchConditionDto, int page){
 
 
         Pageable pageable = createPageRequest(page);
