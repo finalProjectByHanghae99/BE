@@ -24,6 +24,7 @@ ff
     private final RedisTemplate<String,Object> redisTemplate;
 
     public void publish(MessageDto message){
+        //채널에 메시지 전달  -> sub 클래스의 onMessage 메서드 자동 실행
         redisTemplate.convertAndSend(String.valueOf(message.getRoomName()),message);
     }
 

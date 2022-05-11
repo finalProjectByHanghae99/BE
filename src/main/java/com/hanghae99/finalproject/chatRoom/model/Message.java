@@ -2,6 +2,8 @@ package com.hanghae99.finalproject.chatRoom.model;
 
 import com.hanghae99.finalproject.chatRoom.dto.MessageDto;
 import com.hanghae99.finalproject.chatRoom.repository.RoomRepository;
+import com.hanghae99.finalproject.exception.ErrorCode;
+import com.hanghae99.finalproject.exception.PrivateException;
 import com.hanghae99.finalproject.timeConversion.TimeStamped;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.repository.UserRepository;
@@ -16,36 +18,44 @@ import javax.persistence.*;
 @Entity
 public class Message extends TimeStamped {
 
-    //대화 상태
-    public enum MessageType {
-        TALK, EXIT, START //대문자 수정
-    }
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
     @Column(nullable = false)
-    private String content;
+    private String content; // 메시지 내용
 
     @Enumerated(EnumType.STRING)
-    private MessageType messageType;
+    private MessageType messageType; // 메시지 타입
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id", nullable = false)
-    private User user;
+    private User user; // 메시지를 보내는 사람
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
-    private Room room;
+    private Room room; // 현재 방 정보
+
+    @Builder
+    public Message(Long id, User user, String content, MessageType messageType, Room room) {
+        this.id = id;
+        this.user = user;
+        this.content = content;
+        this.messageType = messageType;
+        this.room = room;
+    }
 
     @Builder
     public Message(MessageDto sendMessageDto, UserRepository userRepository, RoomRepository roomRepository) {
         this.messageType = sendMessageDto.getType();
         this.user = userRepository.findById(sendMessageDto.getSenderId()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO));
         this.content = sendMessageDto.getMessage();
         this.room = roomRepository.findByRoomName(sendMessageDto.getRoomName()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 방 입니다."));
+    }
+    // 메시지타입 : 채팅 퇴장 입장
+    public enum MessageType {
+        TALK, EXIT, START //대문자 사용
     }
 }

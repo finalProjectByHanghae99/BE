@@ -175,12 +175,14 @@ public class MyPageService {
         List<Post> findPostsByuser = postRepository.findPostsByUser(user);
 
 
+
         for (Post findPosts : findPostsByuser) {
             MyPageDto.RecruitResponseDto recruitResponseDto = MyPageDto.RecruitResponseDto.builder()
                     .userId(user.getId())
                     .postId(findPosts.getId())
                     .title(findPosts.getTitle())
                     .nickname(user.getNickname())
+                    .userApplyList(userApplyListToDtoList(findPosts.getUserApplyList()))
                     .createAt(TimeConversion.timeConversion(findPosts.getCreatedAt()))
                     .build();
 
@@ -188,6 +190,27 @@ public class MyPageService {
         }
         return recruitResponseDtosList;
     }
+
+    private List<MyPageDto.ResponseEntityToUserApply> userApplyListToDtoList(List<UserApply>userApplyList){
+
+        List<MyPageDto.ResponseEntityToUserApply> resultList = new ArrayList<>();
+        for(UserApply userApply : userApplyList){
+
+            MyPageDto.ResponseEntityToUserApply responseEntityToUserApply= MyPageDto.ResponseEntityToUserApply.builder()
+                    .id(userApply.getId())
+                    .postId(userApply.getPost().getId())
+                    .userId(userApply.getUser().getId())
+                    .nickname(userApply.getUser().getNickname())
+                    .profileImg(userApply.getUser().getProfileImg())
+                    .applyMajor(userApply.getApplyMajor())
+                    .message(userApply.getMessage())
+                    .build();
+            resultList.add(responseEntityToUserApply);
+        }
+
+        return resultList;
+    }
+
 
     //postPk를 받아와 해당 게시글에 '신청하기' 를 한 유저의 정보를 담아서 전달
     //'모집글' 리스트에서 특정 모집글에서 '명단보기 ' 클릭 시...
@@ -322,7 +345,7 @@ public class MyPageService {
             if (StatusOverByPost.getCurrentStatus() == CurrentStatus.RECRUITING_COMPLETE) {
                 MyPageDto.RecruitOverList recruitOverList = MyPageDto.RecruitOverList.builder()
                         .postId(StatusOverByPost.getId())
-                        .profileImg(StatusOverByPost.getUser().getProfileImg())
+                        .title(StatusOverByPost.getTitle())
                         .nickname(StatusOverByPost.getUser().getNickname())
                         .createdAt(TimeConversion.timeConversion(StatusOverByPost.getCreatedAt()))
                         .userApplyList(userApplyList(StatusOverByPost.getUserApplyList()))
@@ -337,7 +360,7 @@ public class MyPageService {
             if (PostByAppliedUser.getPost().getCurrentStatus() == CurrentStatus.RECRUITING_COMPLETE) {
                 MyPageDto.RecruitOverList recruitOverList = MyPageDto.RecruitOverList.builder()
                         .postId(PostByAppliedUser.getPost().getId())
-                        .profileImg(PostByAppliedUser.getUser().getProfileImg())
+                        .title(PostByAppliedUser.getPost().getTitle())
                         .nickname(PostByAppliedUser.getUser().getNickname())
                         .createdAt(TimeConversion.timeConversion(PostByAppliedUser.getPost().getCreatedAt()))
                         .userApplyList(userApplyList(PostByAppliedUser.getPost().getUserApplyList()))
@@ -355,17 +378,18 @@ public class MyPageService {
         List<MyPageDto.ResponseEntityToUserApply> responseEntityToUserApplyList = new ArrayList<>();
 
         for (UserApply userApply : userApplylist) {
-            MyPageDto.ResponseEntityToUserApply responseEntityToUserApply = MyPageDto.ResponseEntityToUserApply.builder()
-                    .id(userApply.getId())
-                    .userId(userApply.getUser().getId())
-                    .postId(userApply.getPost().getId())
-                    .profileImg(userApply.getUser().getProfileImg())
-                    .nickname(userApply.getUser().getNickname())
-                    .message(userApply.getMessage())
-                    .applyMajor(userApply.getApplyMajor())
-                    .build();
-            responseEntityToUserApplyList.add(responseEntityToUserApply);
-
+            if(userApply.getIsAccepted() == 1) {
+                MyPageDto.ResponseEntityToUserApply responseEntityToUserApply = MyPageDto.ResponseEntityToUserApply.builder()
+                        .id(userApply.getId())
+                        .userId(userApply.getUser().getId())
+                        .postId(userApply.getPost().getId())
+                        .profileImg(userApply.getUser().getProfileImg())
+                        .nickname(userApply.getUser().getNickname())
+                        .message(userApply.getMessage())
+                        .applyMajor(userApply.getApplyMajor())
+                        .build();
+                responseEntityToUserApplyList.add(responseEntityToUserApply);
+            }
         }
         return responseEntityToUserApplyList;
     }

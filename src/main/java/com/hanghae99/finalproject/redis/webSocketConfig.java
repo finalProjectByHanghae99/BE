@@ -14,7 +14,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class webSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     // WebSocketMessageBrokerConfigurer 상속받아 아래 두 메서드를 재정의
-    @Override
+
+    @Override // 메시지 브로커에 관련한 설정을 정의
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/sub");
         // 메시지 구독 요청의 prefix -> /sub로 시작하도록 설정
@@ -26,9 +27,10 @@ public class webSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/webSocket").setAllowedOriginPatterns("*")
                 .withSockJS();
-        //엔드포인트[웹 소켓 연결 시 패스]를 설정 , CORS 허용 ,
-        //.withSockJS() 브라우저에서 웹소켓 지원 x -> fallback 옵션 활성화
-
+      // SockJs Fallback 을 활용하여 Stomp 엔드포인트 설정
+        // 메시지 발행하는 prefix /pub 로 시작 하도록 설정
+        // 구독 요청의 prefix /sub 으로 시작 하도록 설정
+        // 현재 엔드포인트 -> /webSocket
     }
 
 

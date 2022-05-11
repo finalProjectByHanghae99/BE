@@ -49,8 +49,10 @@ public class RoomService {
         User toUser = userRepository.findById(roomDto.getToUserId()).orElseThrow( //게시물 주인
                 () -> new IllegalArgumentException("no touser")
         );
+
+        // 현재 '모집글'의 방 정보 가져오기.
         List<Room> checkRoomList = roomRepository.findByRoomPostId(post.getId());
-        //해당 게시물에 모든 채팅정보 가져오기
+
         //룸네임 / 룸pk / roomPostId
         for (Room room : checkRoomList) {
             UserRoom checkUserRoom = userRoomRepository.findByRoomAndUserAndToUser(room, user, toUser);
@@ -94,15 +96,17 @@ public class RoomService {
                 .build();
         userRoomRepository.save(toUserRoom);
 
+        // 채팅할 유저 정보를 담는 Dto
         ChatUserDto chatUserDto = ChatUserDto.builder()
                 .userId(toUser.getId())
                 .profileImg(toUser.getProfileImg())
                 .nickname(toUser.getNickname())
                 .build();
 
+
         RoomDto.Response response = RoomDto.Response.builder()
-                .roomName(room.getRoomName())
-                .user(chatUserDto)
+                .roomName(room.getRoomName()) //현재 방
+                .user(chatUserDto) //채팅할 유저
                 .build();
 
         return response;
@@ -114,38 +118,41 @@ public class RoomService {
     ChatUserDto user;
     LastMessageDto lastMessage;
     CurrentState currentState;
-    notReadingMessageCount;
-
-     */
+    notReadingMessageCount; */
 
     public List<ChatRoomDto> showRoomListService(UserDetailsImpl userDetails) {
+        // 현재 로그인한 유저의 채팅방 목록 리스트를 뽑아낸다.
         List<UserRoom> userRooms = userRoomRepository.findByUser(userDetails.getUser());
         List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
+        // 반복을 통해 조건 분기
         for (UserRoom userRoom : userRooms) {
-            LastMessageDto lastMessageDto;
+            LastMessageDto lastMessageDto; //마지막 메시지 와 시간
 
             ChatUserDto chatUserDto = ChatUserDto.builder()
-                    .userId(userRoom.getToUser().getId())
-                    .profileImg(userRoom.getToUser().getProfileImg())
-                    .nickname(userRoom.getToUser().getNickname())
+                    .userId(userRoom.getToUser().getId()) // 반대편 유저 pk
+                    .profileImg(userRoom.getToUser().getProfileImg()) //반대편 유저의 프로필 이미지
+                    .nickname(userRoom.getToUser().getNickname()) //반대편 유저의 닉네임
                     .build();
 
-            if (userRoom.getLastMessageId() == null) {
+            if (userRoom.getLastMessageId() == null) { //마지막 메시지가 없다면
                 lastMessageDto = LastMessageDto.builder()
-                        .content("방이 생성 되었습니다.")
+                        .content("방이 생성 되었습니다.")  //방이 생성 되었다는 메시지와
                         .createdAt(MessageTimeConversion.timeConversion(userRoom.getCreatedAt()))
                         .build();
             } else {
+                // 현재 대화중이라면 , 메시지 pk를 받아와 메시지 정보를 담는다.
                 Message message = messageRepository.getById(userRoom.getLastMessageId());
                 lastMessageDto = LastMessageDto.builder()
-                        .content(message.getContent())
+                        .content(message.getContent()) //메시지를 가져와 담는다
                         .createdAt(MessageTimeConversion.timeConversion(message.getCreatedAt()))
                         .build();
             }
-
+            //현재 userRoom pk를 이용하여 모집글 정보를 불러온다.
             Post post = postRepository.findById(userRoom.getRoom().getRoomPostId()).orElse(null);
-            ChatRoomDto chatRoomDto;
 
+            ChatRoomDto chatRoomDto;
+            //현재 방이름, 모집글 pk , 유저정보 , 마지막메시지 , 카운트 ,
+            //모집글이 없더라도 , 채팅방은 남겨둔다.
             if (post == null) {
                 chatRoomDto = ChatRoomDto.builder()
                         .roomName(userRoom.getRoom().getRoomName())
