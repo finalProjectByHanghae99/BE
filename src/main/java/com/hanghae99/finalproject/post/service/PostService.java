@@ -1,22 +1,17 @@
 package com.hanghae99.finalproject.post.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hanghae99.finalproject.comment.dto.CommentDto;
+import com.hanghae99.finalproject.comment.dto.CommentResponseDto;
 import com.hanghae99.finalproject.comment.model.Comment;
 import com.hanghae99.finalproject.comment.repository.CommentRepository;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.PrivateException;
-import com.hanghae99.finalproject.img.Img;
-import com.hanghae99.finalproject.img.ImgRepository;
+import com.hanghae99.finalproject.img.*;
 import com.hanghae99.finalproject.post.dto.PostDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
-import com.hanghae99.finalproject.img.AwsS3UploadService;
-import com.hanghae99.finalproject.img.FileUploadService;
-import com.hanghae99.finalproject.img.ImgDto;
-import com.hanghae99.finalproject.img.ImgUrlDto;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.model.Major;
 import com.hanghae99.finalproject.user.model.User;
@@ -35,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -188,13 +182,10 @@ public class PostService {
 
         // commentList
         List<Comment> findCommentByPost = commentRepository.findAllByPost(post);
-        List<CommentDto.ResponseDto> commentList = new ArrayList<>();
+        List<CommentResponseDto> commentList = new ArrayList<>();
         for (Comment comment : findCommentByPost) {
-            commentList.add(new CommentDto.ResponseDto(
-                    comment,
-                    comment.getUser().getId(),
-                    comment.getUser().getNickname(),
-                    comment.getUser().getProfileImg()
+            commentList.add(new CommentResponseDto(
+                    comment
                     ));
         }
 

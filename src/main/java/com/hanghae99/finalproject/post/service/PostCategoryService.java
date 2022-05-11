@@ -1,6 +1,6 @@
 package com.hanghae99.finalproject.post.service;
 
-import com.hanghae99.finalproject.img.ImgUrlDto;
+import com.hanghae99.finalproject.img.ImgResponseDto;
 import com.hanghae99.finalproject.post.dto.PostCategoryRequestDto;
 import com.hanghae99.finalproject.post.dto.PostCategoryResponseDto;
 import com.hanghae99.finalproject.post.repository.PostRepository;
@@ -33,9 +33,9 @@ public class PostCategoryService {
 
 
         // postId별 imgUrl 리스트에 담기
-        List<ImgUrlDto> imgUrlList = postRepository.imgFilter(postIdCollect);
-        Map<Long, List<ImgUrlDto>> imgIdMap = imgUrlList
-                .stream().collect(Collectors.groupingBy(ImgUrlDto::getPostId));
+        List<ImgResponseDto> imgUrlList = postRepository.imgFilter(postIdCollect);
+        Map<Long, List<ImgResponseDto>> imgIdMap = imgUrlList
+                .stream().collect(Collectors.groupingBy(ImgResponseDto::getPostId));
 
 //        String imgUrl;
 //        if (imgUrlList.isEmpty()) {

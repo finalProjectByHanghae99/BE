@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class MyPageDto {
 
+
     @Data
     @Builder
     @NoArgsConstructor
