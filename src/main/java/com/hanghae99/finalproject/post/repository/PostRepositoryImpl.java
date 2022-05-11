@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.post.repository;
 
-import com.hanghae99.finalproject.img.ImgUrlDto;
-import com.hanghae99.finalproject.img.QImgUrlDto;
+import com.hanghae99.finalproject.img.ImgResponseDto;
+import com.hanghae99.finalproject.img.QImgResponseDto;
 import com.hanghae99.finalproject.post.dto.PostCategoryRequestDto;
 import com.hanghae99.finalproject.post.dto.PostCategoryResponseDto;
 import com.hanghae99.finalproject.post.dto.QPostCategoryResponseDto;
@@ -71,9 +71,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     // postId에 맞는 이미지 조회
-    public List<ImgUrlDto> imgFilter(List<Long> postIdCollect) {
+    public List<ImgResponseDto> imgFilter(List<Long> postIdCollect) {
         return queryFactory
-                .select(new QImgUrlDto(
+                .select(new QImgResponseDto(
                         post.id,
                         img.imgUrl
                 ))
