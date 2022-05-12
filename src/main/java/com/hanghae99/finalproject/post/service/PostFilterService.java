@@ -1,8 +1,8 @@
 package com.hanghae99.finalproject.post.service;
 
 import com.hanghae99.finalproject.img.ImgResponseDto;
-import com.hanghae99.finalproject.post.dto.PostCategoryRequestDto;
-import com.hanghae99.finalproject.post.dto.PostCategoryResponseDto;
+import com.hanghae99.finalproject.post.dto.PostFilterRequestDto;
+import com.hanghae99.finalproject.post.dto.PostFilterResponseDto;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import lombok.RequiredArgsConstructor;
@@ -16,20 +16,20 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PostCategoryService {
+public class PostFilterService {
 
     private final PostRepository postRepository;
 
     @Transactional
-    public Map<String, Object> home(PostCategoryRequestDto postCategoryRequestDto, Pageable pageable) {
+    public Map<String, Object> home(PostFilterRequestDto postFilterRequestDto, Pageable pageable) {
 
         // 페이징 및 카테고리별 필터 처리된 post들을 pagePost에 담기
-        Page<PostCategoryResponseDto> pagePost = postRepository.filterPagePost(postCategoryRequestDto, pageable);
+        Page<PostFilterResponseDto> pagePost = postRepository.filterPagePost(postFilterRequestDto, pageable);
 
         Map<String, Object> data = new HashMap<>();
 
         // 카테고리별 필터 처리된 후 조회된 postId 값 모음
-        List<Long> postIdCollect = pagePost.stream().map(PostCategoryResponseDto::getPostId).collect(Collectors.toList());
+        List<Long> postIdCollect = pagePost.stream().map(PostFilterResponseDto::getPostId).collect(Collectors.toList());
 
 
         // postId별 imgUrl 리스트에 담기
@@ -37,23 +37,16 @@ public class PostCategoryService {
         Map<Long, List<ImgResponseDto>> imgIdMap = imgUrlList
                 .stream().collect(Collectors.groupingBy(ImgResponseDto::getPostId));
 
-//        String imgUrl;
-//        if (imgUrlList.isEmpty()) {
-//            imgUrl = "https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/postDefaultImg.PNG";
-//        } else {
-//            imgUrl = String.valueOf(imgIdMap.get(0L));
-//        }
-
         // postId별 majorName 리스트에 담기
         List<MajorDto.ResponseDto> majorList = postRepository.majorFilter(postIdCollect);
         Map<Long, List<MajorDto.ResponseDto>> majorIdMap = majorList
                 .stream().collect(Collectors.groupingBy(MajorDto.ResponseDto::getPostId));
 
         // PostCategoryResponseDto에 imgUrl, major 컬렉션 묶어주기
-        for (PostCategoryResponseDto key : pagePost) {
+        for (PostFilterResponseDto key : pagePost) {
             key.setImgUrl(Optional.ofNullable(imgIdMap.get(key.getPostId())).orElse(new ArrayList<>()));
         }
-        for (PostCategoryResponseDto key : pagePost) {
+        for (PostFilterResponseDto key : pagePost) {
             key.setMajorList(Optional.ofNullable(majorIdMap.get(key.getPostId())).orElse(new ArrayList<>()));
         }
         data.put("data", pagePost.getContent());
