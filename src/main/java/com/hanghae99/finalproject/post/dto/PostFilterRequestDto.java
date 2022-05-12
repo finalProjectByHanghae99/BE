@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostCategoryRequestDto {
+public class PostFilterRequestDto {
     private String region;
     private String major;
+    private String searchKey; // 타입과
+    private String searchValue;   //내용
 }

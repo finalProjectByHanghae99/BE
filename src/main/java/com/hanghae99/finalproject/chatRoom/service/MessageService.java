@@ -143,7 +143,7 @@ public class MessageService {
     @Transactional
     public MessageListDto showMessageList(RoomDto.findRoomDto roomDto, Pageable pageable, UserDetailsImpl userDetails){
 
-
+        //리스트 조회시 userRoom 카운트 초기화
         Room room = userRoomCount(roomDto);
 
         //해당 RoomPostId로 게시물 존재 확인 -> 조회/ 없다면 Null

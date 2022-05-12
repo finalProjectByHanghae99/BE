@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
-public class PostCategoryResponseDto {
+public class PostFilterResponseDto {
 
     private Long postId;
     private Long userId;
@@ -26,8 +26,8 @@ public class PostCategoryResponseDto {
     private List<MajorDto.ResponseDto> majorList;
 
     @QueryProjection
-    public PostCategoryResponseDto(Long postId, Long userId, String nickname, String profileImg, String title,
-                                   String deadline, CurrentStatus currentStatus, String region, LocalDateTime createdAt) {
+    public PostFilterResponseDto(Long postId, Long userId, String nickname, String profileImg, String title,
+                                 String deadline, CurrentStatus currentStatus, String region, LocalDateTime createdAt) {
         this.postId = postId;
         this.userId = userId;
         this.nickname = nickname;
