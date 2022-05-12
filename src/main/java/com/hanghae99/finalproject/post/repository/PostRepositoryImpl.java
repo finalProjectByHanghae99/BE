@@ -36,7 +36,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     @Override
     public Page<PostFilterResponseDto> filterPagePost(PostFilterRequestDto postFilterRequestDto, Pageable pageable) {
         List<PostFilterResponseDto> result = queryFactory
-                .select(new QPostFilterResponseDto(
+                .selectDistinct(new QPostFilterResponseDto(
                         post.id.as("postId"),
                         post.user.id.as("userId"),
                         post.user.nickname,
@@ -60,11 +60,12 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetch();
 
         JPAQuery<Post> count = queryFactory
-                .select(post)
+                .selectDistinct(post)
                 .from(post)
-                .leftJoin(post.user, user)
+                .leftJoin(post.majorList, major)
                 .where(
                         regionEq(postFilterRequestDto.getRegion()),
+                        major.majorName.in(String.valueOf(major)),
                         majorNameEq(postFilterRequestDto.getMajor()),
                         searchKeywords(postFilterRequestDto.getSearchKey(), postFilterRequestDto.getSearchValue())
                 )
