@@ -9,7 +9,6 @@ import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.dto.QMajorDto_ResponseDto;
 import com.hanghae99.finalproject.user.model.QMajor;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
