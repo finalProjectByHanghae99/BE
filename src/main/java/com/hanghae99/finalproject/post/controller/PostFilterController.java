@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.post.controller;
 
-import com.hanghae99.finalproject.post.dto.PostCategoryRequestDto;
-import com.hanghae99.finalproject.post.service.PostCategoryService;
+import com.hanghae99.finalproject.post.dto.PostFilterRequestDto;
+import com.hanghae99.finalproject.post.service.PostFilterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,18 +14,20 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-public class PostCategoryController {
+public class PostFilterController {
 
-    private final PostCategoryService postCategoryService;
+    private final PostFilterService postFilterService;
 
-    @GetMapping("/post/category/{page}")
+    @GetMapping("/post/filter/{page}")
     public Map<String, Object> home(@PathVariable int page,
                                     @RequestParam(required = false) String region,
-                                    @RequestParam(required = false) String major) {
+                                    @RequestParam(required = false) String major,
+                                    @RequestParam(required = false) String searchKey,
+                                    @RequestParam(required = false) String searchValue) {
 
-        PostCategoryRequestDto postCategoryRequestDto = new PostCategoryRequestDto(region, major);
+        PostFilterRequestDto postFilterRequestDto = new PostFilterRequestDto(region, major, searchKey, searchValue);
         Pageable pageable = PageRequest.of(page, 8);
 
-        return postCategoryService.home(postCategoryRequestDto, pageable);
+        return postFilterService.home(postFilterRequestDto, pageable);
     }
 }
