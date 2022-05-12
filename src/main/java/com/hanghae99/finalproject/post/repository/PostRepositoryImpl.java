@@ -2,20 +2,20 @@ package com.hanghae99.finalproject.post.repository;
 
 import com.hanghae99.finalproject.img.ImgResponseDto;
 import com.hanghae99.finalproject.img.QImgResponseDto;
-import com.hanghae99.finalproject.post.dto.PostCategoryRequestDto;
-import com.hanghae99.finalproject.post.dto.PostCategoryResponseDto;
-import com.hanghae99.finalproject.post.dto.QPostCategoryResponseDto;
+import com.hanghae99.finalproject.post.dto.PostFilterRequestDto;
+import com.hanghae99.finalproject.post.dto.PostFilterResponseDto;
+import com.hanghae99.finalproject.post.dto.QPostFilterResponseDto;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.dto.QMajorDto_ResponseDto;
 import com.hanghae99.finalproject.user.model.QMajor;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -35,9 +35,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Page<PostCategoryResponseDto> filterPagePost(PostCategoryRequestDto postCategoryRequestDto, Pageable pageable) {
-        List<PostCategoryResponseDto> result = queryFactory
-                .select(new QPostCategoryResponseDto(
+    public Page<PostFilterResponseDto> filterPagePost(PostFilterRequestDto postFilterRequestDto, Pageable pageable) {
+        List<PostFilterResponseDto> result = queryFactory
+                .select(new QPostFilterResponseDto(
                         post.id.as("postId"),
                         post.user.id.as("userId"),
                         post.user.nickname,
@@ -51,9 +51,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .from(post)
                 .leftJoin(post.majorList, major)
                 .where(
-                        searchKeywords(postCategoryRequestDto.getSearchKey(), postCategoryRequestDto.getSearchValue()),
-                        regionContain(postCategoryRequestDto.getRegion()),
-                        majorNameContain(postCategoryRequestDto.getMajor())
+                        regionEq(postFilterRequestDto.getRegion()),
+                        majorNameEq(postFilterRequestDto.getMajor()),
+                        searchKeywords(postFilterRequestDto.getSearchKey(), postFilterRequestDto.getSearchValue())
                 )
                 .orderBy(post.createdAt.desc())     // 작성시간 기준 최신순 정렬
                 .offset(pageable.getOffset())
@@ -65,9 +65,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .from(post)
                 .leftJoin(post.user, user)
                 .where(
-                        searchKeywords(postCategoryRequestDto.getSearchKey(), postCategoryRequestDto.getSearchValue()),
-                        regionContain(postCategoryRequestDto.getRegion()),
-                        majorNameContain(postCategoryRequestDto.getMajor())
+                        regionEq(postFilterRequestDto.getRegion()),
+                        majorNameEq(postFilterRequestDto.getMajor()),
+                        searchKeywords(postFilterRequestDto.getSearchKey(), postFilterRequestDto.getSearchValue())
                 )
                 .orderBy(post.createdAt.desc());
         return PageableExecutionUtils.getPage(result, pageable, count::fetchCount);
@@ -102,35 +102,36 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetch();
     }
 
-
-    private BooleanExpression searchKeywords(String sk, String sv) {
-        if("nickname".equals(sk)) {
-            if(StringUtils.hasLength(sv)) {
-                return post.user.nickname.contains(sv);
-            }
-        } else if ("title".equals(sk)) {
-            if(StringUtils.hasLength(sv)) {
-                return post.title.contains(sv);
-            }
-        } else if ("content".equals(sk)) {
-            if(StringUtils.hasLength(sv)) {
-                return post.content.contains(sv);
-            }
-        }
-        return null;
-    }
     // 지역별 조회
-    private BooleanExpression regionContain(String region) {
+    private BooleanExpression regionEq(String region) {
         if (hasText(region)) {
-            return post.region.contains(region);
+            return post.region.eq(region);
         }
         return null;
     }
 
     // 분야별 조회
-    private BooleanExpression majorNameContain(String major) {
+    private BooleanExpression majorNameEq(String major) {
         if (hasText(major)) {
-            return QMajor.major.majorName.contains(major);
+            return QMajor.major.majorName.eq(major);
+        }
+        return null;
+    }
+
+    // 검색 조회
+    private Predicate searchKeywords(String sk, String sv) {
+        if("nickname".equals(sk)) {
+            if(hasText(sv)) {
+                return post.user.nickname.contains(sv);
+            }
+        } else if ("title".equals(sk)) {
+            if(hasText(sv)) {
+                return post.title.contains(sv);
+            }
+        } else if ("content".equals(sk)) {
+            if(hasText(sv)) {
+                return post.content.contains(sv);
+            }
         }
         return null;
     }
