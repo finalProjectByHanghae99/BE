@@ -7,7 +7,7 @@ import com.hanghae99.finalproject.user.dto.AcceptedDto;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.PrivateException;
+import com.hanghae99.finalproject.exception.CustomException;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.user.dto.RejectDto;
 import com.hanghae99.finalproject.user.model.*;
@@ -39,7 +39,7 @@ public class MyPageService {
     public MyPageDto.ResponseDto findUserPage(Long userId) {
         // 나 자신 or상대 유저의 pk를 받아와 존재여부 확인
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
        List<String> imgUrlDtoList = new ArrayList<>();
@@ -72,7 +72,7 @@ public class MyPageService {
         log.info("이미지={}", imgs);
         // '수정'에 접근한 유저의 정보를 불러온다.
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
         //접근한 유저정보와 토큰의 유저정보를 비교하여 일치할 때 유저 수정권한을 가능하게 한다.
 //        if(!user.equals(userDetails.getUser())){
@@ -169,7 +169,7 @@ public class MyPageService {
 
         //현재 유저 페이지 pk를 받아와서 유저 정보조회
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
         //현재 유저가 작성한 작성글을 찾아온다.
         List<Post> findPostsByuser = postRepository.findPostsByUser(user);
@@ -223,7 +223,7 @@ public class MyPageService {
         List<MajorDto.ResponseDto> postMajorListDto = new ArrayList<>();
 
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+                () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
         //entity to dto
         for (Major postMajor : post.getMajorList()) {
@@ -263,10 +263,10 @@ public class MyPageService {
     public void modifyAcceptedStatus(AcceptedDto acceptedDto) {
 
         Post post = postRepository.findById(acceptedDto.getPostId()).orElseThrow(
-                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+                () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
         User user = userRepository.findById(acceptedDto.getUserId()).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
         UserApply userApply = userApplyRepository.findUserApplyByUserAndPost(user, post).orElseThrow(
@@ -295,10 +295,10 @@ public class MyPageService {
     @Transactional
     public void rejectUserApply(RejectDto rejectDto) {
         Post post = postRepository.findById(rejectDto.getPostId()).orElseThrow(
-                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+                () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
         User user = userRepository.findById(rejectDto.getUserId()).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
         UserApply userApply = userApplyRepository.findUserApplyByUserAndPost(user, post).orElseThrow(
                 () -> new IllegalArgumentException("신청자가 존재하지 않습니다.")
@@ -328,7 +328,7 @@ public class MyPageService {
         List<MyPageDto.RecruitOverList> recruitOverLists = new ArrayList<>();
 
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
         // 모집글 list를 전부 가져온다
@@ -403,7 +403,7 @@ public class MyPageService {
 
         // 팀원 리뷰 클릭 시 모집마감 list에서 postId를 전달  EX: 1
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+                () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
         // 1번 모집글에 참여한 유저 정보들을 가져온다.
         List<UserApply> userApplyList = post.getUserApplyList();
@@ -430,12 +430,12 @@ public class MyPageService {
     public void EvaluationUser(MyPageDto.RequestUserRate requestUserRate, UserDetailsImpl userDetails) {
         //담겨온 유저 정보[평가를받는 ]를 조회한다.
         User receiver = userRepository.findById(requestUserRate.getReceiverId()).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
         //어떤 모집글에서의 평가가 이루어졌는지 확인
         Post post = postRepository.findById(requestUserRate.getPostId()).orElseThrow(
-                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+                () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
 
         UserRate userRate = UserRate.builder()

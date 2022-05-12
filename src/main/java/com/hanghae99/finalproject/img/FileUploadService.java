@@ -2,7 +2,7 @@ package com.hanghae99.finalproject.img;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.PrivateException;
+import com.hanghae99.finalproject.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,7 +50,7 @@ public class FileUploadService {
         fileValidate.add(".PNG");
         String idxFileName = fileName.substring(fileName.lastIndexOf("."));
         if (!fileValidate.contains(idxFileName)) {
-            throw new PrivateException(ErrorCode.WRONG_IMAGE_FORMAT);
+            throw new CustomException(ErrorCode.WRONG_IMAGE_FORMAT);
         }
         return fileName.substring(fileName.lastIndexOf("."));
     }

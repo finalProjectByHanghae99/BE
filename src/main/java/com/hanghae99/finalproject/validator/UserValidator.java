@@ -4,7 +4,7 @@ import com.hanghae99.finalproject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalproject.user.dto.LoginDto;
 import com.hanghae99.finalproject.user.dto.SignupDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.PrivateException;
+import com.hanghae99.finalproject.exception.CustomException;
 
 import java.util.regex.Pattern;
 
@@ -17,7 +17,7 @@ public class UserValidator {
 
         // 이메일 설정 유효성 검사
         if (email == null || !Pattern.matches(patternEmail, email)) {
-            throw new PrivateException(ErrorCode.SIGNUP_EMAIL_WRONG_INPUT);
+            throw new CustomException(ErrorCode.SIGNUP_EMAIL_WRONG_INPUT);
         }
     }
 
@@ -30,12 +30,12 @@ public class UserValidator {
 
         // 비밀번호 설정 유효성 검사
         if (password == null || !Pattern.matches(patternPw, password)) {
-            throw new PrivateException(ErrorCode.SIGNUP_PASSWORD_WRONG_INPUT);
+            throw new CustomException(ErrorCode.SIGNUP_PASSWORD_WRONG_INPUT);
         }
 
         // 비밀번호 확인 유효성 검사
         if (!password.equals(pwCheck)) {
-            throw new PrivateException(ErrorCode.SIGNUP_PWCHECK_WRONG_INPUT);
+            throw new CustomException(ErrorCode.SIGNUP_PWCHECK_WRONG_INPUT);
         }
     }
 
@@ -47,7 +47,7 @@ public class UserValidator {
 
         // 닉네임 설정 유효성 검사
         if (nickname == null || !Pattern.matches(patternNickname, nickname)) {
-            throw new PrivateException(ErrorCode.SIGNUP_NICKNAME_WRONG_INPUT);
+            throw new CustomException(ErrorCode.SIGNUP_NICKNAME_WRONG_INPUT);
         }
     }
 
@@ -56,7 +56,7 @@ public class UserValidator {
         String major = requestDto.getMajor();
 
         if (major.isEmpty()) {
-            throw new PrivateException(ErrorCode.SIGNUP_MAJOR_WRONG_INPUT);
+            throw new CustomException(ErrorCode.SIGNUP_MAJOR_WRONG_INPUT);
         }
     }
 
@@ -65,7 +65,7 @@ public class UserValidator {
         String email = loginDto.getEmail();
 
         if (email.isEmpty()) {
-            throw new PrivateException(ErrorCode.LOGIN_EMAIL_EMPTY);
+            throw new CustomException(ErrorCode.LOGIN_EMAIL_EMPTY);
         }
     }
 
@@ -74,7 +74,7 @@ public class UserValidator {
         String password = loginDto.getPassword();
 
         if (password.isEmpty()) {
-            throw new PrivateException(ErrorCode.LOGIN_PASSWORD_EMPTY);
+            throw new CustomException(ErrorCode.LOGIN_PASSWORD_EMPTY);
         }
     }
 
@@ -85,7 +85,7 @@ public class UserValidator {
         Long userId = tokenRequestDto.getUserId();
 
         if (accessToken == null || refreshToken == null || userId == null) {
-            throw new PrivateException(ErrorCode.REFRESH_TOKEN_REISSUE_WRONG_INPUT);
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_REISSUE_WRONG_INPUT);
         }
     }
 }

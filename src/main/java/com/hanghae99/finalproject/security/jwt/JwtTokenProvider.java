@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.security.jwt;
 
 import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.PrivateException;
+import com.hanghae99.finalproject.exception.CustomException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -102,16 +102,16 @@ public class JwtTokenProvider {
       }
     } catch (ExpiredJwtException e) {
       log.info("만료된 JWT 토큰입니다");
-      throw new PrivateException(ErrorCode.JWT_TOKEN_EXPIRED);
+      throw new CustomException(ErrorCode.JWT_TOKEN_EXPIRED);
     } catch (UnsupportedJwtException e) {
       log.info("지원되지 않는 JWT 토큰입니다");
-      throw new PrivateException(ErrorCode.JWT_TOKEN_NOT_SUPPORTED);
+      throw new CustomException(ErrorCode.JWT_TOKEN_NOT_SUPPORTED);
     } catch (IllegalArgumentException e) {
       log.info("JWT 토큰이 잘못되었습니다");
-      throw new PrivateException(ErrorCode.JWT_TOKEN_WRONG_FORM);
+      throw new CustomException(ErrorCode.JWT_TOKEN_WRONG_FORM);
     } catch (MalformedJwtException e) {
       log.info("잘못된 JWT 서명입니다");
-      throw new PrivateException(ErrorCode.JWT_TOKEN_WRONG_SIGNATURE);
+      throw new CustomException(ErrorCode.JWT_TOKEN_WRONG_SIGNATURE);
     } catch (Exception e) {
       log.info(e.getMessage());
     }

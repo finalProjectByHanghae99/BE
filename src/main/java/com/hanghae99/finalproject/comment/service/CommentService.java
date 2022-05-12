@@ -5,7 +5,7 @@ import com.hanghae99.finalproject.comment.dto.CommentRequestDto;
 import com.hanghae99.finalproject.comment.model.Comment;
 import com.hanghae99.finalproject.comment.repository.CommentRepository;
 import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.PrivateException;
+import com.hanghae99.finalproject.exception.CustomException;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
@@ -29,7 +29,7 @@ public class CommentService {
     @Transactional
     public CommentCreateResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(
-                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+                () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
 
         // 로그인한 유저
@@ -59,7 +59,7 @@ public class CommentService {
 
         // 본인 comment만 수정 가능
         if (!comment.getUser().equals(user)) {
-            throw new PrivateException(ErrorCode.COMMENT_UPDATE_WRONG_ACCESS);
+            throw new CustomException(ErrorCode.COMMENT_UPDATE_WRONG_ACCESS);
         }
 
         comment.updateComment(requestDto);
@@ -76,7 +76,7 @@ public class CommentService {
 
         // 본인 comment만 삭제 가능
         if (!comment.getUser().equals(user)) {
-            throw new PrivateException(ErrorCode.COMMENT_DELETE_WRONG_ACCESS);
+            throw new CustomException(ErrorCode.COMMENT_DELETE_WRONG_ACCESS);
         }
         commentRepository.deleteById(commentId);
     }
@@ -84,14 +84,14 @@ public class CommentService {
     // [예외 처리] 로그인한 유저 정보가 존배하지 않을 경우
     private User loadUserByUserId(UserDetailsImpl userDetails) {
         return  userRepository.findById(userDetails.getUser().getId()).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
     }
 
     // [예외 처리] commentId에 해당하는 댓글 없을 경우
     private Comment loadCommentByCommentId(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(
-                () -> new PrivateException(ErrorCode.COMMENT_NOT_FOUND)
+                () -> new CustomException(ErrorCode.COMMENT_NOT_FOUND)
         );
     }
 }

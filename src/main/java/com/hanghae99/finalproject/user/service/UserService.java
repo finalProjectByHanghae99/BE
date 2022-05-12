@@ -4,7 +4,7 @@ import com.hanghae99.finalproject.user.dto.LoginDto;
 import com.hanghae99.finalproject.user.dto.SignOutDto;
 import com.hanghae99.finalproject.user.dto.SignupDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.PrivateException;
+import com.hanghae99.finalproject.exception.CustomException;
 import com.hanghae99.finalproject.user.model.RefreshToken;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.post.repository.PostRepository;
@@ -40,13 +40,13 @@ public class UserService {
         // 회원 이메일 중복 확인
         String email = requestDto.getEmail();
         if (userRepository.existsByEmail(email)) {
-            throw new PrivateException(ErrorCode.SIGNUP_EMAIL_DUPLICATE_CHECK);
+            throw new CustomException(ErrorCode.SIGNUP_EMAIL_DUPLICATE_CHECK);
         }
 
         // 회원 닉네임 중복 확인
         String nickname = requestDto.getNickname();
         if (userRepository.existsByNickname(nickname)) {
-            throw new PrivateException(ErrorCode.SIGNUP_NICKNAME_DUPLICATE_CHECK);
+            throw new CustomException(ErrorCode.SIGNUP_NICKNAME_DUPLICATE_CHECK);
         }//
 
         // 회원 비밀번호 암호화
@@ -78,11 +78,11 @@ public class UserService {
         UserValidator.validatePasswordEmpty(loginDto);
 
         User user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(
-                () -> new PrivateException(ErrorCode.LOGIN_NOT_FOUNT_EMAIL)
+                () -> new CustomException(ErrorCode.LOGIN_NOT_FOUNT_EMAIL)
         );
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
-            throw new PrivateException(ErrorCode.LOGIN_PASSWORD_NOT_MATCH);
+            throw new CustomException(ErrorCode.LOGIN_PASSWORD_NOT_MATCH);
         }
 
         String sub = String.valueOf(user.getId());
@@ -108,11 +108,11 @@ public class UserService {
 
         // RefreshToken 만료됐을 경우
         if (jwtTokenProvider.validateToken(tokenRequestDto.getRefreshToken()) != JwtReturn.SUCCESS) {
-            throw new PrivateException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }
 
         User user = userRepository.findById(tokenRequestDto.getUserId()).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
         String sub = "mo-hum";
@@ -123,12 +123,12 @@ public class UserService {
 
         // RefreshToken DB에 없을 경우
         RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(email).orElseThrow(
-                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
+                () -> new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
         );
 
         // RefreshToken 일치하지 않는 경우
         if (!refreshToken.getRefreshValue().equals(tokenRequestDto.getRefreshToken())) {
-            throw new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_MATCH);
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_NOT_MATCH);
         }
 
         // Access Token, Refresh Token 재발급
@@ -146,13 +146,13 @@ public class UserService {
         log.info("로그인 username : " + loginUser);
 
         User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
         log.info("DB 저장된 username : " + user.getNickname());
 
         if (!(user.getNickname().equals(loginUser))) {
-            throw new PrivateException(ErrorCode.NOT_MATCH_USER_INFO);
+            throw new CustomException(ErrorCode.NOT_MATCH_USER_INFO);
         }
         userRepository.deleteById(user.getId());
     }
@@ -161,12 +161,12 @@ public class UserService {
     @Transactional
     public void deleteRefreshToken(TokenRequestDto tokenRequestDto) {
         User user = userRepository.findById(tokenRequestDto.getUserId()).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
         String email = user.getEmail();
 
         RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(email).orElseThrow(
-                () -> new PrivateException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
+                () -> new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
         );
         refreshTokenRepository.deleteById(refreshToken.getRefreshKey());
     }
