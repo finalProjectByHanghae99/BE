@@ -119,7 +119,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     // 검색 조회
-    private Predicate searchKeywords(String sk, String sv) {
+    private BooleanExpression searchKeywords(String sk, String sv) {
         if("nickname".equals(sk)) {
             if(hasText(sv)) {
                 return post.user.nickname.contains(sv);
