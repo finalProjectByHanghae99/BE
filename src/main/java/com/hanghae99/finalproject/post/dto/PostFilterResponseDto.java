@@ -2,6 +2,7 @@ package com.hanghae99.finalproject.post.dto;
 
 import com.hanghae99.finalproject.img.ImgResponseDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
+import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;
@@ -36,10 +37,6 @@ public class PostFilterResponseDto {
         this.deadline = deadline;
         this.currentStatus = currentStatus;
         this.region = region;
-        this.createdAt = formatter(createdAt);
-    }
-
-    public static String formatter(LocalDateTime localDateTime) {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(localDateTime);
+        this.createdAt = TimeConversion.timeConversion(createdAt);
     }
 }
