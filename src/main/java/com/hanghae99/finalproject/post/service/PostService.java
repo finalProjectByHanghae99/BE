@@ -5,7 +5,7 @@ import com.hanghae99.finalproject.comment.dto.CommentResponseDto;
 import com.hanghae99.finalproject.comment.model.Comment;
 import com.hanghae99.finalproject.comment.repository.CommentRepository;
 import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.PrivateException;
+import com.hanghae99.finalproject.exception.CustomException;
 import com.hanghae99.finalproject.img.*;
 import com.hanghae99.finalproject.post.dto.PostDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
@@ -29,7 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -47,36 +49,6 @@ public class PostService {
     private final FileUploadService fileUploadService;
     private final AwsS3UploadService s3UploadService;
     private final UserApplyService userApplyService;
-
-    // post 전체 조회
-    public Map<String, List<PostDto.ResponseDto>> home() {
-        Map<String, List<PostDto.ResponseDto>> mapList = new HashMap<>();
-        List<PostDto.ResponseDto> list = new ArrayList<>();
-        for (Post post : postRepository.findAllByOrderByCreatedAtDesc()) {
-
-            List<String> imgUrlList = imgRepository.findAllByPost(post)
-                .stream()
-                .map(Img::getImgUrl)
-                .collect(Collectors.toList());
-
-            String imgUrl;
-            if (imgUrlList.isEmpty()) {
-                imgUrl = "https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/postDefaultImg.PNG";
-            } else {
-                imgUrl = imgUrlList.get(0);
-            }
-
-            List<Major> findMajorByPost = majorRepository.findAllByPost(post);
-            List<MajorDto.ResponseDto> majorList = new ArrayList<>();
-            for (Major major : findMajorByPost) {
-                majorList.add(new MajorDto.ResponseDto(major));
-            }
-            PostDto.ResponseDto home = new PostDto.ResponseDto(post, imgUrl, majorList);
-            list.add(home);
-        }
-        mapList.put("data", list);
-        return mapList;
-    }
 
     // post 등록
     @Transactional
@@ -98,7 +70,7 @@ public class PostService {
         ObjectMapper objectMapper = new ObjectMapper();
         PostDto.RequestDto requestDto = objectMapper.readValue(jsonString, PostDto.RequestDto.class);
 
-        User user = userDetails.getUser();
+        User user = loadUserByUserId(userDetails);
         dtoParser(imgList, imgDtoList, majorList, requestDto);
 
         // [유효성 검사] 제목, 내용, 기한, 지역, 모집 분야 입력 필수
@@ -125,31 +97,11 @@ public class PostService {
         postRepository.save(post);
     }
 
-    private void dtoParser(List<Img> imgList, List<ImgDto> imgDtoList, List<Major> majorList, PostDto.RequestDto requestDto) {
-        for (ImgDto imgDto : imgDtoList) {
-            Img img = Img.builder()
-                    .imgName(imgDto.getImgName())
-                    .imgUrl(imgDto.getImgUrl())
-                    .build();
-            imgList.add(img);
-        }
-
-        for (MajorDto.RequestDto majorRequestDto : requestDto.getMajorList()) {
-            Major major = Major.builder()
-                    .majorName(majorRequestDto.getMajorName())
-                    .numOfPeopleSet(majorRequestDto.getNumOfPeopleSet())
-                    .numOfPeopleApply(0)
-                    .build();
-            majorList.add(major);
-        }
-    }
-
     // post 상세 조회
     @Transactional
     public PostDto.DetailDto getDetail(Long postId, UserDetailsImpl userDetails) {
-        Post post = postRepository.findById(postId).orElseThrow(
-                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
-        );
+        // postId에 해당하는 게시글
+        Post post = loadPostByPostId(postId);
         
         /*
         1) 모집 글 쓴 유저와 로그인 유저가 같은 경우 : userStatus - starter
@@ -199,19 +151,6 @@ public class PostService {
         return new PostDto.DetailDto(userStatus, postId, post, imgUrl, commentList, majorList);
     }
 
-    /*
-    지원한 정보가 없을 경우 isAccepted = -1
-    지원한 정보가 있을 경우 isAccepted = userApply.getIsAccepted
-    userApply.getIsAccepted = 0 : 모집 지원 상태
-    userApply.getIsAccepted = 1 : 모집 지원 후 수락된 상태
-     */
-    private int isMember(User user, Post post) {
-        Optional<UserApply> userApplyOptional = userApplyRepository.findUserApplyByUserAndPost(user, post);
-        int isAccepted = 0;
-        isAccepted = userApplyOptional.map(UserApply::getIsAccepted).orElse(-1);
-        return isAccepted;
-    }
-
     // post 수정
     @Transactional
     public void editPost(Long postId, String jsonString, List<MultipartFile> imgs, UserDetailsImpl userDetails) throws IOException {
@@ -221,17 +160,15 @@ public class PostService {
         ObjectMapper objectMapper = new ObjectMapper();
         PostDto.PutRequestDto putRequestDto = objectMapper.readValue(jsonString, PostDto.PutRequestDto.class);
 
-        Post post = postRepository.findById(postId).orElseThrow(
-                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
-        );
+        // postId에 해당하는 게시글
+        Post post = loadPostByPostId(postId);
 
-        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
-        );
+        // 로그인한 유저
+        User user = loadUserByUserId(userDetails);
 
         // 본인 post만 수정 가능
         if (!post.getUser().equals(user)) {
-            throw new PrivateException(ErrorCode.POST_UPDATE_WRONG_ACCESS);
+            throw new CustomException(ErrorCode.POST_UPDATE_WRONG_ACCESS);
         }
 
         List<Img> imgList = post.getImgList();
@@ -269,6 +206,68 @@ public class PostService {
         post.updatePost(putRequestDto, imgList);
     }
 
+    // post 삭제
+    @Transactional
+    public void deletePost(Long postId, UserDetailsImpl userDetails) {
+        // postId에 해당하는 게시글
+        Post post = loadPostByPostId(postId);
+
+        // 로그인한 유저
+        User user = loadUserByUserId(userDetails);
+
+        // 본인 post만 삭제 가능
+        if (!post.getUser().equals(user)) {
+            throw new CustomException(ErrorCode.POST_DELETE_WRONG_ACCESS);
+        }
+        postRepository.deleteById(postId);
+    }
+
+    // [예외 처리] postId에 해당하는 게시글 없을 경우
+    private Post loadPostByPostId(Long PostId) {
+        return postRepository.findById(PostId).orElseThrow(
+                () -> new CustomException(ErrorCode.POST_NOT_FOUND)
+        );
+    }
+
+    // [예외 처리] 로그인한 유저 정보가 존배하지 않을 경우
+    private User loadUserByUserId(UserDetailsImpl userDetails) {
+        return  userRepository.findById(userDetails.getUser().getId()).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+    }
+
+    private void dtoParser(List<Img> imgList, List<ImgDto> imgDtoList, List<Major> majorList, PostDto.RequestDto requestDto) {
+        for (ImgDto imgDto : imgDtoList) {
+            Img img = Img.builder()
+                    .imgName(imgDto.getImgName())
+                    .imgUrl(imgDto.getImgUrl())
+                    .build();
+            imgList.add(img);
+        }
+
+        for (MajorDto.RequestDto majorRequestDto : requestDto.getMajorList()) {
+            Major major = Major.builder()
+                    .majorName(majorRequestDto.getMajorName())
+                    .numOfPeopleSet(majorRequestDto.getNumOfPeopleSet())
+                    .numOfPeopleApply(0)
+                    .build();
+            majorList.add(major);
+        }
+    }
+
+    /*
+    지원한 정보가 없을 경우 isAccepted = -1
+    지원한 정보가 있을 경우 isAccepted = userApply.getIsAccepted
+    userApply.getIsAccepted = 0 : 모집 지원 상태
+    userApply.getIsAccepted = 1 : 모집 지원 후 수락된 상태
+     */
+    private int isMember(User user, Post post) {
+        Optional<UserApply> userApplyOptional = userApplyRepository.findUserApplyByUserAndPost(user, post);
+        int isAccepted = 0;
+        isAccepted = userApplyOptional.map(UserApply::getIsAccepted).orElse(-1);
+        return isAccepted;
+    }
+
     private void putDtoParser(List<Img> imgList, List<ImgDto> imgDtoList) {
         for (ImgDto imgDto : imgDtoList) {
             Img img = Img.builder()
@@ -277,23 +276,5 @@ public class PostService {
                     .build();
             imgList.add(img);
         }
-    }
-
-    // post 삭제
-    @Transactional
-    public void deletePost(Long postId, UserDetailsImpl userDetails) {
-        Post post = postRepository.findById(postId).orElseThrow(
-                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
-        );
-
-        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
-        );
-
-        // 본인 post만 삭제 가능
-        if (!post.getUser().equals(user)) {
-            throw new PrivateException(ErrorCode.POST_DELETE_WRONG_ACCESS);
-        }
-        postRepository.deleteById(postId);
     }
 }
