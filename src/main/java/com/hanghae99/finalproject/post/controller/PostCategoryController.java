@@ -20,10 +20,12 @@ public class PostCategoryController {
 
     @GetMapping("/post/category/{page}")
     public Map<String, Object> home(@PathVariable int page,
+                                    @RequestParam(required = false) String searchKey,//닉네임/ 제목 / 내용
+                                    @RequestParam(required = false) String searchValue,
                                     @RequestParam(required = false) String region,
                                     @RequestParam(required = false) String major) {
 
-        PostCategoryRequestDto postCategoryRequestDto = new PostCategoryRequestDto(region, major);
+        PostCategoryRequestDto postCategoryRequestDto = new PostCategoryRequestDto(searchKey,searchValue,region, major);
         Pageable pageable = PageRequest.of(page, 8);
 
         return postCategoryService.home(postCategoryRequestDto, pageable);

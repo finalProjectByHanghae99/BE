@@ -15,6 +15,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -50,6 +51,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .from(post)
                 .leftJoin(post.majorList, major)
                 .where(
+                        searchKeywords(postCategoryRequestDto.getSearchKey(), postCategoryRequestDto.getSearchValue()),
                         regionContain(postCategoryRequestDto.getRegion()),
                         majorNameContain(postCategoryRequestDto.getMajor())
                 )
@@ -63,6 +65,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .from(post)
                 .leftJoin(post.user, user)
                 .where(
+                        searchKeywords(postCategoryRequestDto.getSearchKey(), postCategoryRequestDto.getSearchValue()),
                         regionContain(postCategoryRequestDto.getRegion()),
                         majorNameContain(postCategoryRequestDto.getMajor())
                 )
@@ -99,6 +102,23 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetch();
     }
 
+
+    private BooleanExpression searchKeywords(String sk, String sv) {
+        if("nickname".equals(sk)) {
+            if(StringUtils.hasLength(sv)) {
+                return post.user.nickname.contains(sv);
+            }
+        } else if ("title".equals(sk)) {
+            if(StringUtils.hasLength(sv)) {
+                return post.title.contains(sv);
+            }
+        } else if ("content".equals(sk)) {
+            if(StringUtils.hasLength(sv)) {
+                return post.content.contains(sv);
+            }
+        }
+        return null;
+    }
     // 지역별 조회
     private BooleanExpression regionContain(String region) {
         if (hasText(region)) {

@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class PostCategoryRequestDto {
     private String region;
     private String major;
+    private String searchKey; // 제목 / 유저네임/ 컨텐츠
+    private String searchValue; // <      <      <
 }
