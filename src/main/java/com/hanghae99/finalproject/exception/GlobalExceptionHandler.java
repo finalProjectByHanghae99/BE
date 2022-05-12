@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = { PrivateException.class })
-    public ResponseEntity<Object> handleApiRequestException(PrivateException ex) {
+    @ExceptionHandler(value = { CustomException.class })
+    public ResponseEntity<Object> handleApiRequestException(CustomException ex) {
         HttpStatus status = ex.getErrorCode().getStatus();
         String errCode = ex.getErrorCode().getErrorCode();
         String errMSG = ex.getErrorCode().getErrorMessage();

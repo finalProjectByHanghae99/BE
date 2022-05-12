@@ -3,11 +3,11 @@ package com.hanghae99.finalproject.exception;
 import lombok.Getter;
 
 @Getter
-public class PrivateException extends RuntimeException {
+public class CustomException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
-    public PrivateException(ErrorCode errorCode) {
+    public CustomException(ErrorCode errorCode) {
         super(errorCode.getErrorMessage());
         this.errorCode = errorCode;
     }

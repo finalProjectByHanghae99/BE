@@ -5,7 +5,7 @@ import com.hanghae99.finalproject.comment.dto.CommentResponseDto;
 import com.hanghae99.finalproject.comment.model.Comment;
 import com.hanghae99.finalproject.comment.repository.CommentRepository;
 import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.PrivateException;
+import com.hanghae99.finalproject.exception.CustomException;
 import com.hanghae99.finalproject.img.*;
 import com.hanghae99.finalproject.post.dto.PostDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
@@ -168,7 +168,7 @@ public class PostService {
 
         // 본인 post만 수정 가능
         if (!post.getUser().equals(user)) {
-            throw new PrivateException(ErrorCode.POST_UPDATE_WRONG_ACCESS);
+            throw new CustomException(ErrorCode.POST_UPDATE_WRONG_ACCESS);
         }
 
         List<Img> imgList = post.getImgList();
@@ -217,7 +217,7 @@ public class PostService {
 
         // 본인 post만 삭제 가능
         if (!post.getUser().equals(user)) {
-            throw new PrivateException(ErrorCode.POST_DELETE_WRONG_ACCESS);
+            throw new CustomException(ErrorCode.POST_DELETE_WRONG_ACCESS);
         }
         postRepository.deleteById(postId);
     }
@@ -225,14 +225,14 @@ public class PostService {
     // [예외 처리] postId에 해당하는 게시글 없을 경우
     private Post loadPostByPostId(Long PostId) {
         return postRepository.findById(PostId).orElseThrow(
-                () -> new PrivateException(ErrorCode.POST_NOT_FOUND)
+                () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
     }
 
     // [예외 처리] 로그인한 유저 정보가 존배하지 않을 경우
     private User loadUserByUserId(UserDetailsImpl userDetails) {
         return  userRepository.findById(userDetails.getUser().getId()).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO)
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
     }
 

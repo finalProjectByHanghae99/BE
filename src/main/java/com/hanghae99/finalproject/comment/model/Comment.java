@@ -2,7 +2,7 @@ package com.hanghae99.finalproject.comment.model;
 
 import com.hanghae99.finalproject.comment.dto.CommentRequestDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.PrivateException;
+import com.hanghae99.finalproject.exception.CustomException;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.timeConversion.TimeStamped;
 import com.hanghae99.finalproject.user.model.User;
@@ -36,7 +36,7 @@ public class Comment extends TimeStamped {
     // comment 등록
     public Comment(Post post, CommentRequestDto requestDto, User user) {
         if (!StringUtils.hasText(requestDto.getComment())) {
-            throw new PrivateException(ErrorCode.COMMENT_WRONG_INPUT);
+            throw new CustomException(ErrorCode.COMMENT_WRONG_INPUT);
         }
 
         this.post = post;
@@ -47,7 +47,7 @@ public class Comment extends TimeStamped {
     // comment 삭제
     public void updateComment(CommentRequestDto requestDto) {
         if (!StringUtils.hasText(requestDto.getComment())) {
-            throw new PrivateException(ErrorCode.COMMENT_WRONG_INPUT);
+            throw new CustomException(ErrorCode.COMMENT_WRONG_INPUT);
         }
         this.comment = requestDto.getComment();
     }

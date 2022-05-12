@@ -3,7 +3,7 @@ package com.hanghae99.finalproject.chatRoom.model;
 import com.hanghae99.finalproject.chatRoom.dto.MessageDto;
 import com.hanghae99.finalproject.chatRoom.repository.RoomRepository;
 import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.PrivateException;
+import com.hanghae99.finalproject.exception.CustomException;
 import com.hanghae99.finalproject.timeConversion.TimeStamped;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.repository.UserRepository;
@@ -49,7 +49,7 @@ public class Message extends TimeStamped {
     public Message(MessageDto sendMessageDto, UserRepository userRepository, RoomRepository roomRepository) {
         this.messageType = sendMessageDto.getType();
         this.user = userRepository.findById(sendMessageDto.getSenderId()).orElseThrow(
-                () -> new PrivateException(ErrorCode.NOT_FOUND_USER_INFO));
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO));
         this.content = sendMessageDto.getMessage();
         this.room = roomRepository.findByRoomName(sendMessageDto.getRoomName()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 방 입니다."));
