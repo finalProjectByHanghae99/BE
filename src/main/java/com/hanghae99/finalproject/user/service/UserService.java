@@ -65,7 +65,7 @@ public class UserService {
                         .password(password)
                         .major(requestDto.getMajor())
                         .intro("자기 소개를 입력해주세요")
-                        .profileImg("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/basicProfile.png")
+                        .profileImg("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/profile_default.png")
                         .portfolioLink("작성한 포트폴리오 URL이 없습니다")
                         .build()
         );
