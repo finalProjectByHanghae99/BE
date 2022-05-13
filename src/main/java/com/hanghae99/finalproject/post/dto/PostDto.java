@@ -78,8 +78,4 @@ public class PostDto {
         private String link;
         private List<ImgUrlDto> imgUrl;
     }
-
-    public static String formatter(LocalDateTime localDateTime) {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(localDateTime);
-    }
 }
