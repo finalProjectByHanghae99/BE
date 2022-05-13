@@ -9,7 +9,6 @@ import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.dto.QMajorDto_ResponseDto;
 import com.hanghae99.finalproject.user.model.QMajor;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,7 +22,6 @@ import java.util.List;
 import static com.hanghae99.finalproject.img.QImg.img;
 import static com.hanghae99.finalproject.post.model.QPost.post;
 import static com.hanghae99.finalproject.user.model.QMajor.major;
-import static com.hanghae99.finalproject.user.model.QUser.user;
 import static org.springframework.util.StringUtils.hasText;
 
 public class PostRepositoryImpl implements PostRepositoryCustom {
@@ -37,7 +35,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     @Override
     public Page<PostFilterResponseDto> filterPagePost(PostFilterRequestDto postFilterRequestDto, Pageable pageable) {
         List<PostFilterResponseDto> result = queryFactory
-                .select(new QPostFilterResponseDto(
+                .selectDistinct(new QPostFilterResponseDto(
                         post.id.as("postId"),
                         post.user.id.as("userId"),
                         post.user.nickname,
@@ -61,9 +59,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetch();
 
         JPAQuery<Post> count = queryFactory
-                .select(post)
+                .selectDistinct(post)
                 .from(post)
-                .leftJoin(post.user, user)
+                .leftJoin(post.majorList, major)
                 .where(
                         regionEq(postFilterRequestDto.getRegion()),
                         majorNameEq(postFilterRequestDto.getMajor()),
