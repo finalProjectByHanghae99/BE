@@ -64,7 +64,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .leftJoin(post.majorList, major)
                 .where(
                         regionEq(postFilterRequestDto.getRegion()),
-                        major.majorName.in(String.valueOf(major)),
                         majorNameEq(postFilterRequestDto.getMajor()),
                         searchKeywords(postFilterRequestDto.getSearchKey(), postFilterRequestDto.getSearchValue())
                 )
