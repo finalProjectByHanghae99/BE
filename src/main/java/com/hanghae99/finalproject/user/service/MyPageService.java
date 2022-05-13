@@ -27,6 +27,8 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class MyPageService {
+    //신청중 / 모집중 / 모집완료 페이지네이션 처리 필요
+
 
     private final UserRepository userRepository;
     private final FileUploadService fileUploadService;
