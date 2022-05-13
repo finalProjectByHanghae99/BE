@@ -22,7 +22,6 @@ import java.util.List;
 import static com.hanghae99.finalproject.img.QImg.img;
 import static com.hanghae99.finalproject.post.model.QPost.post;
 import static com.hanghae99.finalproject.user.model.QMajor.major;
-import static com.hanghae99.finalproject.user.model.QUser.user;
 import static org.springframework.util.StringUtils.hasText;
 
 public class PostRepositoryImpl implements PostRepositoryCustom {
