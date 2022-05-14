@@ -5,11 +5,14 @@ import com.hanghae99.finalproject.img.QImgResponseDto;
 import com.hanghae99.finalproject.post.dto.PostFilterRequestDto;
 import com.hanghae99.finalproject.post.dto.PostFilterResponseDto;
 import com.hanghae99.finalproject.post.dto.QPostFilterResponseDto;
+import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.dto.QMajorDto_ResponseDto;
 import com.hanghae99.finalproject.user.model.QMajor;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -34,6 +37,12 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
     @Override
     public Page<PostFilterResponseDto> filterPagePost(PostFilterRequestDto postFilterRequestDto, Pageable pageable) {
+        // 프로젝트 currentStatus 별로 나눠서 조회하기
+        NumberExpression<Integer> roleRankPath = new CaseBuilder()
+                .when(post.currentStatus.eq(CurrentStatus.valueOf("ONGOING"))).then(1)
+                .when(post.currentStatus.eq(CurrentStatus.valueOf("RECRUITING_CLOSE"))).then(2)
+                .otherwise(3);
+
         List<PostFilterResponseDto> result = queryFactory
                 .selectDistinct(new QPostFilterResponseDto(
                         post.id.as("postId"),
@@ -53,7 +62,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         majorNameEq(postFilterRequestDto.getMajor()),
                         searchKeywords(postFilterRequestDto.getSearchKey(), postFilterRequestDto.getSearchValue())
                 )
-                .orderBy(post.createdAt.desc())     // 작성시간 기준 최신순 정렬
+                .orderBy(roleRankPath.asc(),post.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -67,7 +76,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         majorNameEq(postFilterRequestDto.getMajor()),
                         searchKeywords(postFilterRequestDto.getSearchKey(), postFilterRequestDto.getSearchValue())
                 )
-                .orderBy(post.createdAt.desc());
+                .orderBy(roleRankPath.asc(),post.createdAt.desc());
         return PageableExecutionUtils.getPage(result, pageable, count::fetchCount);
     }
 
