@@ -48,6 +48,8 @@ public class FileUploadService {
         fileValidate.add(".JPG");
         fileValidate.add(".JPEG");
         fileValidate.add(".PNG");
+        fileValidate.add(".svg");
+        fileValidate.add(".SVG");
         String idxFileName = fileName.substring(fileName.lastIndexOf("."));
         if (!fileValidate.contains(idxFileName)) {
             throw new CustomException(ErrorCode.WRONG_IMAGE_FORMAT);
