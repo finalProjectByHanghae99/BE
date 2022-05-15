@@ -59,8 +59,8 @@ public enum ErrorCode {
     POST_DELETE_WRONG_ACCESS(HttpStatus.BAD_REQUEST, "400", "본인의 게시물만 삭제할 수 있습니다"),
     POST_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "비어있는 항목을 채워주세요"),
     POST_MAJOR_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "모집 분야를 선택해주세요"),
-    POST_TITLE_INPUT_LENGTH_ERROR(HttpStatus.BAD_REQUEST, "400", "제목을 공백 포함 25자 이내로 작성해주세요"),
-    POST_CONTENT_INPUT_LENGTH_ERROR(HttpStatus.BAD_REQUEST, "400", "내용을 공백 포함 300자 이내로 작성해주세요"),
+    POST_TITLE_INPUT_LENGTH_ERROR(HttpStatus.BAD_REQUEST, "400", "제목을 공백 포함 20자 이내로 작성해주세요"),
+    POST_CONTENT_INPUT_LENGTH_ERROR(HttpStatus.BAD_REQUEST, "400", "내용을 공백 포함 250자 이내로 작성해주세요"),
 
     // comment
     COMMENT_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "댓글을 입력해주세요"),
