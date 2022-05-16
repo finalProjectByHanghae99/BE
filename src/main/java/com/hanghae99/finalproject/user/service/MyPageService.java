@@ -148,18 +148,19 @@ public class MyPageService {
         for (UserApply userApply : userApplyList) {
             //반복 roof ->  userApply -> 참여한 게시글 pk 를 통해 post 를 받아온다.
             Post post = userApply.getPost(); // 현재 유저가 참여한 게시글 post
-            //post 에서 필요한 내용들을 빌더
-            MyPageDto.AppliedResponseDto appliedResponseDto = MyPageDto.AppliedResponseDto.builder()
-                    .userId(post.getUser().getId())
-                    .postId(post.getId())
-                    .nickname(post.getUser().getNickname())
-                    .title(post.getTitle())
-                    .createAt(TimeConversion.timeConversion(post.getCreatedAt()))
-                    .build();
-            //리스트에 담아준다
-            appliedResponseDtoList.add(appliedResponseDto);
+            // 게시글이 진행중 일 때만 신청중에 내용들이 나와야한다.
+            if(post.getCurrentStatus() == CurrentStatus.ONGOING) {
+                MyPageDto.AppliedResponseDto appliedResponseDto = MyPageDto.AppliedResponseDto.builder()
+                        .userId(post.getUser().getId())
+                        .postId(post.getId())
+                        .nickname(post.getUser().getNickname())
+                        .title(post.getTitle())
+                        .createAt(TimeConversion.timeConversion(post.getCreatedAt()))
+                        .build();
+                //리스트에 담아준다
+                appliedResponseDtoList.add(appliedResponseDto);
+            }
         }
-
         return appliedResponseDtoList;
     }
 
@@ -179,16 +180,18 @@ public class MyPageService {
 
 
         for (Post findPosts : findPostsByuser) {
-            MyPageDto.RecruitResponseDto recruitResponseDto = MyPageDto.RecruitResponseDto.builder()
-                    .userId(user.getId())
-                    .postId(findPosts.getId())
-                    .title(findPosts.getTitle())
-                    .nickname(user.getNickname())
-                    .userApplyList(userApplyListToDtoList(findPosts.getUserApplyList()))
-                    .createAt(TimeConversion.timeConversion(findPosts.getCreatedAt()))
-                    .build();
+            if(findPosts.getCurrentStatus() == CurrentStatus.ONGOING) {
+                MyPageDto.RecruitResponseDto recruitResponseDto = MyPageDto.RecruitResponseDto.builder()
+                        .userId(user.getId())
+                        .postId(findPosts.getId())
+                        .title(findPosts.getTitle())
+                        .nickname(user.getNickname())
+                        .userApplyList(userApplyListToDtoList(findPosts.getUserApplyList()))
+                        .createAt(TimeConversion.timeConversion(findPosts.getCreatedAt()))
+                        .build();
 
-            recruitResponseDtosList.add(recruitResponseDto);
+                recruitResponseDtosList.add(recruitResponseDto);
+            }
         }
         return recruitResponseDtosList;
     }
@@ -272,7 +275,7 @@ public class MyPageService {
         );
 
         UserApply userApply = userApplyRepository.findUserApplyByUserAndPost(user, post).orElseThrow(
-                () -> new IllegalArgumentException("신청자가 존재하지 않습니다.")
+                () -> new CustomException(ErrorCode.APPLY_NOT_FOUND)
         );
 
         //수락을 받는 유저가 참여한 포스트에는 요청 전공들이 존재하고
@@ -303,7 +306,7 @@ public class MyPageService {
                 () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
         UserApply userApply = userApplyRepository.findUserApplyByUserAndPost(user, post).orElseThrow(
-                () -> new IllegalArgumentException("신청자가 존재하지 않습니다.")
+                () -> new CustomException(ErrorCode.APPLY_NOT_FOUND)
         );
 
         if(userApply.getIsAccepted() == 0) {
@@ -399,23 +402,35 @@ public class MyPageService {
 
     //모집 마감 list에서 특정 게시글 pk에 접근하여 참여한 user정보들을 반환받아온다.
     @Transactional
-    public List<MyPageDto.RecruitUserList> findRecruitUserList(Long postId) {
+    public MyPageDto.RecruitPostUser findRecruitUserList(Long postId,UserDetailsImpl userDetails) {
         //최종적으로 보낼 값들을 담아줄 list 선언
+
         List<MyPageDto.RecruitUserList> recruitUserLists = new ArrayList<>();
+
+        User user = userDetails.getUser(); // 혜민님
 
         // 팀원 리뷰 클릭 시 모집마감 list에서 postId를 전달  EX: 1
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
-        // 1번 모집글에 참여한 유저 정보들을 가져온다.
+
+        //모집글들의 참가자 정보들을 불러오기 위해 list 빌딩
         List<UserApply> userApplyList = post.getUserApplyList();
 
-        // roof -> 필요한 정보들을 가공하여 list에 담아준다.
-        // 조건을 달아준다. -> 별점을 받은 인원은 안보이게끔!!
+        // 타 유저들은 평가 시 게시글 주인도 평가할 수 있어야한다.
+        // post에서 필요한 정보만 DTO에 빌딩
+        MyPageDto.ResponsePostToUserApply postUser
+                = MyPageDto.ResponsePostToUserApply.builder()
+                .userId(post.getUser().getId())
+                .nickname(post.getUser().getNickname())
+                .profileImg(post.getUser().getProfileImg())
+                .build();
 
+        // 우선 참가자들의 정보를 LIST에 담아준다.
         for (UserApply userApply : userApplyList) {
-
-            if (userApply.getUser().getRateStatus() == null) {
+            // 접근하는 유저의 pk 와 지원한 유저pk가 같지 않아야 본인의 이름이 나오지 않는다.
+            if (userApply.getUser().getRateStatus() == null &&
+                    !Objects.equals(user.getId(), userApply.getUser().getId())) {
                 MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
                         .userId(userApply.getUser().getId())
                         .nickname(userApply.getUser().getNickname())
@@ -424,7 +439,17 @@ public class MyPageService {
                 recruitUserLists.add(recruitUserList);
             }
         }
-        return recruitUserLists;
+        // 필터링된 참가자들의 정보 +
+        // 게시글 참여자가 평점을 받지 않은 상태라면 :STATUS == NULL
+        // 게시글 참여자와 필터링된 유저 리스트들이 반환 되어야하고
+        if(post.getUser().getRateStatus() == null &&
+                !Objects.equals(post.getUser().getId(), userDetails.getUser().getId())){
+            return new MyPageDto.RecruitPostUser(postUser,recruitUserLists);
+        // 게시글 주인이 평점을 받았다면 필터링된 유저들의 정보만 내려준다.
+        }else{
+            return new MyPageDto.RecruitPostUser(recruitUserLists);
+        }
+
     }
 
     //모집 마감 list에서 특정 게시글 pk에 접근해서 가져온 유저 list에서 특정 유저에게 평점을 준다.

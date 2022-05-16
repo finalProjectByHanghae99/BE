@@ -97,9 +97,10 @@ public class MyPageController {
 
     // 모집 마감 -> 팀원 리뷰 -> 모집글 pk 를 받아와 해당 모집글의 참여자들 명단을 반환해준다.
     @GetMapping("/user/recruiting/evaluation/{postId}")
-    public List<MyPageDto.RecruitUserList> userInfoRecruitUserList(@PathVariable Long postId){
+    public MyPageDto.RecruitPostUser userInfoRecruitUserList(@PathVariable Long postId,
+                                                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return myPageService.findRecruitUserList(postId);
+        return myPageService.findRecruitUserList(postId,userDetails);
     }
 
     // 참여자 유저 리스트에서 특정 유저에게 평점을 내려준다.

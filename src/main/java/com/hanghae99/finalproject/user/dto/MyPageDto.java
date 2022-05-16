@@ -117,6 +117,23 @@ public class MyPageDto {
 
     @Data
     @Builder
+    public static class RecruitPostUser {
+
+        private ResponsePostToUserApply postUser;
+        private List<MyPageDto.RecruitUserList> recruitUserList;
+
+        public RecruitPostUser( List<MyPageDto.RecruitUserList> recruitUserList){
+            this.recruitUserList = recruitUserList;
+        }
+        public RecruitPostUser(ResponsePostToUserApply postUser,  List<MyPageDto.RecruitUserList> recruitUserList) {
+            this.postUser = postUser;
+            this.recruitUserList = recruitUserList;
+        }
+    }
+
+
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RequestUserRate{
@@ -156,9 +173,25 @@ public class MyPageDto {
         private int isAccepted;
         private String applyMajor;
 
-        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ResponsePostToUserApply {
+
+        private Long userId;
+        private String nickname;
+        private String profileImg;
+
 
     }
+
+}
+
+
+
 
 
 
