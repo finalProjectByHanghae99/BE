@@ -57,9 +57,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetch();
     }
 
-
-
-
     @Override
     public Page<PostFilterResponseDto> filterPagePost(PostFilterRequestDto postFilterRequestDto, Pageable pageable) {
         // 프로젝트 currentStatus 별로 나눠서 조회하기

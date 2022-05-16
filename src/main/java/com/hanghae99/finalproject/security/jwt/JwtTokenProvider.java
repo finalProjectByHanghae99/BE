@@ -50,7 +50,7 @@ public class JwtTokenProvider {
     headers.put("typ", "JWT");
 
     Claims claims = Jwts.claims().setSubject(String.valueOf(user.getId()));
-    claims.put("email", user.getEmail());
+    claims.put("memberId", user.getMemberId());
     claims.put("nickname", user.getNickname());
     claims.put("major", user.getMajor());
     claims.put("profileImg", user.getProfileImg());

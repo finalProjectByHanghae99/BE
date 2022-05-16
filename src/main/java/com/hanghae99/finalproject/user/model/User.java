@@ -26,7 +26,7 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String email;
+    private String memberId;
 
     @Column(nullable = false)
     private String password;

@@ -9,20 +9,6 @@ import lombok.NoArgsConstructor;
 public class SignupDto {
 
     @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class RequestDto {
-        private String email;
-        private String password;
-        private String pwCheck;
-        private String nickname;
-        private String major;
-        private String intro;
-        private String profileImg;
-    }
-
-    @Getter
     public static class ResponseDto {
         private String nickname;
         private String major;

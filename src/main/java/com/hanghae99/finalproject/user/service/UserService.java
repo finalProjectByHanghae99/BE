@@ -8,10 +8,7 @@ import com.hanghae99.finalproject.security.jwt.JwtReturn;
 import com.hanghae99.finalproject.security.jwt.JwtTokenProvider;
 import com.hanghae99.finalproject.security.jwt.TokenDto;
 import com.hanghae99.finalproject.security.jwt.TokenRequestDto;
-import com.hanghae99.finalproject.user.dto.KakaoUserInfo;
-import com.hanghae99.finalproject.user.dto.LoginDto;
-import com.hanghae99.finalproject.user.dto.SignOutDto;
-import com.hanghae99.finalproject.user.dto.SignupDto;
+import com.hanghae99.finalproject.user.dto.*;
 import com.hanghae99.finalproject.user.model.RefreshToken;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.repository.RefreshTokenRepository;
@@ -35,12 +32,12 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public void registerUser(SignupDto.RequestDto requestDto) {
+    public void registerUser(SignupRequestDto requestDto) {
 
-        // 회원 이메일 중복 확인
-        String email = requestDto.getEmail();
-        if (userRepository.existsByEmail(email)) {
-            throw new CustomException(ErrorCode.SIGNUP_EMAIL_DUPLICATE_CHECK);
+        // 회원 아이디 중복 확인
+        String memberId = requestDto.getMemberId();
+        if (userRepository.existsByMemberId(memberId)) {
+            throw new CustomException(ErrorCode.SIGNUP_MEMBERID_DUPLICATE_CHECK);
         }
 
         // 회원 닉네임 중복 확인
@@ -53,14 +50,14 @@ public class UserService {
         String password = passwordEncoder.encode(requestDto.getPassword());
 
         // 유효성 검사
-        UserValidator.validateInputEmail(requestDto);
+        UserValidator.validateInputMemberId(requestDto);
         UserValidator.validateInputPassword(requestDto);
         UserValidator.validateInputNickname(requestDto);
         UserValidator.validateInputMajor(requestDto);
 
         User user = userRepository.save(
                 User.builder()
-                        .email(requestDto.getEmail())
+                        .memberId(requestDto.getMemberId())
                         .nickname(requestDto.getNickname())
                         .password(password)
                         .major(requestDto.getMajor())
@@ -72,26 +69,20 @@ public class UserService {
     // 로그인
     @Transactional
     public TokenDto login(LoginDto loginDto) {
-        UserValidator.validateEmailEmpty(loginDto);
+        UserValidator.validateMemberIdEmpty(loginDto);
         UserValidator.validatePasswordEmpty(loginDto);
 
-        User user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(
-                () -> new CustomException(ErrorCode.LOGIN_NOT_FOUNT_EMAIL)
+        User user = userRepository.findByMemberId(loginDto.getMemberId()).orElseThrow(
+                () -> new CustomException(ErrorCode.LOGIN_NOT_FOUNT_MEMBERID)
         );
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.LOGIN_PASSWORD_NOT_MATCH);
         }
 
-//        String sub = String.valueOf(user.getId());
-//        String email = loginDto.getEmail();
-//        String nickname = user.getNickname();
-//        String major = user.getMajor();
-//        String profileImgUrl = user.getProfileImg();
-
         TokenDto tokenDto = jwtTokenProvider.createToken(user);
 
-        RefreshToken refreshToken = new RefreshToken(loginDto.getEmail(),tokenDto.getRefreshToken());
+        RefreshToken refreshToken = new RefreshToken(loginDto.getMemberId(),tokenDto.getRefreshToken());
         refreshTokenRepository.save(refreshToken);
 
         return tokenDto;
@@ -114,7 +105,7 @@ public class UserService {
         );
 
         // RefreshToken DB에 없을 경우
-        RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(user.getEmail()).orElseThrow(
+        RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(user.getMemberId()).orElseThrow(
                 () -> new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
         );
 
@@ -155,9 +146,9 @@ public class UserService {
         User user = userRepository.findById(tokenRequestDto.getUserId()).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
-        String email = user.getEmail();
+        String memberId = user.getMemberId();
 
-        RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(email).orElseThrow(
+        RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(memberId).orElseThrow(
                 () -> new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
         );
         refreshTokenRepository.deleteById(refreshToken.getRefreshKey());
@@ -182,7 +173,7 @@ public class UserService {
     }
 
     @Transactional
-    public TokenDto addInfo(SignupDto.RequestDto requestDto) {
+    public TokenDto addInfo(SignupRequestDto requestDto) {
 
         // 회원 닉네임 중복 확인
         String nickname = requestDto.getNickname();

@@ -11,16 +11,16 @@ public enum ErrorCode {
     OK(HttpStatus.OK,  "200", "true"),
 
     // 회원가입
-    SIGNUP_EMAIL_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "Email 형식을 맞춰주세요"),
+    SIGNUP_MEMBERID_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "아이디 형식을 맞춰주세요"),
     SIGNUP_PASSWORD_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "비밀번호 형식을 맞춰주세요"),
     SIGNUP_PWCHECK_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "비밀번호가 일치하지 않습니다"),
     SIGNUP_NICKNAME_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "닉네임 형식을 맞춰주세요"),
-    SIGNUP_EMAIL_DUPLICATE_CHECK(HttpStatus.BAD_REQUEST, "400", "Email 중복확인을 해주세요"),
+    SIGNUP_MEMBERID_DUPLICATE_CHECK(HttpStatus.BAD_REQUEST, "400", "아이디 중복확인을 해주세요"),
     SIGNUP_NICKNAME_DUPLICATE_CHECK(HttpStatus.BAD_REQUEST, "400", "닉네임 중복확인을 해주세요"),
     SIGNUP_MAJOR_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "분야를 선택해주세요"),
 
-    SIGNUP_EMAIL_DUPLICATE(HttpStatus.BAD_REQUEST, "400", "해당 Email이 이미 존재합니다"),
-    SIGNUP_EMAIL_CORRECT(HttpStatus.OK, "200", "사용할 수 있는 Email입니다"),
+    SIGNUP_MEMBERID_DUPLICATE(HttpStatus.BAD_REQUEST, "400", "해당 아이디가 이미 존재합니다"),
+    SIGNUP_MEMBERID_CORRECT(HttpStatus.OK, "200", "사용할 수 있는 아이디입니다"),
     SIGNUP_NICKNAME_DUPLICATE(HttpStatus.BAD_REQUEST, "400", "해당 닉네임이 이미 존재합니다"),
     SIGNUP_NICKNAME_CORRECT(HttpStatus.OK, "200", "사용할 수 있는 닉네임입니다"),
 
@@ -36,8 +36,8 @@ public enum ErrorCode {
     REFRESH_TOKEN_REISSUE_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "userId, accessToken, refreshToken을 입력해주세요"),
 
     // 로그인
-    LOGIN_NOT_FOUNT_EMAIL(HttpStatus.NOT_FOUND, "404", "해당 Email을 찾을 수 없습니다"),
-    LOGIN_EMAIL_EMPTY(HttpStatus.BAD_REQUEST, "400", "Email을 입력해주세요"),
+    LOGIN_NOT_FOUNT_MEMBERID(HttpStatus.NOT_FOUND, "404", "해당 아이디를 찾을 수 없습니다"),
+    LOGIN_MEMBERID_EMPTY(HttpStatus.BAD_REQUEST, "400", "아이디를 입력해주세요"),
     LOGIN_PASSWORD_EMPTY(HttpStatus.BAD_REQUEST, "400", "비밀번호를 입력해주세요"),
     LOGIN_PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "400", "비밀번호가 틀렸습니다. 다시 입력해주세요"),
 
