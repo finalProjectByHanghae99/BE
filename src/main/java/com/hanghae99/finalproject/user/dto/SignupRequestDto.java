@@ -5,11 +5,11 @@ import lombok.Getter;
 @Getter
 public class SignupRequestDto {
 
+    private Long userId;
     private String memberId;
     private String password;
     private String pwCheck;
+    private String profileImg;
     private String nickname;
     private String major;
-    private String intro;
-    private String profileImg;
 }

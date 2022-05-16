@@ -2,7 +2,6 @@ package com.hanghae99.finalproject.validator;
 
 import com.hanghae99.finalproject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalproject.user.dto.LoginDto;
-import com.hanghae99.finalproject.user.dto.SignupDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.CustomException;
 import com.hanghae99.finalproject.user.dto.SignupRequestDto;

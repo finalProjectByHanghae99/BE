@@ -29,11 +29,11 @@ public class UserController {
     // 회원가입 API
     @PostMapping("/user/signup")
     public ResponseEntity<Object> registerUser(@RequestBody SignupRequestDto requestDto) {
-        userService.registerUser(requestDto);
-        return new ResponseEntity<>(new StatusResponseDto("회원가입 성공", ""), HttpStatus.OK);
+        UserInfo userInfo = userService.register(requestDto);
+        return new ResponseEntity<>(new StatusResponseDto("회원가입 1차 성공", userInfo), HttpStatus.OK);
     }
 
-    // 이메일 중복검사 API
+    // 아이디 중복검사 API
     @PostMapping("/user/memberIdCheck")
     public ResponseEntity<ExceptionResponse> memberIdCheck(@RequestBody SignupRequestDto requestDto){
         UserValidator.validateInputMemberId(requestDto);
@@ -82,18 +82,17 @@ public class UserController {
     }
 
     // 카카오 로그인 API
-    @GetMapping("/user/kakao/callback")
+    @GetMapping("/user/kakao/login")
     public ResponseEntity<Object> kakaoLogin(@RequestParam String code) throws JsonProcessingException {
         KakaoUserInfo kakaoUserInfo = kakaoUserService.kakaoLogin(code);
 
-        return new ResponseEntity<>(userService.SignupUserCheck(kakaoUserInfo.getKakaoId()), HttpStatus.OK);
+        return new ResponseEntity<>(userService.SignupUserCheck(kakaoUserInfo.getId()), HttpStatus.OK);
     }
 
     // 회원가입 추가 정보 API
     @PostMapping("/user/signup/addInfo")
     public ResponseEntity<Object> addInfo(@RequestBody SignupRequestDto requestDto) {
         TokenDto tokenDto = userService.addInfo(requestDto);
-//        return new ResponseEntity<>(new StatusResponseDto("추가 정보가 입력되었습니다", data), HttpStatus.OK);
         return new ResponseEntity<>(new StatusResponseDto("추가 정보 등록 성공", tokenDto), HttpStatus.CREATED);
     }
 }

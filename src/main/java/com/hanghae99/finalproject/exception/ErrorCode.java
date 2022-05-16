@@ -18,6 +18,7 @@ public enum ErrorCode {
     SIGNUP_MEMBERID_DUPLICATE_CHECK(HttpStatus.BAD_REQUEST, "400", "아이디 중복확인을 해주세요"),
     SIGNUP_NICKNAME_DUPLICATE_CHECK(HttpStatus.BAD_REQUEST, "400", "닉네임 중복확인을 해주세요"),
     SIGNUP_MAJOR_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "분야를 선택해주세요"),
+    SIGNUP_USERID_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "userId가 존재하지 않습니다"),
 
     SIGNUP_MEMBERID_DUPLICATE(HttpStatus.BAD_REQUEST, "400", "해당 아이디가 이미 존재합니다"),
     SIGNUP_MEMBERID_CORRECT(HttpStatus.OK, "200", "사용할 수 있는 아이디입니다"),

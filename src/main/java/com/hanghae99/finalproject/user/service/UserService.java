@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.color.ProfileDataException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -31,19 +33,14 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    // 일반 회원가입
     @Transactional
-    public void registerUser(SignupRequestDto requestDto) {
+    public UserInfo register(SignupRequestDto requestDto) {
 
         // 회원 아이디 중복 확인
         String memberId = requestDto.getMemberId();
         if (userRepository.existsByMemberId(memberId)) {
             throw new CustomException(ErrorCode.SIGNUP_MEMBERID_DUPLICATE_CHECK);
-        }
-
-        // 회원 닉네임 중복 확인
-        String nickname = requestDto.getNickname();
-        if (userRepository.existsByNickname(nickname)) {
-            throw new CustomException(ErrorCode.SIGNUP_NICKNAME_DUPLICATE_CHECK);
         }
 
         // 회원 비밀번호 암호화
@@ -52,18 +49,20 @@ public class UserService {
         // 유효성 검사
         UserValidator.validateInputMemberId(requestDto);
         UserValidator.validateInputPassword(requestDto);
-        UserValidator.validateInputNickname(requestDto);
-        UserValidator.validateInputMajor(requestDto);
 
         User user = userRepository.save(
                 User.builder()
                         .memberId(requestDto.getMemberId())
-                        .nickname(requestDto.getNickname())
                         .password(password)
-                        .major(requestDto.getMajor())
-                        .profileImg("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/profile_default.png")
+                        .nickname("닉네임을 설정해주세요")
+                        .major("전공을 선택해주세요")
                         .build()
         );
+
+        return UserInfo.builder()
+                .userId(user.getId())
+                .isProfileSet(false)
+                .build();
     }
 
     // 로그인
@@ -159,12 +158,11 @@ public class UserService {
 
         User loginUser = userRepository.findById(id).orElse(null);
 
-        KakaoUserInfo kakaoUserInfo = KakaoUserInfo.builder()
-                .kakaoId(id)
-                .isProfileSet(false)
-                .build();
-
         if (loginUser == null) {
+            KakaoUserInfo kakaoUserInfo = KakaoUserInfo.builder()
+                    .id(id)
+                    .isProfileSet(false)
+                    .build();
             return new StatusResponseDto("추가 정보 작성이 필요한 유저입니다", kakaoUserInfo);
         } else {
             TokenDto tokenDto = jwtTokenProvider.createToken(loginUser);
@@ -172,26 +170,26 @@ public class UserService {
         }
     }
 
+    // 회원가입 추가 정보 등록
     @Transactional
     public TokenDto addInfo(SignupRequestDto requestDto) {
-
-        // 회원 닉네임 중복 확인
-        String nickname = requestDto.getNickname();
-        if (userRepository.existsByNickname(nickname)) {
-            throw new CustomException(ErrorCode.SIGNUP_NICKNAME_DUPLICATE_CHECK);
-        }
 
         // 유효성 검사
         UserValidator.validateInputNickname(requestDto);
         UserValidator.validateInputMajor(requestDto);
 
-        User user = userRepository.save(
-                User.builder()
-                        .nickname(requestDto.getNickname())
-                        .major(requestDto.getMajor())
-                        .profileImg("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/profile_default.png")
-                        .build()
+        // DB에서 유저 정보를 찾음
+        User user = userRepository.findById(requestDto.getUserId()).orElseThrow(
+                () -> new CustomException(ErrorCode.SIGNUP_USERID_NOT_FOUND)
         );
+
+        user.addInfo(requestDto);
+
+//        if (user.getKakaoId() == null) {    // 일반회원가입 유저일 경우
+//            user.addInfo(requestDto);
+//        } else {    // 카카오 회원가입 유저일 경우
+//            user.kakaoUserAddInfo(requestDto);
+//        }
 
         TokenDto tokenDto = jwtTokenProvider.createToken(user);
 
