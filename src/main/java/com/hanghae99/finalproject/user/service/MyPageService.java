@@ -321,6 +321,8 @@ public class MyPageService {
                     major.decreaseApplyCount();
                 }
             }
+            // 스테이터스는 진행중으로 유지한다.
+            post.updateStatus(CurrentStatus.ONGOING);
             userApplyRepository.deleteById(userApply.getId());
         }
     }
