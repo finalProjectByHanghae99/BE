@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface PostRepositoryCustom {
 
+    List<PostFilterResponseDto> filterLandingPage();
+
     Page<PostFilterResponseDto> filterPagePost(PostFilterRequestDto postFilterRequestDto, Pageable pageable);
 
     List<ImgResponseDto> imgFilter(List<Long> postIdCollect);

@@ -35,6 +35,31 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
+    public List<PostFilterResponseDto> filterLandingPage() {
+        return queryFactory
+                .selectDistinct(new QPostFilterResponseDto(
+                        post.id.as("postId"),
+                        post.user.id.as("userId"),
+                        post.user.nickname,
+                        post.user.profileImg,
+                        post.title,
+                        post.deadline,
+                        post.currentStatus,
+                        post.region,
+                        post.createdAt
+                ))
+                .from(post)
+                .leftJoin(post.majorList, major)
+                .where(post.currentStatus.eq(CurrentStatus.valueOf("ONGOING")))
+                .orderBy(post.createdAt.desc())
+                .offset(0)
+                .limit(12)
+                .fetch();
+    }
+
+
+
+
     @Override
     public Page<PostFilterResponseDto> filterPagePost(PostFilterRequestDto postFilterRequestDto, Pageable pageable) {
         // 프로젝트 currentStatus 별로 나눠서 조회하기
