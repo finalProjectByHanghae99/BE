@@ -275,7 +275,7 @@ public class MyPageService {
         );
 
         UserApply userApply = userApplyRepository.findUserApplyByUserAndPost(user, post).orElseThrow(
-                () -> new IllegalArgumentException("신청자가 존재하지 않습니다.")
+                () -> new CustomException(ErrorCode.APPLY_NOT_FOUND)
         );
 
         //수락을 받는 유저가 참여한 포스트에는 요청 전공들이 존재하고
@@ -306,7 +306,7 @@ public class MyPageService {
                 () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
         UserApply userApply = userApplyRepository.findUserApplyByUserAndPost(user, post).orElseThrow(
-                () -> new IllegalArgumentException("신청자가 존재하지 않습니다.")
+                () -> new CustomException(ErrorCode.APPLY_NOT_FOUND)
         );
 
         if(userApply.getIsAccepted() == 0) {
@@ -442,7 +442,8 @@ public class MyPageService {
         // 필터링된 참가자들의 정보 +
         // 게시글 참여자가 평점을 받지 않은 상태라면 :STATUS == NULL
         // 게시글 참여자와 필터링된 유저 리스트들이 반환 되어야하고
-        if(post.getUser().getRateStatus() == null){
+        if(post.getUser().getRateStatus() == null &&
+                !Objects.equals(post.getUser().getId(), userDetails.getUser().getId())){
             return new MyPageDto.RecruitPostUser(postUser,recruitUserLists);
         // 게시글 주인이 평점을 받았다면 필터링된 유저들의 정보만 내려준다.
         }else{
