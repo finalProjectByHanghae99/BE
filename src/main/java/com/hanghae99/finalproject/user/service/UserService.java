@@ -1,20 +1,21 @@
 package com.hanghae99.finalproject.user.service;
 
-import com.hanghae99.finalproject.user.dto.LoginDto;
-import com.hanghae99.finalproject.user.dto.SignOutDto;
-import com.hanghae99.finalproject.user.dto.SignupDto;
-import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.CustomException;
-import com.hanghae99.finalproject.user.model.RefreshToken;
-import com.hanghae99.finalproject.user.model.User;
-import com.hanghae99.finalproject.post.repository.PostRepository;
-import com.hanghae99.finalproject.user.repository.RefreshTokenRepository;
-import com.hanghae99.finalproject.user.repository.UserRepository;
+import com.hanghae99.finalproject.exception.ErrorCode;
+import com.hanghae99.finalproject.exception.StatusResponseDto;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.security.jwt.JwtReturn;
 import com.hanghae99.finalproject.security.jwt.JwtTokenProvider;
 import com.hanghae99.finalproject.security.jwt.TokenDto;
 import com.hanghae99.finalproject.security.jwt.TokenRequestDto;
+import com.hanghae99.finalproject.user.dto.KakaoUserInfo;
+import com.hanghae99.finalproject.user.dto.LoginDto;
+import com.hanghae99.finalproject.user.dto.SignOutDto;
+import com.hanghae99.finalproject.user.dto.SignupDto;
+import com.hanghae99.finalproject.user.model.RefreshToken;
+import com.hanghae99.finalproject.user.model.User;
+import com.hanghae99.finalproject.user.repository.RefreshTokenRepository;
+import com.hanghae99.finalproject.user.repository.UserRepository;
 import com.hanghae99.finalproject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final PostRepository postRepository;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -47,7 +47,7 @@ public class UserService {
         String nickname = requestDto.getNickname();
         if (userRepository.existsByNickname(nickname)) {
             throw new CustomException(ErrorCode.SIGNUP_NICKNAME_DUPLICATE_CHECK);
-        }//
+        }
 
         // 회원 비밀번호 암호화
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -64,9 +64,7 @@ public class UserService {
                         .nickname(requestDto.getNickname())
                         .password(password)
                         .major(requestDto.getMajor())
-                        .intro("자기 소개를 입력해주세요")
                         .profileImg("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/profile_default.png")
-                        .portfolioLink("작성한 포트폴리오 URL이 없습니다")
                         .build()
         );
     }
@@ -85,13 +83,13 @@ public class UserService {
             throw new CustomException(ErrorCode.LOGIN_PASSWORD_NOT_MATCH);
         }
 
-        String sub = String.valueOf(user.getId());
-        String email = loginDto.getEmail();
-        String nickname = user.getNickname();
-        String major = user.getMajor();
-        String profileImgUrl = user.getProfileImg();
+//        String sub = String.valueOf(user.getId());
+//        String email = loginDto.getEmail();
+//        String nickname = user.getNickname();
+//        String major = user.getMajor();
+//        String profileImgUrl = user.getProfileImg();
 
-        TokenDto tokenDto = jwtTokenProvider.createToken(sub, email, nickname, major, profileImgUrl);
+        TokenDto tokenDto = jwtTokenProvider.createToken(user);
 
         RefreshToken refreshToken = new RefreshToken(loginDto.getEmail(),tokenDto.getRefreshToken());
         refreshTokenRepository.save(refreshToken);
@@ -115,14 +113,8 @@ public class UserService {
                 () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
-        String sub = "mo-hum";
-        String email = user.getEmail();
-        String nickname = user.getNickname();
-        String major = user.getMajor();
-        String profile = user.getProfileImg();
-
         // RefreshToken DB에 없을 경우
-        RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(email).orElseThrow(
+        RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(user.getEmail()).orElseThrow(
                 () -> new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)
         );
 
@@ -132,7 +124,7 @@ public class UserService {
         }
 
         // Access Token, Refresh Token 재발급
-        TokenDto tokenDto = jwtTokenProvider.createToken(sub, email, nickname, major, profile);
+        TokenDto tokenDto = jwtTokenProvider.createToken(user);
         RefreshToken updateRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
         refreshTokenRepository.save(updateRefreshToken);
 
@@ -171,5 +163,50 @@ public class UserService {
         refreshTokenRepository.deleteById(refreshToken.getRefreshKey());
     }
 
+    // 로그인 유저 상태 확인
+    public StatusResponseDto SignupUserCheck(Long id) {
 
+        User loginUser = userRepository.findById(id).orElse(null);
+
+        KakaoUserInfo kakaoUserInfo = KakaoUserInfo.builder()
+                .kakaoId(id)
+                .isProfileSet(false)
+                .build();
+
+        if (loginUser == null) {
+            return new StatusResponseDto("추가 정보 작성이 필요한 유저입니다", kakaoUserInfo);
+        } else {
+            TokenDto tokenDto = jwtTokenProvider.createToken(loginUser);
+            return new StatusResponseDto("로그인 성공", tokenDto);
+        }
+    }
+
+    @Transactional
+    public TokenDto addInfo(SignupDto.RequestDto requestDto) {
+
+        // 회원 닉네임 중복 확인
+        String nickname = requestDto.getNickname();
+        if (userRepository.existsByNickname(nickname)) {
+            throw new CustomException(ErrorCode.SIGNUP_NICKNAME_DUPLICATE_CHECK);
+        }
+
+        // 유효성 검사
+        UserValidator.validateInputNickname(requestDto);
+        UserValidator.validateInputMajor(requestDto);
+
+        User user = userRepository.save(
+                User.builder()
+                        .nickname(requestDto.getNickname())
+                        .major(requestDto.getMajor())
+                        .profileImg("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/profile_default.png")
+                        .build()
+        );
+
+        TokenDto tokenDto = jwtTokenProvider.createToken(user);
+
+        RefreshToken refreshToken = new RefreshToken(requestDto.getNickname(), tokenDto.getRefreshToken());
+        refreshTokenRepository.save(refreshToken);
+
+        return tokenDto;
+    }
 }

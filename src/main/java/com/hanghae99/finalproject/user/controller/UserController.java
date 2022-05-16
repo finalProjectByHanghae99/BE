@@ -1,14 +1,19 @@
 package com.hanghae99.finalproject.user.controller;
 
-import com.hanghae99.finalproject.user.dto.LoginDto;
-import com.hanghae99.finalproject.user.dto.SignOutDto;
-import com.hanghae99.finalproject.user.dto.SignupDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.ExceptionResponse;
-import com.hanghae99.finalproject.user.repository.UserRepository;
+import com.hanghae99.finalproject.exception.StatusResponseDto;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.security.jwt.TokenDto;
 import com.hanghae99.finalproject.security.jwt.TokenRequestDto;
+import com.hanghae99.finalproject.user.dto.KakaoUserInfo;
+import com.hanghae99.finalproject.user.dto.LoginDto;
+import com.hanghae99.finalproject.user.dto.SignOutDto;
+import com.hanghae99.finalproject.user.dto.SignupDto;
+import com.hanghae99.finalproject.user.model.User;
+import com.hanghae99.finalproject.user.repository.UserRepository;
+import com.hanghae99.finalproject.user.service.KakaoUserService;
 import com.hanghae99.finalproject.user.service.UserService;
 import com.hanghae99.finalproject.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +22,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RestController
 public class UserController {
 //
     private final UserService userService;
+    private final KakaoUserService kakaoUserService;
     private final UserRepository userRepository;
 
     // 회원가입 API
@@ -79,11 +90,21 @@ public class UserController {
         return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
     }
 
+    // 카카오 로그인 API
+    @GetMapping("/user/kakao/callback")
+    public ResponseEntity<Object> kakaoLogin(@RequestParam String code) throws JsonProcessingException {
+        KakaoUserInfo kakaoUserInfo = kakaoUserService.kakaoLogin(code);
 
+        return new ResponseEntity<>(userService.SignupUserCheck(kakaoUserInfo.getKakaoId()), HttpStatus.OK);
+    }
 
-
-
-
+    // 회원가입 추가 정보 API
+    @PostMapping("/user/signup/addInfo")
+    public ResponseEntity<Object> addInfo(@RequestBody SignupDto.RequestDto requestDto) {
+        TokenDto tokenDto = userService.addInfo(requestDto);
+//        return new ResponseEntity<>(new StatusResponseDto("추가 정보가 입력되었습니다", data), HttpStatus.OK);
+        return new ResponseEntity<>(new StatusResponseDto("추가 정보 등록 성공", tokenDto), HttpStatus.CREATED);
+    }
 
 
 }

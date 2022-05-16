@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.user.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
+import com.hanghae99.finalproject.user.dto.SignupDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -61,6 +61,9 @@ public class User {
 
     @Column
     private Boolean rateStatus;
+
+    @Column
+    private Long kakaoId;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserPortfolioImg>userPortfolioImgList;
