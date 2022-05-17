@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.user.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
+import com.hanghae99.finalproject.user.dto.SignupRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +11,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +27,7 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String email;
+    private String memberId;
 
     @Column(nullable = false)
     private String password;
@@ -62,6 +63,9 @@ public class User {
     @Column
     private Boolean rateStatus;
 
+    @Column
+    private Long kakaoId;
+
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserPortfolioImg>userPortfolioImgList;
 
@@ -91,4 +95,19 @@ public class User {
     public void updateProjectCount(int newProjectCount) {
         this.projectCount = newProjectCount;
     }
+
+    // 회원가입 후 추가 정보 등록
+    public void addInfo(SignupRequestDto requestDto) {
+        this.nickname = requestDto.getNickname();
+        this.major = requestDto.getMajor();
+        this.profileImg = "https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/profile_default.png";
+    }
+
+//    public void kakaoUserAddInfo(SignupRequestDto requestDto) {
+//        this.memberId = UUID.randomUUID().toString();
+//        this.password = UUID.randomUUID().toString();
+//        this.nickname = requestDto.getNickname();
+//        this.major = requestDto.getMajor();
+//        this.profileImg = "https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/profile_default.png";
+//    }
 }

@@ -2,26 +2,26 @@ package com.hanghae99.finalproject.validator;
 
 import com.hanghae99.finalproject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalproject.user.dto.LoginDto;
-import com.hanghae99.finalproject.user.dto.SignupDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.user.dto.SignupRequestDto;
 
 import java.util.regex.Pattern;
 
 public class UserValidator {
-    public static void validateInputEmail(SignupDto.RequestDto requestDto) {
+    public static void validateInputMemberId(SignupRequestDto requestDto) {
 
-        String email = requestDto.getEmail();
+        String memberId = requestDto.getMemberId();
 
-        String patternEmail = "^[a-zA-Z0-9]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
+        String patternMemberId = "^[a-zA-Z0-9]{4,12}$";
 
         // 이메일 설정 유효성 검사
-        if (email == null || !Pattern.matches(patternEmail, email)) {
-            throw new CustomException(ErrorCode.SIGNUP_EMAIL_WRONG_INPUT);
+        if (memberId == null || !Pattern.matches(patternMemberId, memberId)) {
+            throw new CustomException(ErrorCode.SIGNUP_MEMBERID_WRONG_INPUT);
         }
     }
 
-    public static void validateInputPassword(SignupDto.RequestDto requestDto) {
+    public static void validateInputPassword(SignupRequestDto requestDto) {
 
         String password = requestDto.getPassword();
         String pwCheck = requestDto.getPwCheck();
@@ -39,7 +39,7 @@ public class UserValidator {
         }
     }
 
-    public static void validateInputNickname(SignupDto.RequestDto requestDto) {
+    public static void validateInputNickname(SignupRequestDto requestDto) {
 
         String nickname = requestDto.getNickname();
 
@@ -51,7 +51,7 @@ public class UserValidator {
         }
     }
 
-    public static void validateInputMajor(SignupDto.RequestDto requestDto) {
+    public static void validateInputMajor(SignupRequestDto requestDto) {
 
         String major = requestDto.getMajor();
 
@@ -60,12 +60,12 @@ public class UserValidator {
         }
     }
 
-    public static void validateEmailEmpty(LoginDto loginDto) {
+    public static void validateMemberIdEmpty(LoginDto loginDto) {
 
-        String email = loginDto.getEmail();
+        String memberId = loginDto.getMemberId();
 
-        if (email.isEmpty()) {
-            throw new CustomException(ErrorCode.LOGIN_EMAIL_EMPTY);
+        if (memberId.isEmpty()) {
+            throw new CustomException(ErrorCode.LOGIN_MEMBERID_EMPTY);
         }
     }
 

@@ -2,6 +2,7 @@ package com.hanghae99.finalproject.security.jwt;
 
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.user.model.User;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,8 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.hanghae99.finalproject.user.model.QMajor.major;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,16 +44,16 @@ public class JwtTokenProvider {
   }
 
   // 토큰 생성
-  public TokenDto createToken(String userPk, String email,String nickname, String major, String profileImg) {
+  public TokenDto createToken(User user) {
 
     Map<String, Object> headers = new HashMap<>();
     headers.put("typ", "JWT");
 
-    Claims claims = Jwts.claims().setSubject(userPk);
-    claims.put("email", email);
-    claims.put("nickname", nickname);
-    claims.put("major", major);
-    claims.put("profileImg", profileImg);
+    Claims claims = Jwts.claims().setSubject(String.valueOf(user.getId()));
+    claims.put("memberId", user.getMemberId());
+    claims.put("nickname", user.getNickname());
+    claims.put("major", user.getMajor());
+    claims.put("profileImg", user.getProfileImg());
 
     Date now = new Date();
 

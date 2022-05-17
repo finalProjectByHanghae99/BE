@@ -7,13 +7,13 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     // 이메일 중복 확인
-    boolean existsByEmail(String email);
+    boolean existsByMemberId(String memberId);
 
     // 닉네임 중복 확인
     boolean existsByNickname(String nickname);
 
     // 로그인
-    Optional<User> findByEmail(String email);
+    Optional<User> findByMemberId(String memberId);
 
     Optional<User> findByNickname(String nickname);
 }
