@@ -20,14 +20,12 @@ import javax.mail.MessagingException;
 public class UserApplyController {
 
     private final UserApplyService userApplyService;
-    private final MailService mailService;
 
     // 모집 지원 API
     @PostMapping("/api/apply/{postId}")
     public ResponseEntity<Object> apply(@PathVariable Long postId, @RequestBody UserApplyRequestDto userApplyRequestDto,
                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws MessagingException {
-        UserApply userApply = userApplyService.apply(postId, userApplyRequestDto, userDetails);
-        mailService.applicantMailBuilder(new MailDto(userApply));
+        userApplyService.apply(postId, userApplyRequestDto, userDetails);
         return new ResponseEntity<>(new StatusResponseDto("신청 성공", ""), HttpStatus.OK);
     }
 

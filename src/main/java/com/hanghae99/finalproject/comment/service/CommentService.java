@@ -31,7 +31,7 @@ public class CommentService {
 
     // comment 등록
     @Transactional
-    public CommentCreateResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) throws MessagingException {
+    public CommentCreateResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
@@ -49,19 +49,6 @@ public class CommentService {
          */
         List<Comment> findCommentByPost = commentRepository.findAllByPostAndUser(post, user);
         Long commentId = findCommentByPost.get(findCommentByPost.size() - 1).getId();
-
-        // 댓글 작성시 모집글 작성자에게 알림 메일 발송
-        if (post.getUser() != user) {
-            mailService.uploadCommentMailBuilder(MailDto.builder()
-                    .toUserId(post.getUser().getId())
-                    .toEmail(post.getUser().getEmail())
-                    .toNickname(post.getUser().getNickname())
-                    .fromNickname(user.getNickname())
-                    .postId(post.getId())
-                    .postTitle(post.getTitle())
-                    .profileImg(user.getProfileImg())
-                    .build());
-        }
 
         return new CommentCreateResponseDto(commentId);
     }

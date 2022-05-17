@@ -73,8 +73,6 @@ public class User {
 
     private Boolean isVerifiedEmail;
 
-    private Boolean emailReceiveAgreement;
-
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserPortfolioImg>userPortfolioImgList;
 
@@ -121,7 +119,6 @@ public class User {
     public void verifiedEmail(String email) {
         this.email = email;
         this.isVerifiedEmail = true;
-        this.emailReceiveAgreement = true;
     }
 
 //    public void kakaoUserAddInfo(SignupRequestDto requestDto) {

@@ -2,6 +2,8 @@ package com.hanghae99.finalproject.user.service;
 
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.mail.dto.MailDto;
+import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,10 +33,11 @@ public class UserApplyService {
     private final UserRepository userRepository;
     private final MajorRepository majorRepository;
     private final UserApplyRepository userApplyRepository;
+    private final MailService mailService;
 
     // 모집 지원
     @Transactional
-    public UserApply apply(Long postId, UserApplyRequestDto userApplyRequestDto, UserDetailsImpl userDetails) {
+    public UserApply apply(Long postId, UserApplyRequestDto userApplyRequestDto, UserDetailsImpl userDetails) throws MessagingException {
 
         // [예외 처리] 조회하는 게시물이 존재하지 않을 경우
         Post post = postRepository.findById(postId).orElseThrow(
@@ -41,7 +45,7 @@ public class UserApplyService {
         );
 
         // [예외 처리] 요청하는 유저 정보가 존재하지 않을 경우
-        User user = userRepository.findByNickname(userDetails.getUser().getNickname()).orElseThrow(
+        User user = userRepository.findByMemberId(userDetails.getUser().getMemberId()).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
@@ -100,6 +104,11 @@ public class UserApplyService {
                 .message(message)
                 .applyMajor(applyMajor)
                 .build();
+
+        // 모집글 작성자가 이메일 인증을 했을 경우 타유저가 지원시 알림 메일 발송
+        if (post.getUser().getIsVerifiedEmail() != null) {
+            mailService.applicantMailBuilder(new MailDto(userApply));
+        }
 
         return userApplyRepository.save(userApply);
     }
