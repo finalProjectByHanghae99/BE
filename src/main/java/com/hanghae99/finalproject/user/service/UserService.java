@@ -212,4 +212,14 @@ public class UserService {
 
         return tokenDto;
     }
+
+    // 이메일 인증시 이메일인증코드
+    @Transactional
+    public User setEmailAuthCode(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
+        user.setEmailAuthCode();
+        return user;
+    }
 }

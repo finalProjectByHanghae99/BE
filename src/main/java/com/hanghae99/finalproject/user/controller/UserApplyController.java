@@ -1,16 +1,19 @@
 package com.hanghae99.finalproject.user.controller;
 
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.ExceptionResponse;
 import com.hanghae99.finalproject.exception.StatusResponseDto;
+import com.hanghae99.finalproject.mail.dto.MailDto;
+import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.user.dto.UserApplyRequestDto;
+import com.hanghae99.finalproject.user.model.UserApply;
 import com.hanghae99.finalproject.user.service.UserApplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import javax.mail.MessagingException;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +24,7 @@ public class UserApplyController {
     // 모집 지원 API
     @PostMapping("/api/apply/{postId}")
     public ResponseEntity<Object> apply(@PathVariable Long postId, @RequestBody UserApplyRequestDto userApplyRequestDto,
-                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) throws MessagingException {
         userApplyService.apply(postId, userApplyRequestDto, userDetails);
         return new ResponseEntity<>(new StatusResponseDto("신청 성공", ""), HttpStatus.OK);
     }
