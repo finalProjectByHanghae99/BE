@@ -3,11 +3,15 @@ package com.hanghae99.finalproject.mail.dto;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.model.UserApply;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
+@Builder
+@AllArgsConstructor
 public class MailDto {
 
     private Long toUserId;
@@ -17,6 +21,7 @@ public class MailDto {
     private Long postId;
     private String postTitle;
     private String message;
+    private String profileImg;
     private List<User> toUserList;
 
     public MailDto(UserApply userApply) {

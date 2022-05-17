@@ -6,6 +6,8 @@ import com.hanghae99.finalproject.comment.model.Comment;
 import com.hanghae99.finalproject.comment.repository.CommentRepository;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.mail.dto.MailDto;
+import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 @Service
@@ -24,10 +27,11 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final MailService mailService;
 
     // comment 등록
     @Transactional
-    public CommentCreateResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
+    public CommentCreateResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) throws MessagingException {
         Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
@@ -45,6 +49,20 @@ public class CommentService {
          */
         List<Comment> findCommentByPost = commentRepository.findAllByPostAndUser(post, user);
         Long commentId = findCommentByPost.get(findCommentByPost.size() - 1).getId();
+
+        // 댓글 작성시 모집글 작성자에게 알림 메일 발송
+        if (post.getUser() != user) {
+            mailService.uploadCommentMailBuilder(MailDto.builder()
+                    .toUserId(post.getUser().getId())
+                    .toEmail(post.getUser().getEmail())
+                    .toNickname(post.getUser().getNickname())
+                    .fromNickname(user.getNickname())
+                    .postId(post.getId())
+                    .postTitle(post.getTitle())
+                    .profileImg(user.getProfileImg())
+                    .build());
+        }
+
         return new CommentCreateResponseDto(commentId);
     }
 

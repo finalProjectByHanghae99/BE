@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
@@ -20,7 +22,7 @@ public class CommentController {
     // 댓글 등록 API
     @PostMapping("/api/comment")
     public ResponseEntity<Object> createComment(@RequestBody CommentRequestDto requestDto,
-                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) throws MessagingException {
         CommentCreateResponseDto responseDto = commentService.createComment(requestDto, userDetails);
         return new ResponseEntity<>(new StatusResponseDto("댓글 등록 성공", responseDto), HttpStatus.OK);
     }
