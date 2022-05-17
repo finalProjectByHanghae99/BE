@@ -1,6 +1,8 @@
 package com.hanghae99.finalproject.user.service;
 
 import com.hanghae99.finalproject.img.*;
+import com.hanghae99.finalproject.mail.dto.MailDto;
+import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import com.hanghae99.finalproject.user.dto.AcceptedDto;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.*;
 
@@ -29,13 +32,14 @@ import java.util.*;
 public class MyPageService {
     //신청중 / 모집중 / 모집완료 페이지네이션 처리 필요
 
-
     private final UserRepository userRepository;
     private final FileUploadService fileUploadService;
     private final UserPortfolioImgRepository userPortfolioImgRepository;
     private final AwsS3UploadService s3UploadService;
     private final UserApplyRepository userApplyRepository;
     private final PostRepository postRepository;
+    private final MailService mailService;
+
     //마이페이지의 정보를 반환
     @Transactional
     public MyPageDto.ResponseDto findUserPage(Long userId) {
@@ -265,7 +269,7 @@ public class MyPageService {
     // '요청 수락' 시 acceted 가 0 -> 1 로 변경
     // 모집 전공 수가 충족된다면 해당 게시글 상태 변화
     @Transactional
-    public void modifyAcceptedStatus(AcceptedDto acceptedDto) {
+    public void modifyAcceptedStatus(AcceptedDto acceptedDto) throws MessagingException {
 
         Post post = postRepository.findById(acceptedDto.getPostId()).orElseThrow(
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND)
@@ -293,12 +297,16 @@ public class MyPageService {
             }
         }
         int isAccepted = 1;
+
+        // 수락시 지원자에게 메일 발송
+        mailService.acceptTeamMailBuilder(new MailDto(user, post));
+
         userApply.modifyAcceptedStatus(isAccepted);
     }
     //신청한 모집글에서 유저명단 -> 해당 인원의 요청을 거절 시.
     //팀원명단에서 해당 인원을 강퇴 시 같이 사용 .
     @Transactional
-    public void rejectUserApply(RejectDto rejectDto) {
+    public void rejectUserApply(RejectDto rejectDto) throws MessagingException {
         Post post = postRepository.findById(rejectDto.getPostId()).orElseThrow(
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
@@ -325,6 +333,9 @@ public class MyPageService {
             post.updateStatus(CurrentStatus.ONGOING);
             userApplyRepository.deleteById(userApply.getId());
         }
+
+        // 거절시 지원자에게 메일 발송
+        mailService.rejectTeamMailBuilder(new MailDto(user, post));
     }
 
     //모집 마감 목록 조회

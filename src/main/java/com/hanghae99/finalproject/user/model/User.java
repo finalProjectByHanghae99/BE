@@ -66,6 +66,15 @@ public class User {
     @Column
     private Long kakaoId;
 
+    @Column
+    private String email;
+
+    private String emailAuthCode;
+
+    private Boolean isVerifiedEmail;
+
+    private Boolean emailReceiveAgreement;
+
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserPortfolioImg>userPortfolioImgList;
 
@@ -101,6 +110,18 @@ public class User {
         this.nickname = requestDto.getNickname();
         this.major = requestDto.getMajor();
         this.profileImg = "https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/profile_default.png";
+    }
+
+    // 이메일 인증코등 생성
+    public void setEmailAuthCode() {
+        this.emailAuthCode = UUID.randomUUID().toString();
+    }
+
+    // 이메일 인증 확인
+    public void verifiedEmail(String email) {
+        this.email = email;
+        this.isVerifiedEmail = true;
+        this.emailReceiveAgreement = true;
     }
 
 //    public void kakaoUserAddInfo(SignupRequestDto requestDto) {

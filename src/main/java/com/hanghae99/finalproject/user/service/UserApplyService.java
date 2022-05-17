@@ -33,7 +33,7 @@ public class UserApplyService {
 
     // 모집 지원
     @Transactional
-    public void apply(Long postId, UserApplyRequestDto userApplyRequestDto, UserDetailsImpl userDetails) {
+    public UserApply apply(Long postId, UserApplyRequestDto userApplyRequestDto, UserDetailsImpl userDetails) {
 
         // [예외 처리] 조회하는 게시물이 존재하지 않을 경우
         Post post = postRepository.findById(postId).orElseThrow(
@@ -101,7 +101,7 @@ public class UserApplyService {
                 .applyMajor(applyMajor)
                 .build();
 
-        userApplyRepository.save(userApply);
+        return userApplyRepository.save(userApply);
     }
 
     // 모집 지원 취소
