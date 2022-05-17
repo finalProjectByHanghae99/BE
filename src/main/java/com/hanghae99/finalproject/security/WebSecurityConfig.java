@@ -66,13 +66,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             UsernamePasswordAuthenticationFilter.class);
   }
 
+  //"http://localhost:3000","http://localhost:8080"
+  //"https://amplify.d3ifjxscizr42x.amplifyapp.com",
+  //"https://everymohum.shop","https://everymohum.com"
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowCredentials(true) ;
     configuration.addAllowedOriginPattern("*");
     configuration.addAllowedOrigin("http://localhost:3000"); // local 테스트 시
-    configuration.addAllowedOrigin("http://outsta.s3-website.ap-northeast-2.amazonaws.com"); // 배포 시
+    configuration.addAllowedOrigin("https://amplify.d3ifjxscizr42x.amplifyapp.com"); // 배포 시
     configuration.addAllowedMethod("*");
     configuration.addAllowedHeader("*");
     configuration.addExposedHeader("Authorization");
