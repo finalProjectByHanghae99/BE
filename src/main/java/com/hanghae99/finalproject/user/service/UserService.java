@@ -199,7 +199,7 @@ public class UserService {
 
         TokenDto tokenDto = jwtTokenProvider.createToken(user);
 
-        RefreshToken refreshToken = new RefreshToken(requestDto.getNickname(), tokenDto.getRefreshToken());
+        RefreshToken refreshToken = new RefreshToken(user.getMemberId(), tokenDto.getRefreshToken());
         refreshTokenRepository.save(refreshToken);
 
         return tokenDto;
