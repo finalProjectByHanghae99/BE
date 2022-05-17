@@ -18,6 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -35,57 +38,58 @@ public class UserController {
 
     // 아이디 중복검사 API
     @PostMapping("/user/memberIdCheck")
-    public ResponseEntity<ExceptionResponse> memberIdCheck(@RequestBody SignupRequestDto requestDto){
+    public ResponseEntity<Object> memberIdCheck(@RequestBody SignupRequestDto requestDto){
         UserValidator.validateInputMemberId(requestDto);
         if(userRepository.existsByMemberId(requestDto.getMemberId())) {
-            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_MEMBERID_DUPLICATE), HttpStatus.OK);
+            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_MEMBERID_DUPLICATE), HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_MEMBERID_CORRECT), HttpStatus.OK);
+            return new ResponseEntity<>(new StatusResponseDto("사용가능한 아이디입니다", ""), HttpStatus.OK);
         }
     }
 
     // 닉네임 중복검사 API
     @PostMapping("/user/nicknameCheck")
-    public ResponseEntity<ExceptionResponse> nicknameCheck(@RequestBody SignupRequestDto requestDto){
+    public ResponseEntity<Object> nicknameCheck(@RequestBody SignupRequestDto requestDto){
         UserValidator.validateInputNickname(requestDto);
         if(userRepository.existsByNickname(requestDto.getNickname())) {
-            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_NICKNAME_DUPLICATE), HttpStatus.OK);
+            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_NICKNAME_DUPLICATE), HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_NICKNAME_CORRECT), HttpStatus.OK);
+            return new ResponseEntity<>(new StatusResponseDto("사용가능한 닉네임입니다", ""), HttpStatus.OK);
         }
     }
 
     // 로그인 API
     @PostMapping("/user/login")
-    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
-        return ResponseEntity.ok(userService.login(loginDto));
+    public ResponseEntity<Object> login(@RequestBody LoginDto loginDto) {
+        Map<String, Object> data = userService.login(loginDto);
+        return new ResponseEntity<>(new StatusResponseDto("로그인에 성공하셨습니다", data), HttpStatus.OK);
     }
 
     // 토큰 재발행 API
     @PostMapping("/user/reissue")
-    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
-        return ResponseEntity.ok(userService.reissue(tokenRequestDto));
+    public ResponseEntity<Object> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
+        TokenDto tokenDto = userService.reissue(tokenRequestDto);
+        return new ResponseEntity<>(new StatusResponseDto("토큰 재발급 성공", tokenDto), HttpStatus.OK);
     }
 
     // 회원 탈퇴 API
     @DeleteMapping("/user/remove")
-    public ResponseEntity<ExceptionResponse> deleteUser(@RequestBody SignOutDto signOutDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Object> deleteUser(@RequestBody SignOutDto signOutDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.deleteUser(signOutDto, userDetails);
-        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+        return new ResponseEntity<>(new StatusResponseDto("회원 탈퇴 성공", ""), HttpStatus.OK);
     }
 
     // 로그아웃 API
     @PostMapping("/user/logout")
-    public ResponseEntity<ExceptionResponse> logout(@RequestBody TokenRequestDto tokenRequestDto) {
+    public ResponseEntity<Object> logout(@RequestBody TokenRequestDto tokenRequestDto) {
         userService.deleteRefreshToken(tokenRequestDto);
-        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+        return new ResponseEntity<>(new StatusResponseDto("로그아웃 성공", ""), HttpStatus.OK);
     }
 
     // 카카오 로그인 API
     @GetMapping("/user/kakao/login")
     public ResponseEntity<Object> kakaoLogin(@RequestParam String code) throws JsonProcessingException {
         KakaoUserInfo kakaoUserInfo = kakaoUserService.kakaoLogin(code);
-
         return new ResponseEntity<>(userService.SignupUserCheck(kakaoUserInfo.getId()), HttpStatus.OK);
     }
 
