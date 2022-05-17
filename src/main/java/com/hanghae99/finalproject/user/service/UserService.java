@@ -68,33 +68,6 @@ public class UserService {
     }
 
     // 로그인
-//    @Transactional
-//    public TokenDto login(LoginDto loginDto) {
-//        UserValidator.validateMemberIdEmpty(loginDto);
-//        UserValidator.validatePasswordEmpty(loginDto);
-//
-//        User user = userRepository.findByMemberId(loginDto.getMemberId()).orElseThrow(
-//                () -> new CustomException(ErrorCode.LOGIN_NOT_FOUNT_MEMBERID)
-//        );
-//
-//        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
-//            throw new CustomException(ErrorCode.LOGIN_PASSWORD_NOT_MATCH);
-//        }
-//
-//        if (user.getNickname().equals("default") || user.getMajor().equals("default")) {
-//
-//        }
-//
-//
-//
-//        TokenDto tokenDto = jwtTokenProvider.createToken(user);
-//
-//        RefreshToken refreshToken = new RefreshToken(loginDto.getMemberId(),tokenDto.getRefreshToken());
-//        refreshTokenRepository.save(refreshToken);
-//
-//        return tokenDto;
-//    }
-
     @Transactional
     public Map<String, Object> login(LoginDto loginDto) {
         UserValidator.validateMemberIdEmpty(loginDto);
@@ -121,7 +94,6 @@ public class UserService {
 
         return data;
     }
-
 
     // Token 재발급
     @Transactional

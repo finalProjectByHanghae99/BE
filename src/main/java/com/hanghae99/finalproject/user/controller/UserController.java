@@ -59,44 +59,37 @@ public class UserController {
     }
 
     // 로그인 API
-//    @PostMapping("/user/login")
-//    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
-//        return ResponseEntity.ok(userService.login(loginDto));
-//    }
-
     @PostMapping("/user/login")
     public ResponseEntity<Object> login(@RequestBody LoginDto loginDto) {
-
         Map<String, Object> data = userService.login(loginDto);
-
         return new ResponseEntity<>(new StatusResponseDto("로그인에 성공하셨습니다", data), HttpStatus.OK);
     }
 
     // 토큰 재발행 API
     @PostMapping("/user/reissue")
-    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
-        return ResponseEntity.ok(userService.reissue(tokenRequestDto));
+    public ResponseEntity<Object> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
+        TokenDto tokenDto = userService.reissue(tokenRequestDto);
+        return new ResponseEntity<>(new StatusResponseDto("토큰 재발급 성공", tokenDto), HttpStatus.OK);
     }
 
     // 회원 탈퇴 API
     @DeleteMapping("/user/remove")
-    public ResponseEntity<ExceptionResponse> deleteUser(@RequestBody SignOutDto signOutDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Object> deleteUser(@RequestBody SignOutDto signOutDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.deleteUser(signOutDto, userDetails);
-        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+        return new ResponseEntity<>(new StatusResponseDto("회원 탈퇴 성공", ""), HttpStatus.OK);
     }
 
     // 로그아웃 API
     @PostMapping("/user/logout")
-    public ResponseEntity<ExceptionResponse> logout(@RequestBody TokenRequestDto tokenRequestDto) {
+    public ResponseEntity<Object> logout(@RequestBody TokenRequestDto tokenRequestDto) {
         userService.deleteRefreshToken(tokenRequestDto);
-        return new ResponseEntity<>(new ExceptionResponse(ErrorCode.OK), HttpStatus.OK);
+        return new ResponseEntity<>(new StatusResponseDto("로그아웃 성공", ""), HttpStatus.OK);
     }
 
     // 카카오 로그인 API
     @GetMapping("/user/kakao/login")
     public ResponseEntity<Object> kakaoLogin(@RequestParam String code) throws JsonProcessingException {
         KakaoUserInfo kakaoUserInfo = kakaoUserService.kakaoLogin(code);
-
         return new ResponseEntity<>(userService.SignupUserCheck(kakaoUserInfo.getId()), HttpStatus.OK);
     }
 
