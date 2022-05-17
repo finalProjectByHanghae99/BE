@@ -38,12 +38,12 @@ public class UserController {
 
     // 아이디 중복검사 API
     @PostMapping("/user/memberIdCheck")
-    public ResponseEntity<ExceptionResponse> memberIdCheck(@RequestBody SignupRequestDto requestDto){
+    public ResponseEntity<Object> memberIdCheck(@RequestBody SignupRequestDto requestDto){
         UserValidator.validateInputMemberId(requestDto);
         if(userRepository.existsByMemberId(requestDto.getMemberId())) {
-            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_MEMBERID_DUPLICATE), HttpStatus.OK);
+            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_MEMBERID_DUPLICATE), HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_MEMBERID_CORRECT), HttpStatus.OK);
+            return new ResponseEntity<>(new StatusResponseDto("사용가능한 아이디입니다", ""), HttpStatus.OK);
         }
     }
 
