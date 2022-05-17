@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
 
@@ -74,7 +75,7 @@ public class MyPageController {
     //유저가 수락 시 작성한 모집글의 신청자의 Accepted 상태를 = 1 로 변경해준다.
 
     @PostMapping("/user/apply/accepted")
-    public void AcceptedApply(@RequestBody AcceptedDto acceptedDto){
+    public void AcceptedApply(@RequestBody AcceptedDto acceptedDto) throws MessagingException {
 
         myPageService.modifyAcceptedStatus(acceptedDto);
 
@@ -82,7 +83,7 @@ public class MyPageController {
 
     // 신청자/ 팀원 목록에서 거절 or 퇴장
     @PostMapping("/user/apply/reject")
-    public void rejectApply(@RequestBody RejectDto rejectDto){
+    public void rejectApply(@RequestBody RejectDto rejectDto) throws MessagingException {
 
         myPageService.rejectUserApply(rejectDto);
     }

@@ -33,6 +33,8 @@ dependencies {
     runtimeOnly 'mysql:mysql-connector-java'
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -55,12 +57,15 @@ dependencies {
     //redis 내장 포트 사용 << 실제 웹 애플리케이션 구동 시 변경필요
     implementation 'it.ozimov:embedded-redis:0.7.2'
 
-    testCompileOnly 'org.projectlombok:lombok:1.18.12'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
-
     // Query DSL 추가
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+    // email
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // 타임리프
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
     // 테스트 - 스프링시큐리티
     //testImplementation 'org.springframework.security:spring-security-test'

@@ -81,7 +81,10 @@ public enum ErrorCode {
     APPLY_OVER_NO_AUTHORITY(HttpStatus.FORBIDDEN,"403", "권한이 없습니다"),
     APPLY_MESSAGE_INPUT_LENGTH_ERROR(HttpStatus.BAD_REQUEST, "400", "지원 메시지는 20자 이내로 작성해주세요"),
 
-    NO_DIFFERENCE_STATUS(HttpStatus.FORBIDDEN,"403", "Status 변경 사항이 없습니다");
+    NO_DIFFERENCE_STATUS(HttpStatus.FORBIDDEN,"403", "Status 변경 사항이 없습니다"),
+
+    // mail
+    EMAIL_WRONG_PATTERN(HttpStatus.BAD_REQUEST, "400", "이메일 형식을 맞춰주세요");
 
     private final HttpStatus status;
     private final String errorCode;
