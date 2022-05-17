@@ -30,9 +30,6 @@ public class KakaoUserService {
     @Value("${client_id}")
     private String client_id;
 
-    @Value("${client_secret}")
-    private String client_secret;
-
     @Value("${redirect_uri}")
     private String redirect_uri;
 
@@ -59,7 +56,6 @@ public class KakaoUserService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", client_id);
-        body.add("client_secret", client_secret);
         body.add("redirect_uri", redirect_uri);
         body.add("code", code);
 
