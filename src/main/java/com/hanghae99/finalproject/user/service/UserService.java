@@ -174,6 +174,12 @@ public class UserService {
     @Transactional
     public TokenDto addInfo(SignupRequestDto requestDto) {
 
+        // 닉네임 중복 확인
+        String nickname = requestDto.getNickname();
+        if (userRepository.existsByNickname(nickname)) {
+            throw new CustomException(ErrorCode.SIGNUP_NICKNAME_DUPLICATE_CHECK);
+        }
+
         // 유효성 검사
         UserValidator.validateInputNickname(requestDto);
         UserValidator.validateInputMajor(requestDto);
