@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.color.ProfileDataException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -54,8 +56,8 @@ public class UserService {
                 User.builder()
                         .memberId(requestDto.getMemberId())
                         .password(password)
-                        .nickname("닉네임을 설정해주세요")
-                        .major("전공을 선택해주세요")
+                        .nickname("default")
+                        .major("default")
                         .build()
         );
 
@@ -66,8 +68,35 @@ public class UserService {
     }
 
     // 로그인
+//    @Transactional
+//    public TokenDto login(LoginDto loginDto) {
+//        UserValidator.validateMemberIdEmpty(loginDto);
+//        UserValidator.validatePasswordEmpty(loginDto);
+//
+//        User user = userRepository.findByMemberId(loginDto.getMemberId()).orElseThrow(
+//                () -> new CustomException(ErrorCode.LOGIN_NOT_FOUNT_MEMBERID)
+//        );
+//
+//        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+//            throw new CustomException(ErrorCode.LOGIN_PASSWORD_NOT_MATCH);
+//        }
+//
+//        if (user.getNickname().equals("default") || user.getMajor().equals("default")) {
+//
+//        }
+//
+//
+//
+//        TokenDto tokenDto = jwtTokenProvider.createToken(user);
+//
+//        RefreshToken refreshToken = new RefreshToken(loginDto.getMemberId(),tokenDto.getRefreshToken());
+//        refreshTokenRepository.save(refreshToken);
+//
+//        return tokenDto;
+//    }
+
     @Transactional
-    public TokenDto login(LoginDto loginDto) {
+    public Map<String, Object> login(LoginDto loginDto) {
         UserValidator.validateMemberIdEmpty(loginDto);
         UserValidator.validatePasswordEmpty(loginDto);
 
@@ -79,13 +108,20 @@ public class UserService {
             throw new CustomException(ErrorCode.LOGIN_PASSWORD_NOT_MATCH);
         }
 
+        boolean isProfileSet = !user.getNickname().equals("default") && !user.getMajor().equals("default");
+
         TokenDto tokenDto = jwtTokenProvider.createToken(user);
 
-        RefreshToken refreshToken = new RefreshToken(loginDto.getMemberId(),tokenDto.getRefreshToken());
+        RefreshToken refreshToken = new RefreshToken(loginDto.getMemberId(), tokenDto.getRefreshToken());
         refreshTokenRepository.save(refreshToken);
 
-        return tokenDto;
+        Map<String, Object> data = new HashMap<>();
+        data.put("isProfileSet", isProfileSet);
+        data.put("token", tokenDto);
+
+        return data;
     }
+
 
     // Token 재발급
     @Transactional

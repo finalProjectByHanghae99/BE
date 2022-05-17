@@ -18,6 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -46,19 +49,27 @@ public class UserController {
 
     // 닉네임 중복검사 API
     @PostMapping("/user/nicknameCheck")
-    public ResponseEntity<ExceptionResponse> nicknameCheck(@RequestBody SignupRequestDto requestDto){
+    public ResponseEntity<Object> nicknameCheck(@RequestBody SignupRequestDto requestDto){
         UserValidator.validateInputNickname(requestDto);
         if(userRepository.existsByNickname(requestDto.getNickname())) {
-            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_NICKNAME_DUPLICATE), HttpStatus.OK);
+            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_NICKNAME_DUPLICATE), HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>(new ExceptionResponse(ErrorCode.SIGNUP_NICKNAME_CORRECT), HttpStatus.OK);
+            return new ResponseEntity<>(new StatusResponseDto("사용가능한 닉네임입니다", ""), HttpStatus.OK);
         }
     }
 
     // 로그인 API
+//    @PostMapping("/user/login")
+//    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
+//        return ResponseEntity.ok(userService.login(loginDto));
+//    }
+
     @PostMapping("/user/login")
-    public ResponseEntity<TokenDto> login(@RequestBody LoginDto loginDto) {
-        return ResponseEntity.ok(userService.login(loginDto));
+    public ResponseEntity<Object> login(@RequestBody LoginDto loginDto) {
+
+        Map<String, Object> data = userService.login(loginDto);
+
+        return new ResponseEntity<>(new StatusResponseDto("로그인에 성공하셨습니다", data), HttpStatus.OK);
     }
 
     // 토큰 재발행 API
