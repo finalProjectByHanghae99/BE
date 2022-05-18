@@ -166,7 +166,7 @@ public class UserService {
 
         User loginUser = userRepository.findByKakaoId(kakaoId).orElse(null);
 
-        if (loginUser == null) {
+        if (loginUser.getMajor().equals("default")) {
             KakaoUserInfo kakaoUserInfo = KakaoUserInfo.builder()
                     .userId(loginUser.getId())
                     .kakaoId(kakaoId)
@@ -199,12 +199,6 @@ public class UserService {
         );
 
         user.addInfo(requestDto);
-
-//        if (user.getKakaoId() == null) {    // 일반회원가입 유저일 경우
-//            user.addInfo(requestDto);
-//        } else {    // 카카오 회원가입 유저일 경우
-//            user.kakaoUserAddInfo(requestDto);
-//        }
 
         TokenDto tokenDto = jwtTokenProvider.createToken(user);
 
