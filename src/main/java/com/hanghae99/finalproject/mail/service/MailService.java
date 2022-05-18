@@ -53,7 +53,7 @@ public class MailService {
         context.setVariable("email", email);
 
         String subject = "[모험:모두의 경험] " + user.getNickname() + "님! 이메일 인증을 완료해주세요.";
-        String body = templateEngine.process("authenticationEmail1", context);
+        String body = templateEngine.process("authenticationEmail", context);
         setMail(subject, body, email);
     }
 
