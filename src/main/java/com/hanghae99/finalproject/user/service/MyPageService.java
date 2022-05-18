@@ -336,8 +336,15 @@ public class MyPageService {
             userApplyRepository.deleteById(userApply.getId());
         }
 
-        if (user.getIsVerifiedEmail() != null && userApply.getIsAccepted() == 0) {  // 거절시 지원자에게 메일 발송(지원자가 이메일 인증했을 경우만)
+        /*
+         거절 or 강퇴시 지원자에게 메일 발송(지원자가 이메일 인증했을 경우만)
+         1) 거절시 - userApply.getIsAccepted = 0일 때
+         2) 강퇴시 - userApply.getIsAccepted = 1일 때
+         */
+        if (user.getIsVerifiedEmail() != null && userApply.getIsAccepted() == 0) {  // 1)
             mailService.rejectTeamMailBuilder(new MailDto(user, post));
+        } else if (user.getIsVerifiedEmail() != null & userApply.getIsAccepted() == 1) {    // 2)
+            mailService.forcedRejectTeamEmailBuilder(new MailDto(user, post));
         }
     }
 
