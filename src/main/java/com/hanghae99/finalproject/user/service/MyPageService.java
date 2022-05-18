@@ -336,8 +336,9 @@ public class MyPageService {
             userApplyRepository.deleteById(userApply.getId());
         }
 
-        // 거절시 지원자에게 메일 발송
-        mailService.rejectTeamMailBuilder(new MailDto(user, post));
+        if (user.getIsVerifiedEmail() != null && userApply.getIsAccepted() == 0) {  // 거절시 지원자에게 메일 발송(지원자가 이메일 인증했을 경우만)
+            mailService.rejectTeamMailBuilder(new MailDto(user, post));
+        }
     }
 
     //모집 마감 목록 조회
