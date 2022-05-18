@@ -18,11 +18,10 @@ public class MailDto {
     private String toEmail;
     private String toNickname;
     private String fromNickname;
+    private String fromProfileImg;
     private Long postId;
     private String postTitle;
     private String message;
-    private String profileImg;
-    private List<User> toUserList;
 
     public MailDto(UserApply userApply) {
         this.toUserId = userApply.getPost().getUser().getId();

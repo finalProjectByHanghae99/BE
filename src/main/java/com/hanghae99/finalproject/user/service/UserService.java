@@ -162,13 +162,14 @@ public class UserService {
     }
 
     // 로그인 유저 상태 확인
-    public StatusResponseDto SignupUserCheck(Long id) {
+    public StatusResponseDto SignupUserCheck(Long kakaoId) {
 
-        User loginUser = userRepository.findById(id).orElse(null);
+        User loginUser = userRepository.findByKakaoId(kakaoId).orElse(null);
 
         if (loginUser == null) {
             KakaoUserInfo kakaoUserInfo = KakaoUserInfo.builder()
-                    .id(id)
+                    .userId(loginUser.getId())
+                    .kakaoId(kakaoId)
                     .isProfileSet(false)
                     .build();
             return new StatusResponseDto("추가 정보 작성이 필요한 유저입니다", kakaoUserInfo);

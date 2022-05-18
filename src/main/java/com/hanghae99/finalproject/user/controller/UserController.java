@@ -94,7 +94,7 @@ public class UserController {
     @GetMapping("/user/kakao/login")
     public ResponseEntity<Object> kakaoLogin(@RequestParam String code) throws JsonProcessingException {
         KakaoUserInfo kakaoUserInfo = kakaoUserService.kakaoLogin(code);
-        return new ResponseEntity<>(userService.SignupUserCheck(kakaoUserInfo.getId()), HttpStatus.OK);
+        return new ResponseEntity<>(userService.SignupUserCheck(kakaoUserInfo.getKakaoId()), HttpStatus.OK);
     }
 
     // 회원가입 추가 정보 API
