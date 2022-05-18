@@ -298,8 +298,10 @@ public class MyPageService {
         }
         int isAccepted = 1;
 
-        // 수락시 지원자에게 메일 발송
-        mailService.acceptTeamMailBuilder(new MailDto(user, post));
+        // 수락시 지원자에게 메일 발송(지원자가 이메일 인증 했을 경우만)
+       if (user.getIsVerifiedEmail() != null) {
+           mailService.acceptTeamMailBuilder(new MailDto(user, post));
+       }
 
         userApply.modifyAcceptedStatus(isAccepted);
     }
