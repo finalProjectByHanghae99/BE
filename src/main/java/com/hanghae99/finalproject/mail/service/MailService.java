@@ -45,7 +45,7 @@ public class MailService {
         MailValidator.validateEmail(email);
 
         Context context = new Context();
-        context.setVariable("logo", "https://velog.velcdn.com/images/hyemco/post/c0f33375-e893-463b-8905-2b06efdcfe5f/image.png");
+        context.setVariable("logo", logo());
         context.setVariable("profileImg", user.getProfileImg());
         context.setVariable("userId", user.getId());
         context.setVariable("code", user.getEmailAuthCode());
@@ -53,7 +53,7 @@ public class MailService {
         context.setVariable("email", email);
 
         String subject = "[모험:모두의 경험] " + user.getNickname() + "님! 이메일 인증을 완료해주세요.";
-        String body = templateEngine.process("authenticationEmail", context);
+        String body = templateEngine.process("authenticationEmail1", context);
         setMail(subject, body, email);
     }
 
@@ -81,7 +81,7 @@ public class MailService {
         MailValidator.validateEmail(email);
 
         Context context = new Context();
-        context.setVariable("logo", "https://velog.velcdn.com/images/hyemco/post/c0f33375-e893-463b-8905-2b06efdcfe5f/image.png");
+        context.setVariable("logo", logo());
         context.setVariable("userId", mailDto.getToUserId());
         context.setVariable("toNickname", mailDto.getToNickname());
         context.setVariable("fromNickname", mailDto.getFromNickname());
@@ -102,7 +102,7 @@ public class MailService {
         MailValidator.validateEmail(email);
 
         Context context = new Context();
-        context.setVariable("logo", "https://velog.velcdn.com/images/hyemco/post/c0f33375-e893-463b-8905-2b06efdcfe5f/image.png");
+        context.setVariable("logo", logo());
         context.setVariable("toNickname", mailDto.getToNickname());
         context.setVariable("fromNickname", mailDto.getFromNickname());
         context.setVariable("postId", mailDto.getPostId());
@@ -121,7 +121,7 @@ public class MailService {
         MailValidator.validateEmail(email);
 
         Context context = new Context();
-        context.setVariable("logo", "https://velog.velcdn.com/images/hyemco/post/c0f33375-e893-463b-8905-2b06efdcfe5f/image.png");
+        context.setVariable("logo", logo());
         context.setVariable("toNickname", mailDto.getToNickname());
         context.setVariable("fromNickname", mailDto.getFromNickname());
         context.setVariable("postId", mailDto.getPostId());
@@ -140,7 +140,7 @@ public class MailService {
         MailValidator.validateEmail(email);
 
         Context context = new Context();
-        context.setVariable("logo", "https://velog.velcdn.com/images/hyemco/post/c0f33375-e893-463b-8905-2b06efdcfe5f/image.png");
+        context.setVariable("logo", logo());
         context.setVariable("toNickname", mailDto.getToNickname());
         context.setVariable("fromNickname", mailDto.getFromNickname());
         context.setVariable("postId", mailDto.getPostId());
@@ -159,7 +159,7 @@ public class MailService {
         MailValidator.validateEmail(email);
 
         Context context = new Context();
-        context.setVariable("logo", "https://velog.velcdn.com/images/hyemco/post/c0f33375-e893-463b-8905-2b06efdcfe5f/image.png");
+        context.setVariable("logo", logo());
         context.setVariable("toNickname", mailDto.getToNickname());
         context.setVariable("fromNickname", mailDto.getFromNickname());
         context.setVariable("fromProfileImg",mailDto.getFromProfileImg());
@@ -169,5 +169,9 @@ public class MailService {
         String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님, " + mailDto.getFromNickname() + "님과 대화를 시작해보세요!";
         String body = templateEngine.process("chatOnEmil", context);
         setMail(subject, body, email);
+    }
+
+    private String logo() {
+        return "https://velog.velcdn.com/images/hyemco/post/c0f33375-e893-463b-8905-2b06efdcfe5f/image.png";
     }
 }
