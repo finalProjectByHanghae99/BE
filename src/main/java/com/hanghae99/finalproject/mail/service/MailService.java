@@ -133,7 +133,7 @@ public class MailService {
     }
 
     // 강퇴 알림 메일 발송
-    public void forcedRejectTeamEmailBuilder(MailDto mailDto) throws  MessagingException {
+    public void forcedRejectTeamEmailBuilder(MailDto mailDto) throws MessagingException {
 
         String email = mailDto.getToEmail();
         // [유효성 검사] 이메일 형식 확인
@@ -148,6 +148,26 @@ public class MailService {
 
         String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님, 프로젝트에서 중도하차되셨습니다";
         String body = templateEngine.process("forcedRejectTeamEmail", context);
+        setMail(subject, body, email);
+    }
+
+    // 신규 채팅방 생성 알림 메일 발송
+    public void chatOnEmailBuilder(MailDto mailDto) throws MessagingException {
+
+        String email = mailDto.getToEmail();
+        // [유효성 검사] 이메일 형식 확인
+        MailValidator.validateEmail(email);
+
+        Context context = new Context();
+        context.setVariable("logo", "https://velog.velcdn.com/images/hyemco/post/c0f33375-e893-463b-8905-2b06efdcfe5f/image.png");
+        context.setVariable("toNickname", mailDto.getToNickname());
+        context.setVariable("fromNickname", mailDto.getFromNickname());
+        context.setVariable("fromProfileImg",mailDto.getFromProfileImg());
+        context.setVariable("postId", mailDto.getPostId());
+        context.setVariable("postTitle", mailDto.getPostTitle());
+
+        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님, " + mailDto.getFromNickname() + "님과 대화를 시작해보세요!";
+        String body = templateEngine.process("chatOnEmil", context);
         setMail(subject, body, email);
     }
 }
