@@ -83,6 +83,12 @@ public enum ErrorCode {
 
     NO_DIFFERENCE_STATUS(HttpStatus.FORBIDDEN,"403", "Status 변경 사항이 없습니다"),
 
+    //Room
+
+
+
+    //Message
+
     // mail
     EMAIL_WRONG_PATTERN(HttpStatus.BAD_REQUEST, "400", "이메일 형식을 맞춰주세요");
 
