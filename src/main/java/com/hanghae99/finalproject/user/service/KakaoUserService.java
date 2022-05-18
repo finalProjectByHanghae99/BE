@@ -100,7 +100,7 @@ public class KakaoUserService {
         Long kakaoId = jsonNode.get("id").asLong();
         String email = jsonNode.get("kakao_account").get("email").asText();
         return KakaoUserInfo.builder()
-                .id(kakaoId)
+                .kakaoId(kakaoId)
                 .kakaoMemberId(email)
                 .build();
     }
@@ -112,7 +112,7 @@ public class KakaoUserService {
         String encodedPassword = passwordEncoder.encode(password);
 
         User kakaoUser = User.builder()
-                .kakaoId(kakaoUserInfo.getId())
+                .kakaoId(kakaoUserInfo.getKakaoId())
                 .memberId(kakaoUserInfo.getKakaoMemberId())
                 .password(encodedPassword)
                 .nickname("default")

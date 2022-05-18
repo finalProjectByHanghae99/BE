@@ -7,7 +7,8 @@ import lombok.Getter;
 @Builder
 public class KakaoUserInfo {
 
-    private Long id;
+    private Long userId;
+    private Long kakaoId;
     private String kakaoMemberId;
     private boolean isProfileSet;
 }
