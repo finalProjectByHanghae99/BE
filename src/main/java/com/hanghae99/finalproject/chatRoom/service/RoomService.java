@@ -10,6 +10,8 @@ import com.hanghae99.finalproject.chatRoom.model.UserRoom;
 import com.hanghae99.finalproject.chatRoom.repository.MessageRepository;
 import com.hanghae99.finalproject.chatRoom.repository.RoomRepository;
 import com.hanghae99.finalproject.chatRoom.repository.UserRoomRepository;
+import com.hanghae99.finalproject.mail.dto.MailDto;
+import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
@@ -19,6 +21,7 @@ import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,21 +32,19 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RoomService {
 
-   private final RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final UserRoomRepository userRoomRepository;
     private final MessageRepository messageRepository;
+    private final MailService mailService;
 
     @Transactional
-    public RoomDto.Response createRoomService(RoomDto.Request roomDto, UserDetailsImpl userDetails) {
+    public RoomDto.Response createRoomService(RoomDto.Request roomDto, UserDetailsImpl userDetails) throws MessagingException {
 
         Post post = postRepository.findById(roomDto.getPostId()).orElseThrow(
-
-                ()-> new IllegalArgumentException("해당 게시글이 존재하지 않아 방을 생성할 수 없습니다.")
-
+                () -> new IllegalArgumentException("해당 게시글이 존재하지 않아 방을 생성할 수 없습니다.")
         );
-
 
         User user = userDetails.getUser(); //게시물에 접근하는 유저
 
@@ -71,7 +72,6 @@ public class RoomService {
                 .roomName(roomName) //방이름
                 .roomPostId(post.getId()) // 방이 생성된 게시글 ID
                 .build();
-
         roomRepository.save(room); //룸에 저장
 
         // userRoom two create
@@ -84,7 +84,6 @@ public class RoomService {
                 .lastMessageId(null)
                 .count(0)
                 .build();
-
         userRoomRepository.save(userRoom);
 
         //게시물에 접근한 유저 입장에서 보이는 채팅방 생성
@@ -109,6 +108,19 @@ public class RoomService {
                 .roomName(room.getRoomName()) //현재 방
                 .user(chatUserDto) //채팅할 유저
                 .build();
+
+        // 채팅방 신규 생성시 지원자에게 알림 메일 발송(지원자가 이메일 인증했을 경우만)
+        if (user.getIsVerifiedEmail() != null) {
+            mailService.chatOnEmailBuilder(MailDto.builder()
+                    .toUserId(user.getId())
+                    .toEmail(user.getEmail())
+                    .toNickname(user.getNickname())
+                    .fromNickname(post.getUser().getNickname())
+                    .fromProfileImg(post.getUser().getProfileImg())
+                    .postId(post.getId())
+                    .postTitle(post.getTitle())
+                    .build());
+        }
 
         return response;
     }

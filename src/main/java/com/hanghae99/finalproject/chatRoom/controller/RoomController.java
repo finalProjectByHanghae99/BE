@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Map;
 
@@ -30,9 +31,8 @@ public class RoomController {
 
     //1. 방 생성 api -> '모집글' pk 와 '모집글'작성 유저의 pk를 받아온다.
     @PostMapping("/api/room")
-    public RoomDto.Response roomCreate(@RequestBody RoomDto.Request roomDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public RoomDto.Response roomCreate(@RequestBody RoomDto.Request roomDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws MessagingException {
         return roomService.createRoomService(roomDto, userDetails);
-
     }
 
     //채팅방 리스트 api -> 현재 유저의 방생성 목록
