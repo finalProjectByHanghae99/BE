@@ -47,6 +47,10 @@ public class MessageService {
                 () -> new IllegalArgumentException("메시지를 보내는 이가 없습니다.")
         );
 
+        User receiver = userRepository.findById(messageDto.getReceiverId()).orElseThrow(
+                () -> new IllegalArgumentException("해당되는 receiver없음")
+        );
+
 
         // 전달 메시지 타입을 체크 ,
         // 메시지 시작.
@@ -102,7 +106,7 @@ public class MessageService {
             messageRepository.save(message);
 
             for(UserRoom userRoom : userRoomList){
-                //메시지를 보내는 pk 를 해당 방의 마지막 메시지를 보낸 Id로 변경
+                //메시지를 보내는 pk 를 두 개의 userRoom의 마지막 메시지를 보낸 Id로 변경
                 userRoom.lastMessageIdChange(message.getId());
 
             }
@@ -209,12 +213,13 @@ public class MessageService {
 
     }
 
+    //
     @Transactional
     public void updateRoomMessageCount(RoomDto.UpdateCountDto updateCountDto) {
         Room room = roomRepository.findByRoomName(updateCountDto.getRoomName()).orElseThrow(
                 () -> new IllegalArgumentException("해당 방이 존재하지 않습니다.")
         );
-
+        //게시물 주인 유저 정보 조회
         User user = userRepository.findById(updateCountDto.getUserId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 유저가 없습니다.")
         );

@@ -26,18 +26,18 @@ public class User {
     @Column
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String memberId;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     //닉네임
-    @Column(nullable = false)
+    @Column
     private String nickname;
 
     //해당 유저 전공
-    @Column(nullable = false)
+    @Column
     private String major;
 
     // 자기소개
