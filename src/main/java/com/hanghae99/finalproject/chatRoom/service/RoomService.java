@@ -25,6 +25,7 @@ import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -146,14 +147,18 @@ public class RoomService {
                     .nickname(userRoom.getToUser().getNickname()) //반대편 유저의 닉네임
                     .build();
 
+            // 채팅방리스트에 보여줄 마지막 메시지 값
             if (userRoom.getLastMessageId() == null) { //마지막 메시지가 없다면
                 lastMessageDto = LastMessageDto.builder()
                         .content("방이 생성 되었습니다.")  //방이 생성 되었다는 메시지와
                         .createdAt(MessageTimeConversion.timeConversion(userRoom.getCreatedAt()))
                         .build();
             } else {
-                // 현재 대화중이라면 , 메시지 pk를 받아와 메시지 정보를 담는다.
+                // 마지막 메시지가 존재한다면 , == 메시지 수신자의 대화정보를 가져온다
                 Message message = messageRepository.getById(userRoom.getLastMessageId());
+                if(!Objects.equals(message.getUser().getId(), userDetails.getUser().getId())){
+                    userRoom.countChange();
+                }
                 lastMessageDto = LastMessageDto.builder()
                         .content(message.getContent()) //메시지를 가져와 담는다
                         .createdAt(MessageTimeConversion.timeConversion(message.getCreatedAt()))
