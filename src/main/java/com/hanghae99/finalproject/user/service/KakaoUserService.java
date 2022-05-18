@@ -39,9 +39,9 @@ public class KakaoUserService {
 
         KakaoUserInfo kakaoUserInfo = getKakaoUserInfo(accessToken);
 
-        User kakaoUser = userRepository.findById(kakaoUserInfo.getId()).orElse(null);
+        User kakaoUser = userRepository.findByMemberId(kakaoUserInfo.getKakaoMemberId()).orElse(null);
         if (kakaoUser == null) {
-            kakaoUser = registerKakaoUser(kakaoUserInfo);
+            registerKakaoUser(kakaoUserInfo);
         }
         return getKakaoUserInfo(accessToken);
     }
@@ -106,7 +106,7 @@ public class KakaoUserService {
     }
 
     // 첫 소셜로그인일 경우 DB 저장
-    private User registerKakaoUser(KakaoUserInfo kakaoUserInfo) {
+    private void registerKakaoUser(KakaoUserInfo kakaoUserInfo) {
 
         String password = UUID.randomUUID().toString();
         String encodedPassword = passwordEncoder.encode(password);
@@ -115,9 +115,10 @@ public class KakaoUserService {
                 .kakaoId(kakaoUserInfo.getId())
                 .memberId(kakaoUserInfo.getKakaoMemberId())
                 .password(encodedPassword)
+                .nickname("default")
+                .major("default")
                 .build();
         userRepository.save(kakaoUser);
-        return kakaoUser;
     }
 //
 //    // 강제 로그인 처리
