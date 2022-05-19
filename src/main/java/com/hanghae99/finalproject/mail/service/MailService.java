@@ -158,7 +158,7 @@ public class MailService {
         context.setVariable("postId", mailDto.getPostId());
         context.setVariable("postTitle", mailDto.getPostTitle());
 
-        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님, " + mailDto.getFromNickname() + "님과 대화를 시작해보세요!";
+        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 신규 채팅 알림이 도착했습니다.";
         String body = templateEngine.process("chatOnEmil", context);
         setMail(subject, body, email);
     }

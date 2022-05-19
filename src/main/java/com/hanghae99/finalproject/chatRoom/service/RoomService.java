@@ -110,18 +110,17 @@ public class RoomService {
                 .build();
 
         // 채팅방 신규 생성시 지원자에게 알림 메일 발송(지원자가 이메일 인증했을 경우만)
-        if (user.getIsVerifiedEmail() != null) {
+        if (toUser.getIsVerifiedEmail() != null) {
             mailService.chatOnEmailBuilder(MailDto.builder()
-                    .toUserId(user.getId())
-                    .toEmail(user.getEmail())
-                    .toNickname(user.getNickname())
+                    .toUserId(toUser.getId())
+                    .toEmail(toUser.getEmail())
+                    .toNickname(toUser.getNickname())
                     .fromNickname(post.getUser().getNickname())
                     .fromProfileImg(post.getUser().getProfileImg())
                     .postId(post.getId())
                     .postTitle(post.getTitle())
                     .build());
         }
-
         return response;
     }
 
