@@ -1,91 +1,240 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns: lang="en">
+<!-- @format -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link
+            href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css"
+            rel="stylesheet"
+    />
+    <title>모험:모두의 경험</title>
 </head>
 <body>
-<div style="height:100%;text-align: center;">
-    <table id="m_-704073352182606375bodyTable"
-           style="border-collapse:collapse;border-spacing:0;table-layout:fixed;vertical-align:top;width:100%;">
-        <tbody>
-        <tr>
-            <td style="background-color:#fff;color:#5065df;font-family:'roboto','Noto Sans KR','AppleSDGothicNeo-Regular','Malgun Gothic',Arial,'sans-serif';font-size:17px;font-weight:400;line-height:28px;padding:0;padding-left:5%;padding-right:5%;vertical-align:top">
-                <table style="border-collapse:collapse;width:100%;max-width:600px;border-spacing:0;table-layout:fixed;vertical-align:top;margin: auto">
-                    <tbody>
-                    <tr>
-                        <td height="40"
-                            style="color:#5065df;font-family:'roboto','Noto Sans KR','AppleSDGothicNeo-Regular','Malgun Gothic',Arial,'sans-serif';font-size:0;font-weight:400;height:40px;line-height:0;padding:0;vertical-align:top">
-                        </td>
-                    </tr>
-                    <tr>
+<table
+        id="emailTable"
+        border="0"
+        cellpadding="0"
+        cellspacing="0"
+        width="100vw"
+        height="100vh"
+        style="
+            border-collapse: collapse;
+            padding: 20px 0 30px 0;
+            background-color: #ffffff;
+            margin: 0 auto;
+            text-align: center;
+            font-family: ‘SUIT’, sans-serif;
+          "
+>
+    <tr>
+        <td style="border-collapse: collapse">
+            <table
+                    id="emailBody"
+                    border="0"
+                    cellpadding="0"
+                    cellspacing="0"
+                    width="768px"
+                    height="1050px"
+                    style="
+                      border-collapse: collapse;
+                      padding: 20px 0;
+                      background-color: #ffffff;
+                      margin: auto;
+                      text-align: center;
+                      font-family: ‘SUIT’, sans-serif;
+                    "
+            >
+                <thead id="emailTop" style="background-color: #7881f5; text-align: center;">
+                <tr border="0" cellpadding="0" cellspacing="0">
+                    <td
+                            id="emailTopLogo"
+                            style="
+                                border-collapse: collapse;
+                                font-family: SUIT;
+                                font-size: 20px;
+                                font-style: normal;
+                                font-weight: 600;
+                                line-height: 30px;
+                                letter-spacing: 0.0036em;
+                                color: #ffffff;
+                                padding-top: 50px;
+                                display: block;
+                                align-items: center;
+                                justify-content: center;
+                                text-align: center;
+                              "
+                    >
+                        모험:모두의 경험
+                        <img id="logo" alt="logo"
+                             src="https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/pavicon.png"
+                             width="22px"
+                             height="18px"
+                             style="
+                                  border: 0;
+                                  outline: none;
+                                  text-decoration: none;
+                                "
+                        />
+                    </td>
+                </tr>
+                <tr border="0" cellpadding="0" cellspacing="0">
+                    <td
+                            id="emailTopTitle"
+                            style="
+                    border-collapse: collapse;
+                    font-family: SUIT;
+                    font-size: 32px;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: 38px;
+                    letter-spacing: 0.0038em;
+                    color: #ffffff;
+                    padding-bottom: 50px;
+                    position: relative;
+                    display: block;
+                    justify-content: center;
+                    text-align: center;
+                    margin-left: 80px;
+                  "
+                    >
+                        프로젝트 하차 알림이 도착했어요
 
-                    </tr>
-                    <tr height="100">
-                        <td style="padding-bottom:20px;"><img th:src="${logo}" style="max-width:80px"/>
-                        </td>
-                    </tr>
-                    <tr height="100">
-                        <td style="color:#2b2b2b;font-family:'roboto','Noto Sans KR','AppleSDGothicNeo-Regular','Malgun Gothic',Arial,'sans-serif';font-size:32px;font-weight:300;line-height:42px;padding:0;vertical-align:top">
-                            프로젝트 중도하차
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="color:#2b2b2b;font-family:'roboto','Noto Sans KR','AppleSDGothicNeo-Regular','Malgun Gothic',Arial,'sans-serif';font-size:17px;font-weight:800;line-height:28px;padding:0;vertical-align:top">
-                            <span th:text="${toNickname}"></span>님 안녕하세요!<br><br>아쉽게도 <span
-                                th:text="${fromNickname}"></span>님의 프로젝트에 끝까지 함께 갈 수 없게 되었습니다<br>
+                        <img
+                                id="bell"
+                                src="https://bubbled-profile-image.s3.ap-northeast-2.amazonaws.com/email-image/bell.png"
+                                alt="bell"
+                                style="
+                      border: 0;
+                      outline: none;
+                      text-decoration: none;
+                      position: relative;
+                      width: 68.69px;
+                      height: 72.31px;
+                      right: 15px;
+                      top: 0px;
+                    "
+                        />
+                    </td>
+                </tr>
+                <tr border="0" cellpadding="0" cellspacing="0">
+                    <td
+                            id="emailTopContent"
+                            style="
+                    border-collapse: collapse;
+                    font-family: SUIT;
+                    font-size: 22px;
+                    font-style: normal;
+                    font-weight: 400;
+                    letter-spacing: -0.0041em;
+                    color: #ffffff;
+                    padding-bottom: 50px;
+                    position: relative;
+                    display: block;
+                    justify-content: center;
+                    flex-direction: row;
+                    line-height: 40px;
+                  "
+                    >
+                        <b><span th:text="${toNickname}"></span></b> 선장님 안녕하세요.<br>
+                        아쉽게도 <b><span th:text="${fromNickname}"></span></b> 선장님의 프로젝트에서 하차당하셨습니다.
+                    </td>
+                </tr>
+                </thead>
 
-                        </td>
-                    </tr>
-                    <td style="text-align: center">
-                        <table
-                                style="border-collapse:collapse;width:100%">
-                            <tr>
-                                <td height="30" style="line-height:15px">&nbsp;</td>
-                            </tr>
-                            <tbody>
-                            <td style="margin-bottom:80px;font-size:11px;font-family:LucidaGrande,tahoma,verdana,arial,sans-serif;background:#ffffff;display:block">
-                                <table
-                                        style="border-collapse:collapse;width:100%;text-align: center;">
-                                    <tbody>
-                                    <td style="font-size:11px;background:#ffffff;border:solid 1px #e5e5e5;border-radius:4px;padding:15px 15px 15px 15px;display:block;width: auto">
-                                        <table
-                                                style="border-collapse:collapse;width:100%;">
-                                            <tr>
-                                                <div
-                                                        style="font-weight:bold;font-size:16px;color:#1c1e21;margin-bottom: 15px;margin-top: 5px ">
+                <tbody>
+                <tr border="0" cellpadding="0" cellspacing="0">
+                    <td
+                            id="emailCenter"
+                            style="border-collapse: collapse; height: 370px; padding: 35px 0 20px 0"
+                    >
+                        <div
+                                id="card"
+                                style="
+                                  height: 280px;
+                                  width: 600px;
+                                  border-radius: 36px;
+                                  box-shadow: 0px 4px 35px 12px rgba(149, 151, 185, 0.08);
+                                  margin: auto;
+                                  padding: 40px;
+                                  display: block;
+                                  flex-direction: column;
+                                  justify-content: center;
+                                "
+                        >
+                            <img id="profileImg" th:src="${toProfileImg}"
+                                 style="
+                                    border: solid 1px rgba(0,0,0,0.15);
+                                    border-radius: 50%;
+                                    text-align: center;
+                                    width: 84px;
+                                    height: 84px;
+                                "/>
 
-                                                </div>
-                                            </tr>
-                                            <!--        카드박스-->
-                                            <td>
-                                                <div style="text-align: center;margin-bottom: 30px">
-                                                    <h2 th:text="${postTitle}" class="card-text" style="color: #2b2b2b">프로젝트
-                                                        타이틀</h2>
+                            <div id="cardContent"
+                                 style="
+                                    font-weight: bold;
+                                    font-size: 16px;
+                                    margin: 15px 0 40px 0;
+                                    line-height: 45px;
+                                ">
+                                <p><b> <span th:text="${toNickname}" style="font-size: 18px"></span></b> 선장님!</p>
+                                <p>다른 프로젝트를 찾아보실래요?</p>
+                            </div>
+                            <a id="linkUrl"
+                               style="
+                                    border-collapse: collapse;
+                                    background: #353c49;
+                                    border-radius: 8px;
+                                    color: #ffffff;
+                                    font-family: SUIT;
+                                    font-size: 18px;
+                                    font-style: normal;
+                                    font-weight: 400;
+                                    line-height: 24px;
+                                    letter-spacing: 0em;
+                                    padding: 20px 100px;
+                                    text-decoration: none;
+                                "
+                               th:href="@{https://develop.d8m0727pi9ccf.amplifyapp.com/main}">
+                                프로젝트 둘러보기
+                            </a>
+                        </div>
+                    </td>
+                </tr>
 
-                                                </div>
-                                            </td>
-                                            <tr>
-                                                <td
-                                                        height="60" align="center "
-                                                        style="color:#1b8b2b;font-family:'roboto','Noto Sans KR','AppleSDGothicNeo-Regular','Malgun Gothic',Arial,'sans-serif';font-size:17px;font-weight:400;line-height:28px;padding:0;vertical-align:top">
-                                                    <a th:href="@{https://scopewith.com/postdetail/{postId}(postId = ${postId})}"
-                                                       style="background-color:#5065df;border-radius:2px;color:#fff;display:inline-block;padding-bottom:11px;padding-left:30px;padding-right:30px;padding-top:11px;text-align:center;text-decoration:none"
-                                                       target="_blank" data-saferedirecturl="">
-                                                        <span style="color:#fff;font-family:sans-serif;font-size:17px;font-weight:600;line-height:28px;text-align:center">다른 프로젝트 살펴보기</span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </tbody>
-                                </table>
-                            </tbody>
-                        </table>
-                    </tbody>
-                </table>
-            </td>
-        </tbody>
-    </table>
-</div>
+                <tr border="0" cellpadding="0" cellspacing="0">
+                    <td>
+                        <hr id="hr" style="border: 1px solid #d2d6da;"/>
+                    </td>
+                </tr>
+                <tr border="0" cellpadding="0" cellspacing="0">
+                    <td
+                            id="homeLink"
+                            style="
+                                border-collapse: collapse;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                padding-bottom: 50px;
+                                margin-right: 15px;
+                              "
+                    >
+                        <a href="https://www.everymohum.com"><img
+                                class="linkImg"
+                                src="https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/email_footer.png"
+                                width="200px"
+                                height="30px"
+                        /></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</table>
 </body>
 </html>
