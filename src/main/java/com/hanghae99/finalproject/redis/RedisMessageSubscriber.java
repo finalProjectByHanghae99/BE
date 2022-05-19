@@ -32,7 +32,7 @@ public class RedisMessageSubscriber implements MessageListener {
             MessageDto chatMessage = objectMapper.readValue(publishMessage, MessageDto.class);
             // 웹 소켓 구독자에게 채팅 메시지 send
             messagingTemplate.convertAndSend("/sub/"+chatMessage.getRoomName(), chatMessage);  // /sub/ewr2132dsfds  [메시지 ]
-            //messagingTemplate.convertAndSend("/sub/"+chatMessage.getReceiverId(),chatMessage); // /sub/userId [메시지]
+            messagingTemplate.convertAndSend("/sub/"+chatMessage.getReceiverId(),chatMessage); // /sub/userId [메시지]
         } catch (Exception e) {
             e.printStackTrace();
         }
