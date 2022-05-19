@@ -17,6 +17,7 @@ public class MailDto {
     private Long toUserId;
     private String toEmail;
     private String toNickname;
+    private String toProfileImg;
     private String fromNickname;
     private String fromProfileImg;
     private Long postId;
@@ -34,6 +35,7 @@ public class MailDto {
     public MailDto(User user, Post post) {
         this.toEmail = user.getEmail();
         this.toNickname = user.getNickname();
+        this.toProfileImg = user.getProfileImg();
         this.fromNickname = post.getUser().getNickname();
         this.postId = post.getId();
     }

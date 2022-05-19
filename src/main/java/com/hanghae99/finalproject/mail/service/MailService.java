@@ -117,11 +117,11 @@ public class MailService {
 
         Context context = new Context();
         context.setVariable("toNickname", mailDto.getToNickname());
+        context.setVariable("toProfileImg", mailDto.getToProfileImg());
         context.setVariable("fromNickname", mailDto.getFromNickname());
         context.setVariable("postId", mailDto.getPostId());
-        context.setVariable("postTitle", mailDto.getPostTitle());
 
-        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님의 프로젝트 신청이 거절되었습니다";
+        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 프로젝트 매칭 실패 알림이 도착했습니다.";
         String body = templateEngine.process("rejectTeamEmail", context);
         setMail(subject, body, email);
     }
