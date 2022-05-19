@@ -39,6 +39,6 @@ public class MailController {
                                      @RequestParam String code, @RequestParam String email) {
         String msg = mailService.emailAuthCodeCheck(code, userId, email);
         model.addAttribute("msg", msg);
-        return "responsePage";  // 수정 필요
+        return "authEmailResponsePage";
     }
 }

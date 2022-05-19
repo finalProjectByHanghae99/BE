@@ -36,6 +36,7 @@ public class MailDto {
         this.toNickname = user.getNickname();
         this.toProfileImg = user.getProfileImg();
         this.fromNickname = post.getUser().getNickname();
+        this.fromProfileImg = post.getUser().getProfileImg();
         this.postId = post.getId();
     }
 }
