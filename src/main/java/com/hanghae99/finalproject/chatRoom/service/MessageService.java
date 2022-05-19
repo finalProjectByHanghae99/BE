@@ -150,9 +150,6 @@ public class MessageService {
         //리스트 조회시 userRoom 카운트 초기화
         Room room = userRoomCount(roomDto);
 
-        //해당 RoomPostId로 게시물 존재 확인 -> 조회/ 없다면 Null
-        Post post =  postRepository.findById(room.getRoomPostId()).orElse(null);
-
         //특정 방에 해당하는 메시지 정보 가져오기
         PageImpl<Message> messages = messageRepository.findByRoom(room,pageable);
 
@@ -165,21 +162,6 @@ public class MessageService {
                 .build();//
     }
 
-
-    private Room userRoomCount(RoomDto.findRoomDto roomDto){
-       // 방 이름, 모집글 PK , 유저 PK , 상대방 PK
-        Room room = roomRepository.findByRoomNameAndRoomPostId(roomDto.getRoomName(), roomDto.getPostId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 방이 존재하지 않습니다."));
-        //게시물 작성 유저의 정보 조회
-        User user = userRepository.findById(roomDto.getUserId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저 없음")
-        );
-        UserRoom userRoom = userRoomRepository.findByRoomAndUser(room,user);
-        //해당 유저방에 카운팅 -> 0
-        userRoom.countInit();
-        return room;
-
-    }
 
     private List<MessageDto> DiscriminationWhoSentMessage(RoomDto.findRoomDto roomDto , UserDetailsImpl userDetails
             ,Room room, PageImpl<Message> messages){
@@ -210,6 +192,21 @@ public class MessageService {
             }
         }
         return messageDtos;
+
+    }
+
+    private Room userRoomCount(RoomDto.findRoomDto roomDto){
+        // 방 이름, 모집글 PK , 유저 PK , 상대방 PK
+        Room room = roomRepository.findByRoomNameAndRoomPostId(roomDto.getRoomName(), roomDto.getPostId()).orElseThrow(
+                () -> new IllegalArgumentException("해당 방이 존재하지 않습니다."));
+        //게시물 작성 유저의 정보 조회
+        User user = userRepository.findById(roomDto.getUserId()).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저 없음")
+        );
+        UserRoom userRoom = userRoomRepository.findByRoomAndUser(room,user);
+        //해당 유저방에 카운팅 -> 0
+        userRoom.countInit();
+        return room;
 
     }
 

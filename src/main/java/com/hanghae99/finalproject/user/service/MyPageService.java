@@ -182,9 +182,10 @@ public class MyPageService {
         List<Post> findPostsByuser = postRepository.findPostsByUser(user);
 
 
-
+        //모집중 리스트에는 현재 게시글 상태가 진행중이거나 , 마감인 상태의 모집글 리스트들이 보여야함.
         for (Post findPosts : findPostsByuser) {
-            if(findPosts.getCurrentStatus() == CurrentStatus.ONGOING) {
+            if(findPosts.getCurrentStatus() == CurrentStatus.ONGOING
+                    || findPosts.getCurrentStatus() == CurrentStatus.RECRUITING_CLOSE) {
                 MyPageDto.RecruitResponseDto recruitResponseDto = MyPageDto.RecruitResponseDto.builder()
                         .userId(user.getId())
                         .postId(findPosts.getId())
@@ -200,6 +201,7 @@ public class MyPageService {
         return recruitResponseDtosList;
     }
 
+    //userApplyList 무한참조 방지를 위해 DTO 타입으로 매핑 후 전달
     private List<MyPageDto.ResponseEntityToUserApply> userApplyListToDtoList(List<UserApply>userApplyList){
 
         List<MyPageDto.ResponseEntityToUserApply> resultList = new ArrayList<>();
