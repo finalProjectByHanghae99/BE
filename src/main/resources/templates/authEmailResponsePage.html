@@ -98,10 +98,10 @@
                     display: block;
                     justify-content: center;
                     text-align: center;
-                    margin-left: 80px;
+                    margin-left: 70px;
                   "
                     >
-                        프로젝트 매칭 알림이 도착했어요!
+                        이메일 인증 알림이 도착했어요!
 
                         <img
                                 id="bell"
@@ -139,8 +139,7 @@
                     line-height: 40px;
                   "
                     >
-                        <b><span th:text="${toNickname}"></span></b> 선장님 안녕하세요.<br>
-                        <b><span th:text="${fromNickname}"></span></b> 선장님의 프로젝트 합류를 축하드립니다!
+                        <span th:text="${msg}"></span>!
                     </td>
                 </tr>
                 </thead>
@@ -149,12 +148,12 @@
                 <tr border="0" cellpadding="0" cellspacing="0">
                     <td
                             id="emailCenter"
-                            style="border-collapse: collapse; height: 370px; padding: 35px 0 20px 0"
+                            style="border-collapse: collapse; height: 250px; padding-top: 35px"
                     >
                         <div
                                 id="card"
                                 style="
-                                  height: 280px;
+                                  height: 150px;
                                   width: 600px;
                                   border-radius: 36px;
                                   box-shadow: 0px 4px 35px 12px rgba(149, 151, 185, 0.08);
@@ -166,15 +165,6 @@
                                   justify-content: center;
                                 "
                         >
-                            <img id="profileImg" th:src="${fromProfileImg}"
-                                 style="
-                                    border: solid 1px rgba(0,0,0,0.15);
-                                    border-radius: 50%;
-                                    text-align: center;
-                                    width: 84px;
-                                    height: 84px;
-                                "/>
-
                             <div id="cardContent"
                                  style="
                                     font-weight: bold;
@@ -183,8 +173,7 @@
                                     margin: 15px 0 40px 0;
                                     line-height: 35px;
                                 ">
-                                <b><p th:text="${fromNickname}" style="font-size: 18px"></p></b>
-                                <p> 선장님과 즐거운 경험을 쌓으세요!</p>
+                                <p>아래 버튼을 눌러 메인 페이지로 이동해주세요!</p>
                             </div>
                             <a id="linkUrl"
                                style="
@@ -201,8 +190,8 @@
                                     padding: 20px 100px;
                                     text-decoration: none;
                                 "
-                               th:href="@{https://develop.d8m0727pi9ccf.amplifyapp.com/detail/{postId}(postId = ${postId})}">
-                                합류한 프로젝트 확인하기
+                               th:href="@{https://develop.d8m0727pi9ccf.amplifyapp.com/main}">
+                                메인 화면으로 이동하기
                             </a>
                         </div>
                     </td>
