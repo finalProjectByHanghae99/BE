@@ -1,0 +1,229 @@
+<!-- @format -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link
+            href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css"
+            rel="stylesheet"
+    />
+    <title>모험:모두의 경험</title>
+</head>
+<body>
+<table
+        id="emailTable"
+        border="0"
+        cellpadding="0"
+        cellspacing="0"
+        width="100vw"
+        height="100vh"
+        style="
+            border-collapse: collapse;
+            padding: 20px 0 30px 0;
+            background-color: #ffffff;
+            margin: 0 auto;
+            text-align: center;
+            font-family: ‘SUIT’, sans-serif;
+          "
+>
+    <tr>
+        <td style="border-collapse: collapse">
+            <table
+                    id="emailBody"
+                    border="0"
+                    cellpadding="0"
+                    cellspacing="0"
+                    width="768px"
+                    height="1050px"
+                    style="
+                      border-collapse: collapse;
+                      padding: 20px 0;
+                      background-color: #ffffff;
+                      margin: auto;
+                      text-align: center;
+                      font-family: ‘SUIT’, sans-serif;
+                    "
+            >
+                <thead id="emailTop" style="background-color: #7881f5; text-align: center;">
+                <tr border="0" cellpadding="0" cellspacing="0">
+                    <td
+                            id="emailTopLogo"
+                            style="
+                                border-collapse: collapse;
+                                font-family: SUIT;
+                                font-size: 20px;
+                                font-style: normal;
+                                font-weight: 600;
+                                line-height: 30px;
+                                letter-spacing: 0.0036em;
+                                color: #ffffff;
+                                padding-top: 50px;
+                                display: block;
+                                align-items: center;
+                                justify-content: center;
+                                text-align: center;
+                              "
+                    >
+                        모험:모두의 경험
+                        <img id="logo" alt="logo"
+                             src="https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/pavicon.png"
+                             width="22px"
+                             height="18px"
+                             style="
+                                  border: 0;
+                                  outline: none;
+                                  text-decoration: none;
+                                "
+                        />
+                    </td>
+                </tr>
+                <tr border="0" cellpadding="0" cellspacing="0">
+                    <td
+                            id="emailTopTitle"
+                            style="
+                    border-collapse: collapse;
+                    font-family: SUIT;
+                    font-size: 32px;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: 38px;
+                    letter-spacing: 0.0038em;
+                    color: #ffffff;
+                    padding-bottom: 50px;
+                    position: relative;
+                    display: block;
+                    justify-content: center;
+                    text-align: center;
+                    margin-left: 70px;
+                  "
+                    >
+                        이메일 인증 알림이 도착했어요!
+
+                        <img
+                                id="bell"
+                                src="https://bubbled-profile-image.s3.ap-northeast-2.amazonaws.com/email-image/bell.png"
+                                alt="bell"
+                                style="
+                      border: 0;
+                      outline: none;
+                      text-decoration: none;
+                      position: relative;
+                      width: 68.69px;
+                      height: 72.31px;
+                      right: 15px;
+                      top: 0px;
+                    "
+                        />
+                    </td>
+                </tr>
+                <tr border="0" cellpadding="0" cellspacing="0">
+                    <td
+                            id="emailTopContent"
+                            style="
+                    border-collapse: collapse;
+                    font-family: SUIT;
+                    font-size: 22px;
+                    font-style: normal;
+                    font-weight: 400;
+                    letter-spacing: -0.0041em;
+                    color: #ffffff;
+                    padding-bottom: 50px;
+                    position: relative;
+                    display: block;
+                    justify-content: center;
+                    flex-direction: row;
+                    line-height: 40px;
+                  "
+                    >
+                        <span th:text="${msg}"></span>!
+                    </td>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr border="0" cellpadding="0" cellspacing="0">
+                    <td
+                            id="emailCenter"
+                            style="border-collapse: collapse; height: 250px; padding-top: 35px"
+                    >
+                        <div
+                                id="card"
+                                style="
+                                  height: 150px;
+                                  width: 600px;
+                                  border-radius: 36px;
+                                  box-shadow: 0px 4px 35px 12px rgba(149, 151, 185, 0.08);
+                                  margin: auto;
+                                  padding: 40px;
+                                  display: block;
+                                  flex-direction: column;
+                                  justify-content: center;
+                                "
+                        >
+                            <div id="cardContent"
+                                 style="
+                                    font-weight: bold;
+                                    font-size: 16px;
+                                    margin: 15px 0 40px 0;
+                                    line-height: 45px;
+                                ">
+                                <p>아래 버튼을 눌러 메인 페이지로 이동해주세요!</p>
+                            </div>
+                            <a id="linkUrl"
+                               style="
+                                    border-collapse: collapse;
+                                    background: #353c49;
+                                    border-radius: 8px;
+                                    color: #ffffff;
+                                    font-family: SUIT;
+                                    font-size: 18px;
+                                    font-style: normal;
+                                    font-weight: 400;
+                                    line-height: 24px;
+                                    letter-spacing: 0em;
+                                    padding: 20px 100px;
+                                    text-decoration: none;
+                                "
+                               th:href="@{https://develop.d8m0727pi9ccf.amplifyapp.com/main}">
+                                메인 화면으로 이동하기
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr border="0" cellpadding="0" cellspacing="0">
+                    <td>
+                        <hr id="hr" style="border: 1px solid #d2d6da;"/>
+                    </td>
+                </tr>
+                <tr border="0" cellpadding="0" cellspacing="0">
+                    <td
+                            id="homeLink"
+                            style="
+                                border-collapse: collapse;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                padding-bottom: 50px;
+                                margin-right: 15px;
+                              "
+                    >
+                        <a href="https://www.everymohum.com"><img
+                                class="linkImg"
+                                src="https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/email_footer.png"
+                                width="200px"
+                                height="30px"
+                        /></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
