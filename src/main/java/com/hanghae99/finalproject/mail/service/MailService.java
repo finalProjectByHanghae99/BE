@@ -80,14 +80,12 @@ public class MailService {
         MailValidator.validateEmail(email);
 
         Context context = new Context();
-        context.setVariable("userId", mailDto.getToUserId());
         context.setVariable("toNickname", mailDto.getToNickname());
         context.setVariable("fromNickname", mailDto.getFromNickname());
+        context.setVariable("fromProfileImg", mailDto.getFromProfileImg());
         context.setVariable("postId", mailDto.getPostId());
-        context.setVariable("postTitle", mailDto.getPostTitle());
-        context.setVariable("message", mailDto.getMessage());
 
-        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님의 프로젝트에 " + mailDto.getFromNickname() + "님이 지원했습니다.";
+        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 프로젝트 신청 알림이 도착했습니다.";
         String body = templateEngine.process("applicantEmail", context);
         setMail(subject, body, email);
     }
@@ -102,6 +100,7 @@ public class MailService {
         Context context = new Context();
         context.setVariable("toNickname", mailDto.getToNickname());
         context.setVariable("fromNickname", mailDto.getFromNickname());
+        context.setVariable("fromProfileImg", mailDto.getFromProfileImg());
         context.setVariable("postId", mailDto.getPostId());
         context.setVariable("postTitle", mailDto.getPostTitle());
 

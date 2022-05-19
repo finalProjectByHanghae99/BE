@@ -24,13 +24,11 @@ public class MailDto {
     private String message;
 
     public MailDto(UserApply userApply) {
-        this.toUserId = userApply.getPost().getUser().getId();
         this.toEmail = userApply.getPost().getUser().getEmail();
         this.toNickname = userApply.getPost().getUser().getNickname();
         this.fromNickname = userApply.getUser().getNickname();
+        this.fromProfileImg = userApply.getUser().getProfileImg();
         this.postId = userApply.getPost().getId();
-        this.postTitle = userApply.getPost().getTitle();
-        this.message = userApply.getMessage();
     }
 
     public MailDto(User user, Post post) {
