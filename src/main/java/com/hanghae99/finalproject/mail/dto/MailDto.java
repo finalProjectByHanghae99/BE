@@ -22,7 +22,6 @@ public class MailDto {
     private String fromProfileImg;
     private Long postId;
     private String postTitle;
-    private String message;
 
     public MailDto(UserApply userApply) {
         this.toEmail = userApply.getPost().getUser().getEmail();
