@@ -102,9 +102,8 @@ public class MailService {
         context.setVariable("fromNickname", mailDto.getFromNickname());
         context.setVariable("fromProfileImg", mailDto.getFromProfileImg());
         context.setVariable("postId", mailDto.getPostId());
-        context.setVariable("postTitle", mailDto.getPostTitle());
 
-        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님의 프로젝트 신청이 수락되었습니다";
+        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 프로젝트 매칭 알림이 도착했습니다.";
         String body = templateEngine.process("acceptTeamEmail", context);
         setMail(subject, body, email);
     }

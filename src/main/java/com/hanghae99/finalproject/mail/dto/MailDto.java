@@ -32,11 +32,9 @@ public class MailDto {
     }
 
     public MailDto(User user, Post post) {
-        this.toUserId = user.getId();
         this.toEmail = user.getEmail();
         this.toNickname = user.getNickname();
         this.fromNickname = post.getUser().getNickname();
         this.postId = post.getId();
-        this.postTitle = post.getTitle();
     }
 }
