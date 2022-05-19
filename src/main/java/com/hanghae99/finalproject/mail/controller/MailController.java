@@ -41,6 +41,4 @@ public class MailController {
         model.addAttribute("msg", msg);
         return "responsePage";  // 수정 필요
     }
-
-
 }
