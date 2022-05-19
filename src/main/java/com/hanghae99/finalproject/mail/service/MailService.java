@@ -135,6 +135,7 @@ public class MailService {
 
         Context context = new Context();
         context.setVariable("toNickname", mailDto.getToNickname());
+        context.setVariable("toProfileImg", mailDto.getToProfileImg());
         context.setVariable("fromNickname", mailDto.getFromNickname());
         context.setVariable("postId", mailDto.getPostId());
 
