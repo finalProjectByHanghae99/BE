@@ -80,6 +80,10 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserApply> userApplyList = new ArrayList<>();
 
+    public User(long userId) {
+        this.id = userId;
+    }
+
     public void updateInfo( MyPageDto.RequestDto requestDto, List<UserPortfolioImg> userPortfolioImgList) {
         this.nickname = requestDto.getNickname();
         this.major = requestDto.getMajor();

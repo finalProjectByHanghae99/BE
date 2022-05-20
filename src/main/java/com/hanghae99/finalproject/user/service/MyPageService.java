@@ -137,12 +137,14 @@ public class MyPageService {
 
     // 마이페이지 내의 신청중 리스트 찾아오기 .
     @Transactional
-    public List<MyPageDto.AppliedResponseDto> responseAppliedList(UserDetailsImpl userDetails) {
+    public List<MyPageDto.AppliedResponseDto> responseAppliedList(Long userId) {
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.AppliedResponseDto> appliedResponseDtoList = new ArrayList<>();
 
         // userPK -> 내가 지원한 모집글을 찾아온다.
-        User user = userDetails.getUser();
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
         // 현재 유저가 참여[신청]하고 있는 게시글에 포함된 Apply정보를 전부 찾아온다.
         List<UserApply> userApplyList = userApplyRepository.findUserApplyByUser(user);
         // list {userApply1[postPk, userPk], userApply 2, }

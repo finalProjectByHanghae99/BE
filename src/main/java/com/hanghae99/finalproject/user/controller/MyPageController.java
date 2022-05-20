@@ -51,10 +51,10 @@ public class MyPageController {
     //신청 / 모집 / 모집 완료 조회
     //신청한 모집글은 본인만 확인할 수 있다.
     //유저 pk를 이용하여 해당 유저가 '신청' 한 게시글 목록을 가져와야한다.
-    @GetMapping("/user/applied")
-    public List<MyPageDto.AppliedResponseDto> userInfoApplied(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    @GetMapping("/user/applied/{userId}")
+    public List<MyPageDto.AppliedResponseDto> userInfoApplied(@PathVariable Long userId){
 
-        return myPageService.responseAppliedList(userDetails);
+        return myPageService.responseAppliedList(userId);
 
     }
 
