@@ -137,12 +137,14 @@ public class MyPageService {
 
     // 마이페이지 내의 신청중 리스트 찾아오기 .
     @Transactional
-    public List<MyPageDto.AppliedResponseDto> responseAppliedList(UserDetailsImpl userDetails) {
+    public List<MyPageDto.AppliedResponseDto> responseAppliedList(Long userId) {
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.AppliedResponseDto> appliedResponseDtoList = new ArrayList<>();
 
         // userPK -> 내가 지원한 모집글을 찾아온다.
-        User user = userDetails.getUser();
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
+        );
         // 현재 유저가 참여[신청]하고 있는 게시글에 포함된 Apply정보를 전부 찾아온다.
         List<UserApply> userApplyList = userApplyRepository.findUserApplyByUser(user);
         // list {userApply1[postPk, userPk], userApply 2, }
@@ -182,9 +184,10 @@ public class MyPageService {
         List<Post> findPostsByuser = postRepository.findPostsByUser(user);
 
 
-
+        //모집중 리스트에는 현재 게시글 상태가 진행중이거나 , 마감인 상태의 모집글 리스트들이 보여야함.
         for (Post findPosts : findPostsByuser) {
-            if(findPosts.getCurrentStatus() == CurrentStatus.ONGOING) {
+            if(findPosts.getCurrentStatus() == CurrentStatus.ONGOING
+                    || findPosts.getCurrentStatus() == CurrentStatus.RECRUITING_CLOSE) {
                 MyPageDto.RecruitResponseDto recruitResponseDto = MyPageDto.RecruitResponseDto.builder()
                         .userId(user.getId())
                         .postId(findPosts.getId())
@@ -200,6 +203,7 @@ public class MyPageService {
         return recruitResponseDtosList;
     }
 
+    //userApplyList 무한참조 방지를 위해 DTO 타입으로 매핑 후 전달
     private List<MyPageDto.ResponseEntityToUserApply> userApplyListToDtoList(List<UserApply>userApplyList){
 
         List<MyPageDto.ResponseEntityToUserApply> resultList = new ArrayList<>();

@@ -130,16 +130,19 @@ public class RoomService {
     ChatUserDto user;
     LastMessageDto lastMessage;
     CurrentState currentState;
-    notReadingMessageCount; */
+    notReadingMessageCount;
+    */
 
+    @Transactional
     public List<ChatRoomDto> showRoomListService(UserDetailsImpl userDetails) {
         // 현재 로그인한 유저의 채팅방 목록 리스트를 뽑아낸다.
         List<UserRoom> userRooms = userRoomRepository.findByUser(userDetails.getUser());
         List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
-        // 반복을 통해 조건 분기
+        // 반복을 통해 조건
         for (UserRoom userRoom : userRooms) {
             LastMessageDto lastMessageDto; //마지막 메시지 와 시간
 
+            //toUser 의 정보
             ChatUserDto chatUserDto = ChatUserDto.builder()
                     .userId(userRoom.getToUser().getId()) // 반대편 유저 pk
                     .profileImg(userRoom.getToUser().getProfileImg()) //반대편 유저의 프로필 이미지
@@ -149,17 +152,20 @@ public class RoomService {
             // 채팅방리스트에 보여줄 마지막 메시지 값
             if (userRoom.getLastMessageId() == null) { //마지막 메시지가 없다면
                 lastMessageDto = LastMessageDto.builder()
-                        .content("방이 생성 되었습니다.")  //방이 생성 되었다는 메시지와
+                        .content("방이 생성 되었습니다.")  //방이 생성 되었다는 메시지와 시간
                         .createdAt(MessageTimeConversion.timeConversion(userRoom.getCreatedAt()))
                         .build();
             } else {
-                // 마지막 메시지가 존재한다면 , == 메시지 수신자의 대화정보를 가져온다
+                // 마지막 메시지가 존재한다면 , == 메시지 정보를 가져온다
                 Message message = messageRepository.getById(userRoom.getLastMessageId());
-                if(!Objects.equals(message.getUser().getId(), userDetails.getUser().getId())){
-                    userRoom.countChange();
-                }
+                // 해당 방식으로 문제 접근 시 라스트 메시지가 다른 상황이면 계속해서 1이 유지됨.
+//                if(!Objects.equals(message.getUser().getId(), userDetails.getUser().getId())){
+//                    userRoom.countChange();
+//                }
+
+                // 마지막 메시지 DTO 에 메시지 정보를 담아준다.
                 lastMessageDto = LastMessageDto.builder()
-                        .content(message.getContent()) //메시지를 가져와 담는다
+                        .content(message.getContent())
                         .createdAt(MessageTimeConversion.timeConversion(message.getCreatedAt()))
                         .build();
             }

@@ -2,6 +2,7 @@ package com.hanghae99.finalproject.timeConversion;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 
 public class MessageTimeConversion {
@@ -20,9 +21,12 @@ public class MessageTimeConversion {
             if(modifiedAt.get(ChronoField.AMPM_OF_DAY) == 0) {
                 resultConversion = "오전 "+modifiedAt.getHour()+":"+String.format("%02d", modifiedAt.getMinute());
             } else {
-                resultConversion = "오후 "+modifiedAt.getHour()+":"+String.format("%02d", modifiedAt.getMinute());
+                //12 시간 타입으로 포맷팅 후 전달
+                String modifiedAtHour = modifiedAt.format(DateTimeFormatter.ofPattern("hh"));
+                resultConversion = "오후 "+modifiedAtHour+":"+String.format("%02d", modifiedAt.getMinute());
             }
         }
+
         return resultConversion;
 
     }

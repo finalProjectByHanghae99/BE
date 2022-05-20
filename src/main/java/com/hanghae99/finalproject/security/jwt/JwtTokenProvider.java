@@ -125,4 +125,17 @@ public class JwtTokenProvider {
     return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken)
         .getBody().getSubject();
   }
+
+  public Long getUserIdFromToken(String token) {
+    Claims claims = getAllClaims(token);
+
+    return Long.valueOf(String.valueOf(claims.getSubject()));
+  }
+
+  private Claims getAllClaims(String token) {
+    return Jwts.parser()
+            .setSigningKey(secretKey)
+            .parseClaimsJws(token)
+            .getBody();
+  }
 }
