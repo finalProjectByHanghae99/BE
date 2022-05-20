@@ -125,6 +125,7 @@ public class JwtTokenProvider {
     return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken)
         .getBody().getSubject();
   }
+
   public Long getUserIdFromToken(String token) {
     Claims claims = getAllClaims(token);
 
