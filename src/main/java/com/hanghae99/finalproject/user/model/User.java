@@ -111,7 +111,7 @@ public class User {
     public void addInfo(SignupRequestDto requestDto) {
         this.nickname = requestDto.getNickname();
         this.major = requestDto.getMajor();
-        this.profileImg = "https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/profile_default.png";
+        this.profileImg = "https://mohum.s3.ap-northeast-2.amazonaws.com/mohum-src/profile_default.png";
     }
 
     // 이메일 인증코등 생성
@@ -124,12 +124,4 @@ public class User {
         this.email = email;
         this.isVerifiedEmail = true;
     }
-
-//    public void kakaoUserAddInfo(SignupRequestDto requestDto) {
-//        this.memberId = UUID.randomUUID().toString();
-//        this.password = UUID.randomUUID().toString();
-//        this.nickname = requestDto.getNickname();
-//        this.major = requestDto.getMajor();
-//        this.profileImg = "https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/profile_default.png";
-//    }
 }
