@@ -55,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/post/filter/**").permitAll()
             .antMatchers("/webSocket/**").permitAll()
             .antMatchers("/search/**").permitAll()
-            .antMatchers("/sub/**").permitAll()
+            .antMatchers("/subscribe/**").permitAll()
 
             //추가 - 메인 페이지 접근 허용
             .antMatchers("/").permitAll()

@@ -1,11 +1,14 @@
 package com.hanghae99.finalproject.user.model;
 
 import com.hanghae99.finalproject.post.model.Post;
+import com.hanghae99.finalproject.sse.dto.NotificationRequestDto;
+import com.hanghae99.finalproject.sse.model.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.context.ApplicationEventPublisher;
 
 import javax.persistence.*;
 
@@ -60,4 +63,5 @@ public class UserApply {
             this.post.getUserApplyList().remove(this);
             this.user.getUserApplyList().remove(this);
         }
+
     }
