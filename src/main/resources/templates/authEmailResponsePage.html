@@ -13,10 +13,6 @@
 <body>
 <table
         id="emailTable"
-        border="0"
-        cellpadding="0"
-        cellspacing="0"
-        width="100vw"
         height="100vh"
         style="
             border-collapse: collapse;
@@ -31,10 +27,6 @@
         <td style="border-collapse: collapse">
             <table
                     id="emailBody"
-                    border="0"
-                    cellpadding="0"
-                    cellspacing="0"
-                    width="768px"
                     height="1050px"
                     style="
                       border-collapse: collapse;
@@ -67,7 +59,7 @@
                     >
                         모험:모두의 경험
                         <img id="logo" alt="logo"
-                             th:src="${logo}"
+                             src="https://mohum.s3.ap-northeast-2.amazonaws.com/mohum-src/favicon.png"
                              width="22px"
                              height="18px"
                              style="
@@ -102,7 +94,7 @@
 
                         <img
                                 id="bell"
-                                th:src="${bell}"
+                                src="https://mohum.s3.ap-northeast-2.amazonaws.com/mohum-src/bell.png"
                                 alt="bell"
                                 style="
                       border: 0;
@@ -187,6 +179,7 @@
                                     padding: 20px 100px;
                                     text-decoration: none;
                                 "
+                               target="_blank" data-saferedirecturl=""
                                th:href="@{https://develop.d8m0727pi9ccf.amplifyapp.com/main}">
                                 메인 화면으로 이동하기
                             </a>
@@ -213,7 +206,7 @@
                     >
                         <a href="https://www.everymohum.com"><img
                                 class="linkImg"
-                                th:src="${footer}"
+                                src="https://mohum.s3.ap-northeast-2.amazonaws.com/mohum-src/email_footer.png"
                                 width="200px"
                                 height="30px"
                         /></a>
