@@ -2,6 +2,7 @@ package com.hanghae99.finalproject.user.dto;
 
 
 import com.hanghae99.finalproject.img.ImgUrlDto;
+import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.user.model.UserApply;
 import lombok.*;
 
@@ -55,6 +56,7 @@ public class MyPageDto {
         private String nickname;
         private String title;
         private String createAt;
+        private CurrentStatus status;
 
 
 

@@ -38,4 +38,12 @@ public class UserRate {
     @Column
     private int ratePoint;
 
+    @Column
+    private Boolean rateStatus;
+
+    //평점을 받는다면 status 상태가 true :)
+    public void updateStatus(boolean status){
+        this.rateStatus = status;
+    }
+
 }

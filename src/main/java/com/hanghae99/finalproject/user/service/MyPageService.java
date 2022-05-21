@@ -43,6 +43,7 @@ public class MyPageService {
     private final PostRepository postRepository;
     private final MailService mailService;
     private final NotificationService notificationService;
+    private final UserRateRepository userRateRepository;
     //마이페이지의 정보를 반환
     @Transactional
     public MyPageDto.ResponseDto findUserPage(Long userId) {
@@ -165,6 +166,7 @@ public class MyPageService {
                         .postId(post.getId())
                         .nickname(post.getUser().getNickname())
                         .title(post.getTitle())
+                        .status(post.getCurrentStatus())
                         .createAt(TimeConversion.timeConversion(post.getCreatedAt()))
                         .build();
                 //리스트에 담아준다
@@ -354,7 +356,6 @@ public class MyPageService {
         } else if (user.getIsVerifiedEmail() != null & userApply.getIsAccepted() == 1) {    // 2)
             mailService.forcedRejectTeamEmailBuilder(new MailDto(user, post));
         }
-        notificationService.send(userApply.getUser(),NotificationType.REJECT,"거절","testUrl");
 
     }
 
@@ -442,14 +443,14 @@ public class MyPageService {
 
         List<MyPageDto.RecruitUserList> recruitUserLists = new ArrayList<>();
 
-        User user = userDetails.getUser(); // 혜민님
+        User user = userDetails.getUser(); // 현재 로그인한 유저 ,
 
         // 팀원 리뷰 클릭 시 모집마감 list에서 postId를 전달  EX: 1
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
 
-        //모집글들의 참가자 정보들을 불러오기 위해 list 빌딩
+        //현재 모집글들에 참여한 userApplyList 를 불러옴 ,
         List<UserApply> userApplyList = post.getUserApplyList();
 
         // 타 유저들은 평가 시 게시글 주인도 평가할 수 있어야한다.
@@ -461,10 +462,14 @@ public class MyPageService {
                 .profileImg(post.getUser().getProfileImg())
                 .build();
 
-        // 우선 참가자들의 정보를 LIST에 담아준다.
+        // 현재 모집글에 지원한 참가자들의 정보
         for (UserApply userApply : userApplyList) {
-            // 접근하는 유저의 pk 와 지원한 유저pk가 같지 않아야 본인의 이름이 나오지 않는다.
-            if (userApply.getUser().getRateStatus() == null &&
+            //참가자들의 유저정보와 모집글 정보 -> 해당 게시글의 유저가 가진 평점정보를 조회한다.
+            UserRate userRate = userRateRepository.findUserRateByPostAndReceiver(post,userApply.getUser());
+
+            // 해당 게시글에의 유저가 가진 평점 정보의 상태가 null이거나 ,
+            if (userRate.getRateStatus() == null &&
+                    //로그인한 유저[마이페이지 주인] != 모집글에 참여한 사람 일 때 ,
                     !Objects.equals(user.getId(), userApply.getUser().getId())) {
                 MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
                         .userId(userApply.getUser().getId())
@@ -477,7 +482,9 @@ public class MyPageService {
         // 필터링된 참가자들의 정보 +
         // 게시글 참여자가 평점을 받지 않은 상태라면 :STATUS == NULL
         // 게시글 참여자와 필터링된 유저 리스트들이 반환 되어야하고
-        if(post.getUser().getRateStatus() == null &&
+        // 게시글 주인의 유저정보 및 평점정보는 현재 참가자 리스트에 없기에 별도로 추가 조회한다.
+        UserRate postUserRate = userRateRepository.findUserRateByPostAndReceiver(post,post.getUser());
+        if(postUserRate.getRateStatus() == null &&
                 !Objects.equals(post.getUser().getId(), userDetails.getUser().getId())){
             return new MyPageDto.RecruitPostUser(postUser,recruitUserLists);
         // 게시글 주인이 평점을 받았다면 필터링된 유저들의 정보만 내려준다.
@@ -504,9 +511,14 @@ public class MyPageService {
                 .sender(userDetails.getUser())
                 .receiver(receiver)
                 .post(post)
+                .ratePoint(requestUserRate.getPoint())
                 .build();
 
-        receiver.updateRateStatus(requestUserRate.getPoint());
+        userRate.updateStatus(true);
+        userRateRepository.save(userRate);
+        receiver.updateRateStatus(userRate);
+
+
     }
 
 }
