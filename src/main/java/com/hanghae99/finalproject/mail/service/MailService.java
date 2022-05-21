@@ -9,6 +9,7 @@ import com.hanghae99.finalproject.validator.MailValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
@@ -39,12 +40,16 @@ public class MailService {
     }
 
     // 이메일 인증 메일 발송
+    @Async
     public void authMailSender(String email, User user) throws MessagingException {
 
         // [유효성 검사] 이메일 형식 확인
         MailValidator.validateEmail(email);
 
         Context context = new Context();
+        context.setVariable("logo", logoImgUrl());
+        context.setVariable("bell", bellImgUrl());
+        context.setVariable("footer", footerImgUrl());
         context.setVariable("userId", user.getId());
         context.setVariable("profileImg", user.getProfileImg());
         context.setVariable("nickname", user.getNickname());
@@ -80,6 +85,9 @@ public class MailService {
         MailValidator.validateEmail(email);
 
         Context context = new Context();
+        context.setVariable("logo", logoImgUrl());
+        context.setVariable("bell", bellImgUrl());
+        context.setVariable("footer", footerImgUrl());
         context.setVariable("toNickname", mailDto.getToNickname());
         context.setVariable("fromNickname", mailDto.getFromNickname());
         context.setVariable("fromProfileImg", mailDto.getFromProfileImg());
@@ -98,6 +106,9 @@ public class MailService {
         MailValidator.validateEmail(email);
 
         Context context = new Context();
+        context.setVariable("logo", logoImgUrl());
+        context.setVariable("bell", bellImgUrl());
+        context.setVariable("footer", footerImgUrl());
         context.setVariable("toNickname", mailDto.getToNickname());
         context.setVariable("fromNickname", mailDto.getFromNickname());
         context.setVariable("fromProfileImg", mailDto.getFromProfileImg());
@@ -116,6 +127,9 @@ public class MailService {
         MailValidator.validateEmail(email);
 
         Context context = new Context();
+        context.setVariable("logo", logoImgUrl());
+        context.setVariable("bell", bellImgUrl());
+        context.setVariable("footer", footerImgUrl());
         context.setVariable("toNickname", mailDto.getToNickname());
         context.setVariable("toProfileImg", mailDto.getToProfileImg());
         context.setVariable("fromNickname", mailDto.getFromNickname());
@@ -134,6 +148,9 @@ public class MailService {
         MailValidator.validateEmail(email);
 
         Context context = new Context();
+        context.setVariable("logo", logoImgUrl());
+        context.setVariable("bell", bellImgUrl());
+        context.setVariable("footer", footerImgUrl());
         context.setVariable("toNickname", mailDto.getToNickname());
         context.setVariable("toProfileImg", mailDto.getToProfileImg());
         context.setVariable("fromNickname", mailDto.getFromNickname());
@@ -152,6 +169,9 @@ public class MailService {
         MailValidator.validateEmail(email);
 
         Context context = new Context();
+        context.setVariable("logo", logoImgUrl());
+        context.setVariable("bell", bellImgUrl());
+        context.setVariable("footer", footerImgUrl());
         context.setVariable("toNickname", mailDto.getToNickname());
         context.setVariable("fromNickname", mailDto.getFromNickname());
         context.setVariable("fromProfileImg",mailDto.getFromProfileImg());
@@ -161,5 +181,17 @@ public class MailService {
         String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 신규 채팅 알림이 도착했습니다.";
         String body = templateEngine.process("chatOnEmil", context);
         setMail(subject, body, email);
+    }
+
+    private String logoImgUrl() {
+        return "https://mohum.s3.ap-northeast-2.amazonaws.com/mohum-src/favicon.png";
+    }
+
+    private String bellImgUrl() {
+        return "https://mohum.s3.ap-northeast-2.amazonaws.com/mohum-src/bell.png";
+    }
+
+    private String footerImgUrl() {
+        return "https://mohum.s3.ap-northeast-2.amazonaws.com/mohum-src/email_footer.png";
     }
 }
