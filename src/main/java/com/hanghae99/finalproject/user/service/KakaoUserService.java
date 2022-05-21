@@ -120,14 +120,4 @@ public class KakaoUserService {
                 .build();
         userRepository.save(kakaoUser);
     }
-//
-//    // 강제 로그인 처리
-//    private LoginDto.KakaoLogin jwtTokenCreate(User kakaoUser) {
-//
-//        UserDetails userDetails = new UserDetailsImpl(kakaoUser);
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        return
-//    }
 }
