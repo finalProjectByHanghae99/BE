@@ -440,7 +440,6 @@ public class MyPageService {
     @Transactional
     public MyPageDto.RecruitPostUser findRecruitUserList(Long postId,UserDetailsImpl userDetails) {
         //최종적으로 보낼 값들을 담아줄 list 선언
-
         List<MyPageDto.RecruitUserList> recruitUserLists = new ArrayList<>();
 
         User user = userDetails.getUser(); // 현재 로그인한 유저 ,
@@ -465,11 +464,12 @@ public class MyPageService {
         // 현재 모집글에 지원한 참가자들의 정보
         for (UserApply userApply : userApplyList) {
             //참가자들의 유저정보와 모집글 정보 -> 해당 게시글의 유저가 가진 평점정보를 조회한다.
-            UserRate userRate = userRateRepository.findUserRateByPostAndReceiver(post,userApply.getUser());
+            // null 값 허용
+            Optional<UserRate> userRate =
+                    userRateRepository.findUserRateByPostAndReceiver(post,userApply.getUser());
 
-            // 해당 게시글에의 유저가 가진 평점 정보의 상태가 null이거나 ,
-            if (userRate.getRateStatus() == null &&
-                    //로그인한 유저[마이페이지 주인] != 모집글에 참여한 사람 일 때 ,
+            //평점 정보가 존재하지 않는다면
+            if (!userRate.isPresent() &&
                     !Objects.equals(user.getId(), userApply.getUser().getId())) {
                 MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
                         .userId(userApply.getUser().getId())
@@ -483,8 +483,8 @@ public class MyPageService {
         // 게시글 참여자가 평점을 받지 않은 상태라면 :STATUS == NULL
         // 게시글 참여자와 필터링된 유저 리스트들이 반환 되어야하고
         // 게시글 주인의 유저정보 및 평점정보는 현재 참가자 리스트에 없기에 별도로 추가 조회한다.
-        UserRate postUserRate = userRateRepository.findUserRateByPostAndReceiver(post,post.getUser());
-        if(postUserRate.getRateStatus() == null &&
+        Optional<UserRate> postUserRate = userRateRepository.findUserRateByPostAndReceiver(post,post.getUser());
+        if(!postUserRate.isPresent() &&
                 !Objects.equals(post.getUser().getId(), userDetails.getUser().getId())){
             return new MyPageDto.RecruitPostUser(postUser,recruitUserLists);
         // 게시글 주인이 평점을 받았다면 필터링된 유저들의 정보만 내려준다.
@@ -514,7 +514,6 @@ public class MyPageService {
                 .ratePoint(requestUserRate.getPoint())
                 .build();
 
-        userRate.updateStatus(true);
         userRateRepository.save(userRate);
         receiver.updateRateStatus(userRate);
 

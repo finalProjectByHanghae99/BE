@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface UserRateRepository extends JpaRepository<UserRate,Long> {
-    UserRate findUserRateByPostAndReceiver(Post post, User user);
+    Optional<UserRate> findUserRateByPostAndReceiver(Post post, User user);
 
 }
