@@ -9,6 +9,7 @@ import com.hanghae99.finalproject.validator.MailValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
@@ -39,6 +40,7 @@ public class MailService {
     }
 
     // 이메일 인증 메일 발송
+    @Async
     public void authMailSender(String email, User user) throws MessagingException {
 
         // [유효성 검사] 이메일 형식 확인
