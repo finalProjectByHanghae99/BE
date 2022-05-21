@@ -4,10 +4,14 @@ import com.hanghae99.finalproject.comment.dto.CommentRequestDto;
 import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.CustomException;
 import com.hanghae99.finalproject.post.model.Post;
+import com.hanghae99.finalproject.sse.dto.NotificationRequestDto;
+import com.hanghae99.finalproject.sse.model.NotificationType;
 import com.hanghae99.finalproject.timeConversion.TimeStamped;
 import com.hanghae99.finalproject.user.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
@@ -51,4 +55,11 @@ public class Comment extends TimeStamped {
         }
         this.comment = requestDto.getComment();
     }
+
+    public void publishEvent(ApplicationEventPublisher eventPublisher, NotificationType notificationType){
+        eventPublisher.publishEvent(new NotificationRequestDto(post.getUser(),notificationType,
+                notificationType.makeContent(post.getTitle()),notificationType.makeUrl(post.getId())));
+
+    }
+
 }

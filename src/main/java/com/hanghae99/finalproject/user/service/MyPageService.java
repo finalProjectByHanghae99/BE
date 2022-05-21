@@ -4,6 +4,8 @@ import com.hanghae99.finalproject.img.*;
 import com.hanghae99.finalproject.mail.dto.MailDto;
 import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
+import com.hanghae99.finalproject.sse.model.NotificationType;
+import com.hanghae99.finalproject.sse.service.NotificationService;
 import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import com.hanghae99.finalproject.user.dto.AcceptedDto;
 import com.hanghae99.finalproject.user.dto.MajorDto;
@@ -18,6 +20,7 @@ import com.hanghae99.finalproject.user.repository.*;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +42,7 @@ public class MyPageService {
     private final UserApplyRepository userApplyRepository;
     private final PostRepository postRepository;
     private final MailService mailService;
-
+    private final NotificationService notificationService;
     //마이페이지의 정보를 반환
     @Transactional
     public MyPageDto.ResponseDto findUserPage(Long userId) {
@@ -61,6 +64,7 @@ public class MyPageService {
         // 닉네임/프로필 이미지/자기소개/ 등록한 포폴 이미지/ 내가 올린 글 목록
         return MyPageDto.ResponseDto.builder()
                 .userId(user.getId())
+                .email(user.getEmail())
                 .nickname(user.getNickname())
                 .profileImg(user.getProfileImg()) // default or 수정 이미지
                 .intro(user.getIntro()) // default 값 or 수정 소개글
@@ -350,7 +354,11 @@ public class MyPageService {
         } else if (user.getIsVerifiedEmail() != null & userApply.getIsAccepted() == 1) {    // 2)
             mailService.forcedRejectTeamEmailBuilder(new MailDto(user, post));
         }
+        notificationService.send(userApply.getUser(),NotificationType.REJECT,"거절","testUrl");
+
     }
+
+
 
     //모집 마감 목록 조회
     //신청한 글들과 모집한 글들을 전부 찾아와 스테이터스가 모집마감인 상태의 글들을 반환해준다.

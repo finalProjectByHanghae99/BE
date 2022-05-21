@@ -32,6 +32,7 @@ public class MyPageDto {
     @AllArgsConstructor
     public static class ResponseDto{
         private Long userId; //해당 유저 Id
+        private String email;
         private String nickname; //닉네임
         private String profileImg; // 프로필 이미지 링크 -> Default 이미지 전달.
         private String intro; // 자기 소개

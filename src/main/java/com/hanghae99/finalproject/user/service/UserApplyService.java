@@ -8,6 +8,8 @@ import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
+import com.hanghae99.finalproject.sse.model.NotificationType;
+import com.hanghae99.finalproject.sse.service.NotificationService;
 import com.hanghae99.finalproject.user.dto.UserApplyRequestDto;
 import com.hanghae99.finalproject.user.model.Major;
 import com.hanghae99.finalproject.user.model.User;
@@ -16,6 +18,7 @@ import com.hanghae99.finalproject.user.repository.MajorRepository;
 import com.hanghae99.finalproject.user.repository.UserApplyRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -34,6 +37,7 @@ public class UserApplyService {
     private final MajorRepository majorRepository;
     private final UserApplyRepository userApplyRepository;
     private final MailService mailService;
+    private final NotificationService notificationService;
 
     // 모집 지원
     @Transactional
@@ -110,8 +114,13 @@ public class UserApplyService {
             mailService.applicantMailBuilder(new MailDto(userApply));
         }
 
+        // '모집글' -> '신청' 시에 모집글 작성자에게 실시간 알림을 보낸다.
+        notificationService.send(post.getUser(),NotificationType.APPLY,"모집 지원","testUrl");
+
+
         return userApplyRepository.save(userApply);
     }
+
 
     // 모집 지원 취소
     @Transactional
@@ -204,4 +213,6 @@ public class UserApplyService {
         Long loginUserId = user.getId();    // 현재 로그인 한 유저
         return starterId.equals(loginUserId);
     }
+
+
 }

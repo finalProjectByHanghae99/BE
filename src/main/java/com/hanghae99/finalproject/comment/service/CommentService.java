@@ -11,9 +11,12 @@ import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
+import com.hanghae99.finalproject.sse.model.NotificationType;
+import com.hanghae99.finalproject.sse.service.NotificationService;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final MailService mailService;
+    private final NotificationService notificationService;
 
     // comment 등록
     @Transactional
@@ -49,6 +53,9 @@ public class CommentService {
          */
         List<Comment> findCommentByPost = commentRepository.findAllByPostAndUser(post, user);
         Long commentId = findCommentByPost.get(findCommentByPost.size() - 1).getId();
+
+        //댓글 생성 시 모집글 작성 유저에게 실시간 알림 전송 ,
+        notificationService.send(post.getUser(),NotificationType.REPLY,"댓글","testUrl");
 
         return new CommentCreateResponseDto(commentId);
     }
@@ -99,4 +106,5 @@ public class CommentService {
                 () -> new CustomException(ErrorCode.COMMENT_NOT_FOUND)
         );
     }
+
 }
