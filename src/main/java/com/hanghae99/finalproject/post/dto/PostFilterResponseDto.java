@@ -22,7 +22,7 @@ public class PostFilterResponseDto {
     private String deadline;
     private CurrentStatus currentStatus;
     private String region;
-    private String createdAt;
+    private LocalDateTime createdAt;
     private List<ImgResponseDto> imgUrl;
     private List<MajorDto.ResponseDto> majorList;
 
@@ -37,6 +37,6 @@ public class PostFilterResponseDto {
         this.deadline = deadline;
         this.currentStatus = currentStatus;
         this.region = region;
-        this.createdAt = TimeConversion.timeConversion(createdAt);
+        this.createdAt = createdAt;
     }
 }
