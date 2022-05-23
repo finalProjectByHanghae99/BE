@@ -14,7 +14,6 @@ import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.sse.model.NotificationType;
 import com.hanghae99.finalproject.sse.service.NotificationService;
-import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import com.hanghae99.finalproject.user.dto.AcceptedDto;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
@@ -176,7 +175,7 @@ public class MyPageService {
                         .nickname(post.getUser().getNickname())
                         .title(post.getTitle())
                         .status(post.getCurrentStatus())
-                        .createAt(TimeConversion.timeConversion(post.getCreatedAt()))
+                        .createAt(post.getCreatedAt())
                         .build();
                 //리스트에 담아준다
                 appliedResponseDtoList.add(appliedResponseDto);
@@ -209,7 +208,7 @@ public class MyPageService {
                         .title(findPosts.getTitle())
                         .nickname(user.getNickname())
                         .userApplyList(userApplyListToDtoList(findPosts.getUserApplyList()))
-                        .createAt(TimeConversion.timeConversion(findPosts.getCreatedAt()))
+                        .createAt(findPosts.getCreatedAt())
                         .build();
 
                 recruitResponseDtosList.add(recruitResponseDto);
@@ -398,7 +397,7 @@ public class MyPageService {
                         .postId(StatusOverByPost.getId())
                         .title(StatusOverByPost.getTitle())
                         .nickname(StatusOverByPost.getUser().getNickname())
-                        .createdAt(TimeConversion.timeConversion(StatusOverByPost.getCreatedAt()))
+                        .createdAt(StatusOverByPost.getCreatedAt())
                         .userApplyList(userApplyList(StatusOverByPost.getUserApplyList()))
                         .build();
                 recruitOverLists.add(recruitOverList);
@@ -413,7 +412,7 @@ public class MyPageService {
                         .postId(PostByAppliedUser.getPost().getId())
                         .title(PostByAppliedUser.getPost().getTitle())
                         .nickname(PostByAppliedUser.getUser().getNickname())
-                        .createdAt(TimeConversion.timeConversion(PostByAppliedUser.getPost().getCreatedAt()))
+                        .createdAt(PostByAppliedUser.getPost().getCreatedAt())
                         .userApplyList(userApplyList(PostByAppliedUser.getPost().getUserApplyList()))
                         .build();
                 recruitOverLists.add(recruitOverList);

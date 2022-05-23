@@ -6,6 +6,7 @@ import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.user.model.UserApply;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class MyPageDto {
         private Long userId;
         private String nickname;
         private String title;
-        private String createAt;
+        private LocalDateTime createAt;
         private CurrentStatus status;
 
 
@@ -70,7 +71,7 @@ public class MyPageDto {
         private Long userId;
         private String nickname;
         private String title;
-        private String createAt;
+        private LocalDateTime createAt;
         private List<MyPageDto.ResponseEntityToUserApply> userApplyList;
 
 
@@ -102,7 +103,7 @@ public class MyPageDto {
         private Long postId;
         private String title;
         private String nickname;
-        private String createdAt;
+        private LocalDateTime createdAt;
         private List<MyPageDto.ResponseEntityToUserApply> userApplyList;
 
 
