@@ -59,7 +59,7 @@ public class PostDto {
             this.createdAt = TimeConversion.timeConversion(post.getCreatedAt());
             this.link = post.getLink();
             if (imgList.isEmpty()) {
-                this.imgList = Collections.singletonList("https://hyemco-butket.s3.ap-northeast-2.amazonaws.com/detail_default.png");
+                this.imgList = Collections.singletonList("https://mohum.s3.ap-northeast-2.amazonaws.com/mohum-src/detail_default.png");
             } else {
                 this.imgList = imgList;
             }

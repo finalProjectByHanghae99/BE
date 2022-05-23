@@ -37,4 +37,10 @@ public class PostFilterController {
 
         return postFilterService.home(postFilterRequestDto, pageable);
     }
+
+    // post 전체 조회 API - 검색 목록
+    @GetMapping("/api/posts")
+    public Map<String, Object> getAll() {
+        return postFilterService.getAllPost();
+    }
 }
