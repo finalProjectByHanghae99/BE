@@ -119,7 +119,7 @@ public class NotificationService {
                 .notificationType(notificationType)
                 .content(content)
                 .url(url)
-                .isRead(false)
+                .isRead(false) // 현재 읽음상태
                 .build();
     }
 
@@ -127,9 +127,14 @@ public class NotificationService {
     public List<NotificationDto> findAllNotifications(Long userId) {
         List<Notification> notifications = notificationRepository.findAllByUserId(userId);
         notifications
-                .forEach(Notification::read);
+                .forEach(Notification::read); // 읽음처리 된 알람들을 보내준다
         return notifications.stream()
                 .map(NotificationDto::create)
                 .collect(Collectors.toList());
+    }
+
+    public Long countUnReadNotifications(Long userId) {
+            return notificationRepository.countUnReadNotifications(userId);
+
     }
 }

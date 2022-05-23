@@ -5,9 +5,11 @@ import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.sse.dto.NotificationDto;
 import com.hanghae99.finalproject.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -39,5 +41,12 @@ public class NotificationController {
         return notificationService.findAllNotifications(userDetails.getUser().getId());
     }
 
+    //알림 조회 - 구독자가 현재 읽지않은 알림 갯수
+    @GetMapping(value = "/notifications/count")
+    @ResponseStatus(HttpStatus.OK)
+    public Long countUnReadNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return notificationService.countUnReadNotifications(userDetails.getUser().getId());
+
+    }
 
 }
