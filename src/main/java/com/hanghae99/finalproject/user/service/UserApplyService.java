@@ -115,7 +115,7 @@ public class UserApplyService {
         }
 
         // '모집글' -> '신청' 시에 모집글 작성자에게 실시간 알림을 보낸다.
-        notificationService.send(post.getUser(),NotificationType.APPLY,"모집 지원","testUrl");
+        notificationService.send(post.getUser(),NotificationType.APPLY,"게시한 모집글에 '신청'이 들어왔습니다","URL");
 
 
         return userApplyRepository.save(userApply);

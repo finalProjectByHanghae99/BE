@@ -60,9 +60,6 @@ public class User {
     @Column
     private int likeCount;
 
-//    @Column
-//    private Boolean rateStatus;
-
     @Column
     private Long kakaoId;
 

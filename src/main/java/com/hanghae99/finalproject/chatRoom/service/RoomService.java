@@ -15,6 +15,8 @@ import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
+import com.hanghae99.finalproject.sse.model.NotificationType;
+import com.hanghae99.finalproject.sse.service.NotificationService;
 import com.hanghae99.finalproject.timeConversion.MessageTimeConversion;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.repository.UserRepository;
@@ -25,7 +27,6 @@ import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -38,6 +39,8 @@ public class RoomService {
     private final UserRoomRepository userRoomRepository;
     private final MessageRepository messageRepository;
     private final MailService mailService;
+    private final NotificationService notificationService;
+
 
     @Transactional
     public RoomDto.Response createRoomService(RoomDto.Request roomDto, UserDetailsImpl userDetails) throws MessagingException {
@@ -121,6 +124,9 @@ public class RoomService {
                     .postTitle(post.getTitle())
                     .build());
         }
+
+        notificationService.send(toUser, NotificationType.CHAT,"상대방과 채팅방이 생성되었습니다.","URL");
+        notificationService.send(user, NotificationType.CHAT,"상대방과 채팅방이 생성되었습니다.","URL");
         return response;
     }
 

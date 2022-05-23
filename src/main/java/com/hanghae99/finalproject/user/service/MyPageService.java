@@ -1,33 +1,41 @@
 package com.hanghae99.finalproject.user.service;
 
-import com.hanghae99.finalproject.img.*;
+import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.exception.ErrorCode;
+import com.hanghae99.finalproject.img.AwsS3UploadService;
+import com.hanghae99.finalproject.img.FileUploadService;
+import com.hanghae99.finalproject.img.ImgDto;
+import com.hanghae99.finalproject.img.ImgUrlDto;
 import com.hanghae99.finalproject.mail.dto.MailDto;
 import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
+import com.hanghae99.finalproject.post.model.Post;
+import com.hanghae99.finalproject.post.repository.PostRepository;
+import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.sse.model.NotificationType;
 import com.hanghae99.finalproject.sse.service.NotificationService;
 import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import com.hanghae99.finalproject.user.dto.AcceptedDto;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.CustomException;
-import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.user.dto.RejectDto;
 import com.hanghae99.finalproject.user.model.*;
-import com.hanghae99.finalproject.post.repository.PostRepository;
-import com.hanghae99.finalproject.user.repository.*;
-import com.hanghae99.finalproject.security.UserDetailsImpl;
+import com.hanghae99.finalproject.user.repository.UserApplyRepository;
+import com.hanghae99.finalproject.user.repository.UserPortfolioImgRepository;
+import com.hanghae99.finalproject.user.repository.UserRateRepository;
+import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -61,6 +69,7 @@ public class MyPageService {
             }
         }
         //이미지가 없다면 ,Default 값 전달해야함. 디자이너분들과 상의 후 변경필요
+        //리스트값이 비었다면 프론트단에서 디폴트 이미지를 보여주기로 협의
 
         // 닉네임/프로필 이미지/자기소개/ 등록한 포폴 이미지/ 내가 올린 글 목록
         return MyPageDto.ResponseDto.builder()
@@ -278,8 +287,10 @@ public class MyPageService {
     // 신청한 모집글의 유저 1이 현재 게시글 pk 와 자신의 유저 pk 를 전달
     // '요청 수락' 시 acceted 가 0 -> 1 로 변경
     // 모집 전공 수가 충족된다면 해당 게시글 상태 변화
+
     @Transactional
     public void modifyAcceptedStatus(AcceptedDto acceptedDto) throws MessagingException {
+        final int isAccepted = 1;
 
         Post post = postRepository.findById(acceptedDto.getPostId()).orElseThrow(
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND)
@@ -306,7 +317,6 @@ public class MyPageService {
                 post.updateStatus(CurrentStatus.RECRUITING_CLOSE);
             }
         }
-        int isAccepted = 1;
 
         // 수락시 지원자에게 메일 발송(지원자가 이메일 인증 했을 경우만)
        if (user.getIsVerifiedEmail() != null) {
@@ -314,6 +324,8 @@ public class MyPageService {
        }
 
         userApply.modifyAcceptedStatus(isAccepted);
+       //수락 받은 user에게 알림
+        notificationService.send(userApply.getUser(), NotificationType.ACCEPT,"요청하신 모집신청이 수락되었습니다.","URL");
     }
     //신청한 모집글에서 유저명단 -> 해당 인원의 요청을 거절 시.
     //팀원명단에서 해당 인원을 강퇴 시 같이 사용 .
@@ -331,6 +343,7 @@ public class MyPageService {
 
         if(userApply.getIsAccepted() == 0) {
             userApplyRepository.deleteById(userApply.getId());
+            notificationService.send(userApply.getUser(),NotificationType.REJECT,"모집","URL");
         }
         //isAccepted가 == 1 이라면[현재 팀원 목록에 존재하는 참가자]
         //해당 전공에서 지원수를 1 차감한다.
@@ -358,9 +371,6 @@ public class MyPageService {
         }
 
     }
-
-
-
     //모집 마감 목록 조회
     //신청한 글들과 모집한 글들을 전부 찾아와 스테이터스가 모집마감인 상태의 글들을 반환해준다.
     @Transactional

@@ -12,4 +12,9 @@ public interface NotificationRepository extends JpaRepository<Notification,Long>
             "where n.receiver.id = :userId " +
             "order by n.id desc")
     List<Notification> findAllByUserId(@Param("userId") Long userId);
+
+    @Query("select count(n) from Notification n " +
+            "where n.receiver.id = :userId and " +
+            "n.isRead = false")
+    Long countUnReadNotifications(@Param("userId") Long userId);
 }

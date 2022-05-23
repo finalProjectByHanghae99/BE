@@ -55,7 +55,7 @@ public class CommentService {
         Long commentId = findCommentByPost.get(findCommentByPost.size() - 1).getId();
 
         //댓글 생성 시 모집글 작성 유저에게 실시간 알림 전송 ,
-        notificationService.send(post.getUser(),NotificationType.REPLY,"모집중인 글에 댓글이 생성되었습니다.","");
+        notificationService.send(post.getUser(),NotificationType.REPLY,"게시한 모집글에 댓글이 생성되었습니다.","URL");
 
         return new CommentCreateResponseDto(commentId);
     }
