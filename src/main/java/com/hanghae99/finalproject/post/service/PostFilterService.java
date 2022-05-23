@@ -1,10 +1,14 @@
 package com.hanghae99.finalproject.post.service;
 
+import com.hanghae99.finalproject.img.ImgRepository;
 import com.hanghae99.finalproject.img.ImgResponseDto;
+import com.hanghae99.finalproject.post.dto.PostAllResponseDto;
 import com.hanghae99.finalproject.post.dto.PostFilterRequestDto;
 import com.hanghae99.finalproject.post.dto.PostFilterResponseDto;
+import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.user.dto.MajorDto;
+import com.hanghae99.finalproject.user.repository.MajorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -85,6 +89,39 @@ public class PostFilterService {
         }
         data.put("data", pagePost.getContent());
 
+        return data;
+    }
+
+    // 검색 리스트 띄워주기 위한 post 전체 조회
+    @Transactional
+    public Map<String, Object> getAllPost() {
+
+        List<PostAllResponseDto> list = new ArrayList<>();
+
+        Map<String, Object> data = new HashMap<>();
+
+        // 모든 포스트의 title 만 모아놓은 list
+        List<String> titleList = new ArrayList<>();
+        for (Post postTitle : postRepository.findAll()) {
+            titleList.add(postTitle.getTitle());
+        }
+
+        // 모든 포스트의 nickname 만 모아놓은 list
+        List<String> nicknameList = new ArrayList<>();
+        for (Post postNickname : postRepository.findAll()) {
+            nicknameList.add(postNickname.getUser().getNickname());
+        }
+
+        // 모든 포스트의 content 만 모아놓은 list
+        List<String> contentList = new ArrayList<>();
+        for (Post postContent : postRepository.findAll()) {
+            contentList.add(postContent.getContent());
+        }
+
+        PostAllResponseDto postAll = new PostAllResponseDto(titleList, nicknameList, contentList);
+        list.add(postAll);
+
+        data.put("data", list);
         return data;
     }
 }
