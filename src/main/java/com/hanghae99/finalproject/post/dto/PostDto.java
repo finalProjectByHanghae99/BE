@@ -7,6 +7,7 @@ import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ public class PostDto {
     }
 
     @Getter
+    @NoArgsConstructor
     public static class DetailDto {
         private String userStatus;
         private Long postId;
@@ -39,7 +41,7 @@ public class PostDto {
         private String deadline;
         private CurrentStatus currentStatus;
         private String region;
-        private String createdAt;
+        private LocalDateTime createdAt;
         private String link;
         private List<String> imgList;
         private List<CommentResponseDto> commentList;
@@ -56,7 +58,7 @@ public class PostDto {
             this.deadline = post.getDeadline();
             this.currentStatus = post.getCurrentStatus();
             this.region = post.getRegion();
-            this.createdAt = TimeConversion.timeConversion(post.getCreatedAt());
+            this.createdAt = post.getCreatedAt();
             this.link = post.getLink();
             if (imgList.isEmpty()) {
                 this.imgList = Collections.singletonList("https://mohum.s3.ap-northeast-2.amazonaws.com/mohum-src/detail_default.png");
