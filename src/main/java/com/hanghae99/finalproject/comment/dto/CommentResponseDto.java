@@ -1,12 +1,10 @@
 package com.hanghae99.finalproject.comment.dto;
 
 import com.hanghae99.finalproject.comment.model.Comment;
-import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @NoArgsConstructor

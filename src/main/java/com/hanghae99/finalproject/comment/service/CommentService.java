@@ -54,8 +54,9 @@ public class CommentService {
         List<Comment> findCommentByPost = commentRepository.findAllByPostAndUser(post, user);
         Long commentId = findCommentByPost.get(findCommentByPost.size() - 1).getId();
 
+        String notiUrl = "https://develop.d8m0727pi9ccf.amplifyapp.com/detail/"+post.getId();
         //댓글 생성 시 모집글 작성 유저에게 실시간 알림 전송 ,
-        notificationService.send(post.getUser(),NotificationType.REPLY,"게시한 모집글에 댓글이 생성되었습니다.","URL");
+        notificationService.send(post.getUser(),NotificationType.REPLY,"게시한 모집글에 댓글이 생성되었습니다.",notiUrl);
 
         return new CommentCreateResponseDto(commentId);
     }

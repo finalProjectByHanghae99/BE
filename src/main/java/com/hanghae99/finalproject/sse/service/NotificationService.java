@@ -133,6 +133,7 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public Long countUnReadNotifications(Long userId) {
             return notificationRepository.countUnReadNotifications(userId);
 

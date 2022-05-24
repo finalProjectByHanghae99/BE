@@ -67,6 +67,17 @@ dependencies {
     // 타임리프
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
+    //AOP 적용
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    //swagger 적용
+    // https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+
+    //구글 애널리틱스 적용
+//   implementation 'com.google.apis:google-api-services-analyticsreporting:v4-rev20211020-1.32.1'
+
     // 테스트 - 스프링시큐리티
     //testImplementation 'org.springframework.security:spring-security-test'
 
