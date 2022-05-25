@@ -19,12 +19,14 @@ public class PostFilterController {
     private final PostFilterService postFilterService;
 
     // post 랜딩 페이지 조회 API
+
     @GetMapping("/api/preview")
     public Map<String, Object> landingPage() {
         return postFilterService.landingPage();
     }
 
     // post 메인 조회 API
+
     @GetMapping("/post/filter/{page}")
     public Map<String, Object> home(@PathVariable int page,
                                     @RequestParam(required = false) String region,
@@ -36,5 +38,11 @@ public class PostFilterController {
         Pageable pageable = PageRequest.of(page, 8);
 
         return postFilterService.home(postFilterRequestDto, pageable);
+    }
+
+    // post 전체 조회 API - 검색 목록
+    @GetMapping("/api/posts")
+    public Map<String, Object> getAll() {
+        return postFilterService.getAllPost();
     }
 }

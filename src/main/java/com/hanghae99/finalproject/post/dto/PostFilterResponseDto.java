@@ -2,13 +2,11 @@ package com.hanghae99.finalproject.post.dto;
 
 import com.hanghae99.finalproject.img.ImgResponseDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
-import com.hanghae99.finalproject.timeConversion.TimeConversion;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
@@ -22,7 +20,7 @@ public class PostFilterResponseDto {
     private String deadline;
     private CurrentStatus currentStatus;
     private String region;
-    private String createdAt;
+    private LocalDateTime createdAt;
     private List<ImgResponseDto> imgUrl;
     private List<MajorDto.ResponseDto> majorList;
 
@@ -37,6 +35,6 @@ public class PostFilterResponseDto {
         this.deadline = deadline;
         this.currentStatus = currentStatus;
         this.region = region;
-        this.createdAt = TimeConversion.timeConversion(createdAt);
+        this.createdAt = createdAt;
     }
 }

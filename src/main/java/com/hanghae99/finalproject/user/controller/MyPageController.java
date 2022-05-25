@@ -7,6 +7,7 @@ import com.hanghae99.finalproject.exception.ExceptionResponse;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.user.dto.RejectDto;
 import com.hanghae99.finalproject.user.service.MyPageService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class MyPageController {
 
     //유저 정보 조회 및 수정
     //자신 or 타인의 유저 정보를 볼 수 있다 .
+    @ApiOperation(value = "회원 조회",notes = "특정 회원을 조회한다.")
     @GetMapping("/user/info/{userId}")
     public MyPageDto.ResponseDto userInfo(@PathVariable Long userId){
         return myPageService.findUserPage(userId);

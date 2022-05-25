@@ -61,9 +61,6 @@ public class User {
     private int likeCount;
 
     @Column
-    private Boolean rateStatus;
-
-    @Column
     private Long kakaoId;
 
     @Column
@@ -97,9 +94,8 @@ public class User {
     }
 
     //평점을 받는다면 likeCount가 +1 -> 평가완료 !
-    public void updateRateStatus(int point) {
-        this.likeCount +=point;
-        this.rateStatus = true;
+    public void updateRateStatus(UserRate userRate) {
+        this.likeCount += userRate.getRatePoint();
     }
 
     // 모집 마감시 ProjectCount 변경(projectCount += 1)

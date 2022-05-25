@@ -7,23 +7,18 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 
-@Configuration
 @EnableAsync
+@Configuration
 public class AsyncConfig implements AsyncConfigurer {
 
-    @Override
+    @Override // 비동기 처리 설정 / SSE 리스너에 필요함
     public Executor getAsyncExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        //기본적으로 실행 대기하는 thread의 갯수 설정
-        executor.setCorePoolSize(2);
-        //동시동작하는 최대 Thread pool 크기
-        executor.setMaxPoolSize(10);
-        //thread pool que 크기
-        executor.setQueueCapacity(500);
-        // spring이 생성하는 thread의 접두사 설정
-        executor.setThreadNamePrefix("mail-async-");
-        //initialize 안해주면 executor 사용 불가
-        executor.initialize();
-        return executor;
+        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+        taskExecutor.setCorePoolSize(3);
+        taskExecutor.setMaxPoolSize(10);
+        taskExecutor.setQueueCapacity(50);
+        taskExecutor.setThreadNamePrefix("async-thread-");
+        taskExecutor.initialize();
+        return taskExecutor;
     }
 }

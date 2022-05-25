@@ -33,8 +33,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   public void configure(WebSecurity web) {
     // h2-console 사용에 대한 허용 (CSRF, FrameOptions 무시)
     web
-        .ignoring()
-        .antMatchers("/h2-console/**","/webSocket/**");
+            .ignoring()
+            .antMatchers("/h2-console/**", "/webSocket/**")
+            .antMatchers("/v2/api-docs","/v3/api-docs", "/swagger-resources/**", "**/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**","/swagger-ui","/swagger-ui/**");
   }
 
   @Override
@@ -51,11 +52,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             // login 없이 허용
             .antMatchers("/user/**").permitAll()
             .antMatchers(HttpMethod.GET, "/api/post/**").permitAll()
+            .antMatchers("/api/posts").permitAll()
             .antMatchers("/api/preview").permitAll()
             .antMatchers("/post/filter/**").permitAll()
             .antMatchers("/webSocket/**").permitAll()
             .antMatchers("/search/**").permitAll()
-            .antMatchers("/sub/**").permitAll()
+            .antMatchers("/subscribe/**").permitAll()
+            .antMatchers("/v2/api-docs","/v3/api-docs", "/swagger-resources/**", "**/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger*/**","/swagger-ui","/swagger-ui/**").permitAll()
 
             //추가 - 메인 페이지 접근 허용
             .antMatchers("/").permitAll()

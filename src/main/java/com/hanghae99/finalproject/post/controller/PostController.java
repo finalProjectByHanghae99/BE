@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+
 @RestController
 @RequiredArgsConstructor
 public class PostController {
@@ -21,6 +22,7 @@ public class PostController {
     private final PostService postService;
 
     // post 등록 API
+
     @PostMapping("/api/post")
     public ResponseEntity<Object> createPost(@RequestPart("data") String jsonString,
                                                         @RequestPart(value = "img", required = false) List<MultipartFile> imgs,
@@ -30,6 +32,7 @@ public class PostController {
     }
 
     // post 상세 조회 API
+
     @GetMapping("/api/post/{postId}")
     public ResponseEntity<Object> getDetailPost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         PostDto.DetailDto detailDto = postService.getDetail(postId, userDetails);
@@ -37,6 +40,7 @@ public class PostController {
     }
 
     // post 수정 API
+
     @PutMapping("/api/post/{postId}")
     public ResponseEntity<Object> editPost(@PathVariable Long postId,
                                                       @RequestPart(value = "data") String jsonString,

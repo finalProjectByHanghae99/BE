@@ -14,6 +14,7 @@ import com.hanghae99.finalproject.user.repository.UserRepository;
 import com.hanghae99.finalproject.user.service.KakaoUserService;
 import com.hanghae99.finalproject.user.service.UserService;
 import com.hanghae99.finalproject.validator.UserValidator;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ public class UserController {
     private final UserRepository userRepository;
 
     // 회원가입 API
+    @ApiOperation(value = "회원가입",notes = "회원 가입을 진행한다")
     @PostMapping("/user/signup")
     public ResponseEntity<Object> registerUser(@RequestBody SignupRequestDto requestDto) {
         UserInfo userInfo = userService.register(requestDto);

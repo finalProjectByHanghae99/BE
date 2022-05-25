@@ -2,9 +2,11 @@ package com.hanghae99.finalproject.user.dto;
 
 
 import com.hanghae99.finalproject.img.ImgUrlDto;
+import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.user.model.UserApply;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +34,7 @@ public class MyPageDto {
     @AllArgsConstructor
     public static class ResponseDto{
         private Long userId; //해당 유저 Id
+        private String email;
         private String nickname; //닉네임
         private String profileImg; // 프로필 이미지 링크 -> Default 이미지 전달.
         private String intro; // 자기 소개
@@ -53,7 +56,8 @@ public class MyPageDto {
         private Long userId;
         private String nickname;
         private String title;
-        private String createAt;
+        private LocalDateTime createAt;
+        private CurrentStatus status;
 
 
 
@@ -67,7 +71,7 @@ public class MyPageDto {
         private Long userId;
         private String nickname;
         private String title;
-        private String createAt;
+        private LocalDateTime createAt;
         private List<MyPageDto.ResponseEntityToUserApply> userApplyList;
 
 
@@ -99,7 +103,7 @@ public class MyPageDto {
         private Long postId;
         private String title;
         private String nickname;
-        private String createdAt;
+        private LocalDateTime createdAt;
         private List<MyPageDto.ResponseEntityToUserApply> userApplyList;
 
 

@@ -1,21 +1,28 @@
 package com.hanghae99.finalproject.user.service;
 
-import com.hanghae99.finalproject.img.*;
+import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.exception.ErrorCode;
+import com.hanghae99.finalproject.img.AwsS3UploadService;
+import com.hanghae99.finalproject.img.FileUploadService;
+import com.hanghae99.finalproject.img.ImgDto;
+import com.hanghae99.finalproject.img.ImgUrlDto;
 import com.hanghae99.finalproject.mail.dto.MailDto;
 import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
-import com.hanghae99.finalproject.timeConversion.TimeConversion;
+import com.hanghae99.finalproject.post.model.Post;
+import com.hanghae99.finalproject.post.repository.PostRepository;
+import com.hanghae99.finalproject.security.UserDetailsImpl;
+import com.hanghae99.finalproject.sse.model.NotificationType;
+import com.hanghae99.finalproject.sse.service.NotificationService;
 import com.hanghae99.finalproject.user.dto.AcceptedDto;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.CustomException;
-import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.user.dto.RejectDto;
 import com.hanghae99.finalproject.user.model.*;
-import com.hanghae99.finalproject.post.repository.PostRepository;
-import com.hanghae99.finalproject.user.repository.*;
-import com.hanghae99.finalproject.security.UserDetailsImpl;
+import com.hanghae99.finalproject.user.repository.UserApplyRepository;
+import com.hanghae99.finalproject.user.repository.UserPortfolioImgRepository;
+import com.hanghae99.finalproject.user.repository.UserRateRepository;
+import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +31,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -39,7 +49,8 @@ public class MyPageService {
     private final UserApplyRepository userApplyRepository;
     private final PostRepository postRepository;
     private final MailService mailService;
-
+    private final NotificationService notificationService;
+    private final UserRateRepository userRateRepository;
     //마이페이지의 정보를 반환
     @Transactional
     public MyPageDto.ResponseDto findUserPage(Long userId) {
@@ -57,10 +68,12 @@ public class MyPageService {
             }
         }
         //이미지가 없다면 ,Default 값 전달해야함. 디자이너분들과 상의 후 변경필요
+        //리스트값이 비었다면 프론트단에서 디폴트 이미지를 보여주기로 협의
 
         // 닉네임/프로필 이미지/자기소개/ 등록한 포폴 이미지/ 내가 올린 글 목록
         return MyPageDto.ResponseDto.builder()
                 .userId(user.getId())
+                .email(user.getEmail())
                 .nickname(user.getNickname())
                 .profileImg(user.getProfileImg()) // default or 수정 이미지
                 .intro(user.getIntro()) // default 값 or 수정 소개글
@@ -161,7 +174,8 @@ public class MyPageService {
                         .postId(post.getId())
                         .nickname(post.getUser().getNickname())
                         .title(post.getTitle())
-                        .createAt(TimeConversion.timeConversion(post.getCreatedAt()))
+                        .status(post.getCurrentStatus())
+                        .createAt(post.getCreatedAt())
                         .build();
                 //리스트에 담아준다
                 appliedResponseDtoList.add(appliedResponseDto);
@@ -194,7 +208,7 @@ public class MyPageService {
                         .title(findPosts.getTitle())
                         .nickname(user.getNickname())
                         .userApplyList(userApplyListToDtoList(findPosts.getUserApplyList()))
-                        .createAt(TimeConversion.timeConversion(findPosts.getCreatedAt()))
+                        .createAt(findPosts.getCreatedAt())
                         .build();
 
                 recruitResponseDtosList.add(recruitResponseDto);
@@ -272,8 +286,10 @@ public class MyPageService {
     // 신청한 모집글의 유저 1이 현재 게시글 pk 와 자신의 유저 pk 를 전달
     // '요청 수락' 시 acceted 가 0 -> 1 로 변경
     // 모집 전공 수가 충족된다면 해당 게시글 상태 변화
+
     @Transactional
     public void modifyAcceptedStatus(AcceptedDto acceptedDto) throws MessagingException {
+        final int isAccepted = 1;
 
         Post post = postRepository.findById(acceptedDto.getPostId()).orElseThrow(
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND)
@@ -300,7 +316,6 @@ public class MyPageService {
                 post.updateStatus(CurrentStatus.RECRUITING_CLOSE);
             }
         }
-        int isAccepted = 1;
 
         // 수락시 지원자에게 메일 발송(지원자가 이메일 인증 했을 경우만)
        if (user.getIsVerifiedEmail() != null) {
@@ -308,6 +323,7 @@ public class MyPageService {
        }
 
         userApply.modifyAcceptedStatus(isAccepted);
+       //수락 받은 user에게 알림
     }
     //신청한 모집글에서 유저명단 -> 해당 인원의 요청을 거절 시.
     //팀원명단에서 해당 인원을 강퇴 시 같이 사용 .
@@ -325,6 +341,7 @@ public class MyPageService {
 
         if(userApply.getIsAccepted() == 0) {
             userApplyRepository.deleteById(userApply.getId());
+            notificationService.send(userApply.getUser(),NotificationType.REJECT,"모집","URL");
         }
         //isAccepted가 == 1 이라면[현재 팀원 목록에 존재하는 참가자]
         //해당 전공에서 지원수를 1 차감한다.
@@ -350,8 +367,8 @@ public class MyPageService {
         } else if (user.getIsVerifiedEmail() != null & userApply.getIsAccepted() == 1) {    // 2)
             mailService.forcedRejectTeamEmailBuilder(new MailDto(user, post));
         }
-    }
 
+    }
     //모집 마감 목록 조회
     //신청한 글들과 모집한 글들을 전부 찾아와 스테이터스가 모집마감인 상태의 글들을 반환해준다.
     @Transactional
@@ -379,7 +396,7 @@ public class MyPageService {
                         .postId(StatusOverByPost.getId())
                         .title(StatusOverByPost.getTitle())
                         .nickname(StatusOverByPost.getUser().getNickname())
-                        .createdAt(TimeConversion.timeConversion(StatusOverByPost.getCreatedAt()))
+                        .createdAt(StatusOverByPost.getCreatedAt())
                         .userApplyList(userApplyList(StatusOverByPost.getUserApplyList()))
                         .build();
                 recruitOverLists.add(recruitOverList);
@@ -394,7 +411,7 @@ public class MyPageService {
                         .postId(PostByAppliedUser.getPost().getId())
                         .title(PostByAppliedUser.getPost().getTitle())
                         .nickname(PostByAppliedUser.getUser().getNickname())
-                        .createdAt(TimeConversion.timeConversion(PostByAppliedUser.getPost().getCreatedAt()))
+                        .createdAt(PostByAppliedUser.getPost().getCreatedAt())
                         .userApplyList(userApplyList(PostByAppliedUser.getPost().getUserApplyList()))
                         .build();
                 recruitOverLists.add(recruitOverList);
@@ -431,17 +448,16 @@ public class MyPageService {
     @Transactional
     public MyPageDto.RecruitPostUser findRecruitUserList(Long postId,UserDetailsImpl userDetails) {
         //최종적으로 보낼 값들을 담아줄 list 선언
-
         List<MyPageDto.RecruitUserList> recruitUserLists = new ArrayList<>();
 
-        User user = userDetails.getUser(); // 혜민님
+        User user = userDetails.getUser(); // 현재 로그인한 유저 ,
 
         // 팀원 리뷰 클릭 시 모집마감 list에서 postId를 전달  EX: 1
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
 
-        //모집글들의 참가자 정보들을 불러오기 위해 list 빌딩
+        //현재 모집글들에 참여한 userApplyList 를 불러옴 ,
         List<UserApply> userApplyList = post.getUserApplyList();
 
         // 타 유저들은 평가 시 게시글 주인도 평가할 수 있어야한다.
@@ -453,10 +469,15 @@ public class MyPageService {
                 .profileImg(post.getUser().getProfileImg())
                 .build();
 
-        // 우선 참가자들의 정보를 LIST에 담아준다.
+        // 현재 모집글에 지원한 참가자들의 정보
         for (UserApply userApply : userApplyList) {
-            // 접근하는 유저의 pk 와 지원한 유저pk가 같지 않아야 본인의 이름이 나오지 않는다.
-            if (userApply.getUser().getRateStatus() == null &&
+            //참가자들의 유저정보와 모집글 정보 -> 해당 게시글의 유저가 가진 평점정보를 조회한다.
+            // null 값 허용
+            Optional<UserRate> userRate =
+                    userRateRepository.findUserRateByPostAndReceiver(post,userApply.getUser());
+
+            //평점 정보가 존재하지 않는다면
+            if (!userRate.isPresent() &&
                     !Objects.equals(user.getId(), userApply.getUser().getId())) {
                 MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
                         .userId(userApply.getUser().getId())
@@ -469,7 +490,9 @@ public class MyPageService {
         // 필터링된 참가자들의 정보 +
         // 게시글 참여자가 평점을 받지 않은 상태라면 :STATUS == NULL
         // 게시글 참여자와 필터링된 유저 리스트들이 반환 되어야하고
-        if(post.getUser().getRateStatus() == null &&
+        // 게시글 주인의 유저정보 및 평점정보는 현재 참가자 리스트에 없기에 별도로 추가 조회한다.
+        Optional<UserRate> postUserRate = userRateRepository.findUserRateByPostAndReceiver(post,post.getUser());
+        if(!postUserRate.isPresent() &&
                 !Objects.equals(post.getUser().getId(), userDetails.getUser().getId())){
             return new MyPageDto.RecruitPostUser(postUser,recruitUserLists);
         // 게시글 주인이 평점을 받았다면 필터링된 유저들의 정보만 내려준다.
@@ -496,9 +519,13 @@ public class MyPageService {
                 .sender(userDetails.getUser())
                 .receiver(receiver)
                 .post(post)
+                .ratePoint(requestUserRate.getPoint())
                 .build();
 
-        receiver.updateRateStatus(requestUserRate.getPoint());
+        userRateRepository.save(userRate);
+        receiver.updateRateStatus(userRate);
+
+
     }
 
 }
