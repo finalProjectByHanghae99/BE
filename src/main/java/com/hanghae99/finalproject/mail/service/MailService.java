@@ -78,6 +78,7 @@ public class MailService {
     }
 
     // 지원 알림 메일 발송
+    @Async
     public void applicantMailBuilder(MailDto mailDto) throws MessagingException {
 
         String email = mailDto.getToEmail();
@@ -99,6 +100,7 @@ public class MailService {
     }
 
     // 수락 알림 메일 발송
+    @Async
     public void acceptTeamMailBuilder(MailDto mailDto) throws MessagingException {
 
         String email = mailDto.getToEmail();
@@ -120,6 +122,7 @@ public class MailService {
     }
 
     // 거절 알림 메일 발송
+    @Async
     public void rejectTeamMailBuilder(MailDto mailDto) throws MessagingException {
 
         String email = mailDto.getToEmail();
@@ -141,6 +144,7 @@ public class MailService {
     }
 
     // 강퇴 알림 메일 발송
+    @Async
     public void forcedRejectTeamEmailBuilder(MailDto mailDto) throws MessagingException {
 
         String email = mailDto.getToEmail();
@@ -162,6 +166,7 @@ public class MailService {
     }
 
     // 신규 채팅방 생성 알림 메일 발송
+    @Async
     public void chatOnEmailBuilder(MailDto mailDto) throws MessagingException {
 
         String email = mailDto.getToEmail();

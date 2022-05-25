@@ -321,6 +321,12 @@ public class MyPageService {
        if (user.getIsVerifiedEmail() != null) {
            mailService.acceptTeamMailBuilder(new MailDto(user, post));
        }
+        //해당 댓글로 이동하는 url
+        String Url = "https://develop.d8m0727pi9ccf.amplifyapp.com/user/"+userApply.getUser().getId();
+        //신청 수락 시 신청 유저에게 실시간 알림 전송 ,
+        String content = userApply.getUser().getNickname()+"님! 프로젝트 매칭 알림이 도착했어요!";
+        notificationService.send(post.getUser(),NotificationType.ACCEPT,content,Url);
+
 
         userApply.modifyAcceptedStatus(isAccepted);
        //수락 받은 user에게 알림
@@ -339,9 +345,14 @@ public class MyPageService {
                 () -> new CustomException(ErrorCode.APPLY_NOT_FOUND)
         );
 
+        //해당 댓글로 이동하는 url
+        String Url = "https://develop.d8m0727pi9ccf.amplifyapp.com/user/"+userApply.getUser().getId();
+        //신청 수락 시 신청 유저에게 실시간 알림 전송 ,
+
         if(userApply.getIsAccepted() == 0) {
             userApplyRepository.deleteById(userApply.getId());
-            notificationService.send(userApply.getUser(),NotificationType.REJECT,"모집","URL");
+            String content = userApply.getUser().getNickname()+"님! 프로젝트 매칭 실패 알림이 도착했어요!";
+            notificationService.send(userApply.getUser(),NotificationType.REJECT,content,Url);
         }
         //isAccepted가 == 1 이라면[현재 팀원 목록에 존재하는 참가자]
         //해당 전공에서 지원수를 1 차감한다.
@@ -355,6 +366,8 @@ public class MyPageService {
             // 스테이터스는 진행중으로 유지한다.
             post.updateStatus(CurrentStatus.ONGOING);
             userApplyRepository.deleteById(userApply.getId());
+            String content = userApply.getUser().getNickname()+"님! 프로젝트 하차 알림이 도착했어요!";
+            notificationService.send(userApply.getUser(),NotificationType.REJECT,content,Url);
         }
 
         /*

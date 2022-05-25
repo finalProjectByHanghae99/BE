@@ -6,6 +6,8 @@ import com.hanghae99.finalproject.user.model.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -36,7 +38,8 @@ public class Notification extends TimeStamped {
     private NotificationType notificationType;
     // 알림 종류 [신청 / 수락 / 거절 등등 ]
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action= OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     private User receiver;
     //회원정보
