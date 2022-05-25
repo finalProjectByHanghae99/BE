@@ -2,15 +2,13 @@ package com.hanghae99.finalproject.sse.controller;
 
 
 import com.hanghae99.finalproject.security.UserDetailsImpl;
+import com.hanghae99.finalproject.sse.dto.NotificationCountDto;
 import com.hanghae99.finalproject.sse.dto.NotificationDto;
 import com.hanghae99.finalproject.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
@@ -41,12 +39,38 @@ public class NotificationController {
         return notificationService.findAllNotifications(userDetails.getUser().getId());
     }
 
+    //전체목록 알림 조회에서 해당 목록 클릭 시 읽음처리 ,
+    @PostMapping("/notification/read/{notificationId}")
+    public void readNotification(@PathVariable Long notificationId){
+        notificationService.readNotification(notificationId);
+
+    }
     //알림 조회 - 구독자가 현재 읽지않은 알림 갯수
     @GetMapping(value = "/notifications/count")
     @ResponseStatus(HttpStatus.OK)
-    public Long countUnReadNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public NotificationCountDto countUnReadNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return notificationService.countUnReadNotifications(userDetails.getUser().getId());
-
     }
+
+    /*
+        1. count -> 안 읽은 카운트
+        2. reset -> 전체목록은 전체목록만 , 읽음처리를 할 수 있는 api가 필요함
+
+
+
+
+        0. 구독 -> 서버로부터 오는 알람 받음
+
+        2.notifications -> 내가 가지고있는 알림 목록을 다불러옴 [불러올 때 애들의 스테이터스 상태는 true가 됨]
+
+        1.notifications/count -> notifications 알람에서 상태가 false 인 친구들을 가져옴
+     */
+
+
+
+
+
+
+
 
 }

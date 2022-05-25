@@ -20,9 +20,11 @@ public class NotificationDto {
 
     private String url;
 
+    private Boolean status;
+
 
     public static NotificationDto create(Notification notification) {
         return new NotificationDto(notification.getId(), notification.getContent(),
-                notification.getUrl());
+                notification.getUrl(), notification.getIsRead());
     }
 }
