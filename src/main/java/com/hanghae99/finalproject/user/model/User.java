@@ -107,7 +107,6 @@ public class User {
     public void addInfo(SignupRequestDto requestDto) {
         this.nickname = requestDto.getNickname();
         this.major = requestDto.getMajor();
-        this.profileImg = "https://mohum.s3.ap-northeast-2.amazonaws.com/mohum-src/profile_default.png";
     }
 
     // 이메일 인증코등 생성
