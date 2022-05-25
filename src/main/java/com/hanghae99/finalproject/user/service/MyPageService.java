@@ -324,7 +324,6 @@ public class MyPageService {
 
         userApply.modifyAcceptedStatus(isAccepted);
        //수락 받은 user에게 알림
-        notificationService.send(userApply.getUser(), NotificationType.ACCEPT,"요청하신 모집신청이 수락되었습니다.","URL");
     }
     //신청한 모집글에서 유저명단 -> 해당 인원의 요청을 거절 시.
     //팀원명단에서 해당 인원을 강퇴 시 같이 사용 .

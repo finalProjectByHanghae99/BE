@@ -1,5 +1,6 @@
 package com.hanghae99.finalproject.sse.service;
 
+import com.hanghae99.finalproject.sse.dto.NotificationCountDto;
 import com.hanghae99.finalproject.sse.dto.NotificationDto;
 import com.hanghae99.finalproject.sse.model.Notification;
 import com.hanghae99.finalproject.sse.model.NotificationType;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /*
@@ -126,16 +128,27 @@ public class NotificationService {
     @Transactional
     public List<NotificationDto> findAllNotifications(Long userId) {
         List<Notification> notifications = notificationRepository.findAllByUserId(userId);
-        notifications
-                .forEach(Notification::read); // 읽음처리 된 알람들을 보내준다
         return notifications.stream()
                 .map(NotificationDto::create)
                 .collect(Collectors.toList());
     }
 
+
+    public NotificationCountDto countUnReadNotifications(Long userId) {
+            //유저의 알람리스트에서 ->isRead(false)인 갯수를 측정 ,
+            Long count = notificationRepository.countUnReadNotifications(userId);
+            return NotificationCountDto.builder()
+                    .count(count)
+                    .build();
+
+    }
+
     @Transactional
-    public Long countUnReadNotifications(Long userId) {
-            return notificationRepository.countUnReadNotifications(userId);
+    public void readNotification(Long notificationId) {
+        //알림을 받은 사람의 id 와 알림의 id 를 받아와서 해당 알림을 찾는다.
+        Optional<Notification> notification = notificationRepository.findById(notificationId);
+        Notification checkNotification = notification.orElseThrow(()-> new IllegalArgumentException("존재하지 않는 알림입니다."));
+        checkNotification.read(); // 읽음처리
 
     }
 }
