@@ -1,6 +1,8 @@
 package com.hanghae99.finalproject.sse.model;
 
 
+import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.exception.ErrorCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +21,7 @@ public class RelatedURL {
 
     public RelatedURL(String url) {
         if (isNotValidRelatedURL(url)) {
-            throw new IllegalArgumentException("유효하지 않은 url 입니다.");
+            throw new CustomException(ErrorCode.NOT_VALIDURL);
         }
         this.url = url;
     }

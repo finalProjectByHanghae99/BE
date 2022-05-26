@@ -58,6 +58,7 @@ public class UserService {
                         .password(password)
                         .nickname("default")
                         .major("default")
+                        .profileImg("https://mohum.s3.ap-northeast-2.amazonaws.com/mohum-src/profile_default.png")
                         .build()
         );
 
