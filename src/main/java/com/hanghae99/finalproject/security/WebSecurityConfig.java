@@ -80,6 +80,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     configuration.addAllowedOriginPattern("*");
     configuration.addAllowedOrigin("http://localhost:3000"); // local 테스트 시
     configuration.addAllowedOrigin("https://amplify.d3ifjxscizr42x.amplifyapp.com"); // 배포 시
+    configuration.addAllowedOrigin("https://www.everymohum.com");
     configuration.addAllowedMethod("*");
     configuration.addAllowedHeader("*");
     configuration.addExposedHeader("Authorization");
