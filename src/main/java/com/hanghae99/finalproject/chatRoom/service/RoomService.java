@@ -10,6 +10,8 @@ import com.hanghae99.finalproject.chatRoom.model.UserRoom;
 import com.hanghae99.finalproject.chatRoom.repository.MessageRepository;
 import com.hanghae99.finalproject.chatRoom.repository.RoomRepository;
 import com.hanghae99.finalproject.chatRoom.repository.UserRoomRepository;
+import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.mail.dto.MailDto;
 import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.Post;
@@ -46,13 +48,13 @@ public class RoomService {
     public RoomDto.Response createRoomService(RoomDto.Request roomDto, UserDetailsImpl userDetails) throws MessagingException {
 
         Post post = postRepository.findById(roomDto.getPostId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 존재하지 않아 방을 생성할 수 없습니다.")
+                () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
 
         User user = userDetails.getUser(); //게시물에 접근하는 유저
 
         User toUser = userRepository.findById(roomDto.getToUserId()).orElseThrow( //게시물 주인
-                () -> new IllegalArgumentException("no touser")
+                () ->  new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
         // 현재 '모집글'의 방 정보 가져오기.
@@ -63,7 +65,7 @@ public class RoomService {
             UserRoom checkUserRoom = userRoomRepository.findByRoomAndUserAndToUser(room, user, toUser);
             //해당 게시물에 유저와, 게시물에 접근하는 유저에 채팅방 정보가 있는지 확인
             if (checkUserRoom != null) { //이미 대화하고 있던 방이 있을경우.
-                throw new IllegalArgumentException("same room");
+                throw new CustomException(ErrorCode.ALREADY_EXISTS_CHAT_ROOM);
             }
         }
 

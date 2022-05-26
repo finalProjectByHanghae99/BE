@@ -25,6 +25,7 @@ import com.hanghae99.finalproject.user.repository.UserRateRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -289,7 +290,9 @@ public class MyPageService {
 
     @Transactional
     public void modifyAcceptedStatus(AcceptedDto acceptedDto) throws MessagingException {
-        final int isAccepted = 1;
+        int isAccepted = 1;
+        int totalSetCount=0;
+        int totalApplyCount=0;
 
         Post post = postRepository.findById(acceptedDto.getPostId()).orElseThrow(
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND)
@@ -306,16 +309,21 @@ public class MyPageService {
         List<Major> majorList = post.getMajorList();
         //userApply 지원자는 그 중의 하나를 선택한다.
 
-        // SET : 2 / APPLY : 0 -> SET : 2 /APPLY : 1
+        // ex) SET : 2 / APPLY : 0 -> SET : 2 /APPLY : 1
+        // ex) SET : 3 / APPLY : 0 -> SET : 3 /APPLY : 1
         for (Major major : majorList) {
             if (major.getMajorName().equals(userApply.getApplyMajor())) {
                 major.increaseApplyCount();
             }
-            // IF SET : 2 == APPLY : 2 -> post- status '마감'변경
-            if(Objects.equals(major.getNumOfPeopleSet(), major.getNumOfPeopleApply())){
-                post.updateStatus(CurrentStatus.RECRUITING_CLOSE);
-            }
+            //구하는 전체 인원수를 쌓는다.    2 + 3..= 구하는 전공들의 전체 인원수
+            totalSetCount += major.getNumOfPeopleSet();
+            //현재 major의 총 지원자수를 초기화 시켜준다.
+            totalApplyCount += major.getNumOfPeopleApply();
         }
+        // 구하는 전체인원수와 지원한 인원수가 같다면 마감
+        if(totalSetCount == totalApplyCount) post.updateStatus(CurrentStatus.RECRUITING_CLOSE);
+
+
 
         // 수락시 지원자에게 메일 발송(지원자가 이메일 인증 했을 경우만)
        if (user.getIsVerifiedEmail() != null) {
@@ -325,7 +333,7 @@ public class MyPageService {
         String Url = "https://develop.d8m0727pi9ccf.amplifyapp.com/user/"+userApply.getUser().getId();
         //신청 수락 시 신청 유저에게 실시간 알림 전송 ,
         String content = userApply.getUser().getNickname()+"님! 프로젝트 매칭 알림이 도착했어요!";
-        notificationService.send(post.getUser(),NotificationType.ACCEPT,content,Url);
+        notificationService.send(userApply.getUser(),NotificationType.ACCEPT,content,Url);
 
 
         userApply.modifyAcceptedStatus(isAccepted);

@@ -2,6 +2,7 @@ package com.hanghae99.finalproject.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.springframework.http.HttpStatus;
 
 @Getter
@@ -9,6 +10,11 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     OK(HttpStatus.OK,  "200", "true"),
+
+
+    //문자열 체크
+    NOT_VALIDCONTENT(HttpStatus.BAD_REQUEST,"400","유효하지 않는 내용입니다."),
+    NOT_VALIDURL(HttpStatus.BAD_REQUEST,"400","요효하지 않는 URL 입니다."),
 
     // 회원가입
     SIGNUP_MEMBERID_WRONG_INPUT(HttpStatus.BAD_REQUEST, "400", "아이디 형식을 맞춰주세요"),
@@ -83,14 +89,18 @@ public enum ErrorCode {
 
     NO_DIFFERENCE_STATUS(HttpStatus.FORBIDDEN,"403", "Status 변경 사항이 없습니다"),
 
+    // mail
+    EMAIL_WRONG_PATTERN(HttpStatus.BAD_REQUEST, "400", "이메일 형식을 맞춰주세요"),
+
     //Room
 
+    ALREADY_EXISTS_CHAT_ROOM(HttpStatus.BAD_REQUEST,"400","채팅방이 이미 존재합니다."),
+    NOT_EXIST_ROOM(HttpStatus.NOT_FOUND,"404","채팅방이 존재하지 않습니다."),
+
+    //sse
+    NOT_EXIST_NOTIFICATION(HttpStatus.NOT_FOUND,"404","존재하지 않는 알림입니다.");
 
 
-    //Message
-
-    // mail
-    EMAIL_WRONG_PATTERN(HttpStatus.BAD_REQUEST, "400", "이메일 형식을 맞춰주세요");
 
     private final HttpStatus status;
     private final String errorCode;
