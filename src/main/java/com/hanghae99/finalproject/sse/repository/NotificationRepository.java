@@ -20,8 +20,10 @@ public interface NotificationRepository extends JpaRepository<Notification,Long>
             "n.isRead = false")
     Long countUnReadNotifications(@Param("userId") Long userId);
 
-
     Optional<Notification> findById(Long NotificationsId);
+
+    void deleteAllByReceiverId(Long receiverId);
+    void deleteById(Long notificationId);
 
 
 }

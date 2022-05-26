@@ -126,7 +126,7 @@ public class MyPageDto {
         private ResponsePostToUserApply postUser;
         private List<MyPageDto.RecruitUserList> recruitUserList;
 
-        public RecruitPostUser( List<MyPageDto.RecruitUserList> recruitUserList){
+        public RecruitPostUser(List<MyPageDto.RecruitUserList> recruitUserList){
             this.recruitUserList = recruitUserList;
         }
         public RecruitPostUser(ResponsePostToUserApply postUser,  List<MyPageDto.RecruitUserList> recruitUserList) {

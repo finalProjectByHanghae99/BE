@@ -1,5 +1,8 @@
 package com.hanghae99.finalproject.sse.service;
 
+import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.exception.ErrorCode;
+import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.sse.dto.NotificationCountDto;
 import com.hanghae99.finalproject.sse.dto.NotificationDto;
 import com.hanghae99.finalproject.sse.model.Notification;
@@ -37,7 +40,7 @@ public class NotificationService {
     public SseEmitter subscribe(Long userId, String lastEventId) {
         String emitterId = makeTimeIncludeId(userId);
 
-        Long timeout = 60L * 1000L * 60L;
+        Long timeout = 60L * 1000L * 60L; // 1시간
         // 생성된 emiiterId를 기반으로 emitter를 저장
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(timeout));
 
@@ -147,8 +150,19 @@ public class NotificationService {
     public void readNotification(Long notificationId) {
         //알림을 받은 사람의 id 와 알림의 id 를 받아와서 해당 알림을 찾는다.
         Optional<Notification> notification = notificationRepository.findById(notificationId);
-        Notification checkNotification = notification.orElseThrow(()-> new IllegalArgumentException("존재하지 않는 알림입니다."));
+        Notification checkNotification = notification.orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_NOTIFICATION));
         checkNotification.read(); // 읽음처리
 
+    }
+
+    @Transactional
+    public void deleteAllByNotifications(UserDetailsImpl userDetails) {
+        Long receiverId = userDetails.getUser().getId();
+        notificationRepository.deleteAllByReceiverId(receiverId);
+
+    }
+    @Transactional
+    public void deleteByNotifications(Long notificationId) {
+        notificationRepository.deleteById(notificationId);
     }
 }

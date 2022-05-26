@@ -6,6 +6,7 @@ import com.hanghae99.finalproject.comment.service.CommentService;
 import com.hanghae99.finalproject.exception.StatusResponseDto;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
+
 
     private final CommentService commentService;
     // 댓글 등록 API

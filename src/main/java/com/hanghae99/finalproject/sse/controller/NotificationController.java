@@ -1,12 +1,14 @@
 package com.hanghae99.finalproject.sse.controller;
 
 
+import com.hanghae99.finalproject.exception.StatusResponseDto;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.sse.dto.NotificationCountDto;
 import com.hanghae99.finalproject.sse.dto.NotificationDto;
 import com.hanghae99.finalproject.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -47,10 +49,25 @@ public class NotificationController {
     }
     //알림 조회 - 구독자가 현재 읽지않은 알림 갯수
     @GetMapping(value = "/notifications/count")
-    @ResponseStatus(HttpStatus.OK)
     public NotificationCountDto countUnReadNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return notificationService.countUnReadNotifications(userDetails.getUser().getId());
     }
+
+    //알림 전체 삭제
+    @DeleteMapping(value = "/notifications/delete")
+    public ResponseEntity<Object> deleteNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        notificationService.deleteAllByNotifications(userDetails);
+        return new ResponseEntity<>(new StatusResponseDto("알림 목록 전체삭제 성공",""), HttpStatus.OK);
+    }
+    //단일 알림 삭제
+    @DeleteMapping(value = "/notifications/delete/{notificationId}")
+    public ResponseEntity<Object> deleteNotification(@PathVariable Long notificationId){
+
+        notificationService.deleteByNotifications(notificationId);
+        return new ResponseEntity<>(new StatusResponseDto("알림 목록 삭제 성공",""), HttpStatus.OK);
+    }
+
 
     /*
         1. count -> 안 읽은 카운트

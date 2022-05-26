@@ -115,9 +115,11 @@ public class UserApplyService {
         }
 
         // '모집글' -> '신청' 시에 모집글 작성자에게 실시간 알림을 보낸다.
-
-        String notiUrl = "https://develop.d8m0727pi9ccf.amplifyapp.com/user/"+post.getUser().getId();
-        notificationService.send(post.getUser(),NotificationType.APPLY,"게시한 모집글에 '신청'이 들어왔습니다",notiUrl);
+        //해당 댓글로 이동하는 url
+        String Url = "https://develop.d8m0727pi9ccf.amplifyapp.com/detail/"+post.getId();
+        //신청 시 모집글 작성 유저에게 실시간 알림 전송 ,
+        String content = post.getUser().getNickname()+"님! 프로젝트 신청 알림이 도착했어요!";
+        notificationService.send(post.getUser(),NotificationType.APPLY,content,Url);
 
 
         return userApplyRepository.save(userApply);

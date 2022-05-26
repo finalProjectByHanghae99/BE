@@ -9,6 +9,8 @@ import com.hanghae99.finalproject.chatRoom.model.UserRoom;
 import com.hanghae99.finalproject.chatRoom.repository.MessageRepository;
 import com.hanghae99.finalproject.chatRoom.repository.RoomRepository;
 import com.hanghae99.finalproject.chatRoom.repository.UserRoomRepository;
+import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.redis.RedisMessagePublisher;
@@ -44,11 +46,11 @@ public class MessageService {
         boolean check = false;
 
         User sender = userRepository.findById(messageDto.getSenderId()).orElseThrow(
-                () -> new IllegalArgumentException("메시지를 보내는 이가 없습니다.")
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
         User receiver = userRepository.findById(messageDto.getReceiverId()).orElseThrow(
-                () -> new IllegalArgumentException("해당되는 receiver없음")
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
 
@@ -95,7 +97,7 @@ public class MessageService {
         if(check == false){
             // TALK / START
             Room room = roomRepository.findByRoomName(sendMessageDto.getRoomName()).orElseThrow(
-                    () -> new IllegalArgumentException("해당하는 방이 존재하지 않습니다.")
+                    () -> new CustomException(ErrorCode.NOT_EXIST_ROOM)
             );
 
             // 방을 공유하는 유저룸 리스트를 가져온다.
@@ -120,7 +122,7 @@ public class MessageService {
     public boolean roomOut(MessageDto sendMessageDto) {
         //현재 방을 찾는다.
         Room room = roomRepository.findByRoomName(sendMessageDto.getRoomName()).orElseThrow(
-                () -> new IllegalArgumentException("해당 방이 존재하지 않습니다.")
+                () -> new CustomException(ErrorCode.NOT_EXIST_ROOM)
         );
         //방을 찾아와 유저룸 리스트를 반환
         List<UserRoom> userRoomList = userRoomRepository.findByRoom(room);
@@ -198,10 +200,10 @@ public class MessageService {
     private Room userRoomCount(RoomDto.findRoomDto roomDto){
         // 방 이름, 모집글 PK , 유저 PK , 상대방 PK
         Room room = roomRepository.findByRoomNameAndRoomPostId(roomDto.getRoomName(), roomDto.getPostId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 방이 존재하지 않습니다."));
+                () -> new CustomException(ErrorCode.NOT_EXIST_ROOM));
         //게시물 작성 유저의 정보 조회
         User user = userRepository.findById(roomDto.getUserId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저 없음")
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
         UserRoom userRoom = userRoomRepository.findByRoomAndUser(room,user);
         //해당 유저방에 카운팅 -> 0
@@ -214,11 +216,11 @@ public class MessageService {
     @Transactional
     public void updateRoomMessageCount(RoomDto.UpdateCountDto updateCountDto) {
         Room room = roomRepository.findByRoomName(updateCountDto.getRoomName()).orElseThrow(
-                () -> new IllegalArgumentException("해당 방이 존재하지 않습니다.")
+                () -> new CustomException(ErrorCode.NOT_EXIST_ROOM)
         );
         //게시물 주인 유저 정보 조회
         User user = userRepository.findById(updateCountDto.getUserId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저가 없습니다.")
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
         );
 
         UserRoom userRoom = userRoomRepository.findByRoomAndUser(room, user);
