@@ -43,7 +43,7 @@ public class UserValidator {
 
         String nickname = requestDto.getNickname();
 
-        String patternNickname = "^[A-Za-z0-9가-힣]{4,10}$";
+        String patternNickname = "^[A-Za-z0-9가-힣]{2,6}$";
 
         // 닉네임 설정 유효성 검사
         if (nickname == null || !Pattern.matches(patternNickname, nickname)) {
