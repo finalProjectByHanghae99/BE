@@ -489,16 +489,20 @@ public class MyPageService {
                 .profileImg(post.getUser().getProfileImg())
                 .build();
 
-        // 현재 모집글에 지원한 참가자들의 정보
+        // 현재 모집글에 지원한 참가자들
         for (UserApply userApply : userApplyList) {
-            //참가자들의 유저정보와 모집글 정보 -> 해당 게시글의 유저가 가진 평점정보를 조회한다.
-            // null 값 허용
-            Optional<UserRate> userRate =
-                    userRateRepository.findUserRateByPostAndReceiver(post,userApply.getUser());
+            // 지원자들 1, 2, 3
 
-            //평점 정보가 존재하지 않는다면
-            if (!userRate.isPresent() &&
-                    !Objects.equals(user.getId(), userApply.getUser().getId())) {
+            // 모집글 1번에 대한 1번 지원자에 대한 평점 정보가 존재하느냐
+//            Optional<UserRate> userRate =
+//                    userRateRepository.findUserRateByPostAndReceiver(post,userApply.getUser());
+
+            Optional<UserRate> userRate = userRateRepository.findUserRateByPostAndReceiverAndSender(post,userApply.getUser(),user);
+
+            // 평점이 존재하지 않고 자기 자신은 보여야하지 않으니깐 .
+            if (!userRate.isPresent()&&!Objects.equals(user.getId(), userApply.getUser().getId())) {
+
+                // 평점을 보는 입장에서 자기 자신은 보여서느 안된다.
                 MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
                         .userId(userApply.getUser().getId())
                         .nickname(userApply.getUser().getNickname())
@@ -511,9 +515,8 @@ public class MyPageService {
         // 게시글 참여자가 평점을 받지 않은 상태라면 :STATUS == NULL
         // 게시글 참여자와 필터링된 유저 리스트들이 반환 되어야하고
         // 게시글 주인의 유저정보 및 평점정보는 현재 참가자 리스트에 없기에 별도로 추가 조회한다.
-        Optional<UserRate> postUserRate = userRateRepository.findUserRateByPostAndReceiver(post,post.getUser());
-        if(!postUserRate.isPresent() &&
-                !Objects.equals(post.getUser().getId(), userDetails.getUser().getId())){
+        Optional<UserRate> postUserRate = userRateRepository.findUserRateByPostAndReceiverAndSender(post,post.getUser(),user);
+        if(!postUserRate.isPresent()&&!Objects.equals(post.getUser().getId(), userDetails.getUser().getId())){
             return new MyPageDto.RecruitPostUser(postUser,recruitUserLists);
         // 게시글 주인이 평점을 받았다면 필터링된 유저들의 정보만 내려준다.
         }else{
@@ -537,11 +540,14 @@ public class MyPageService {
 
         User sender = userDetails.getUser();
 
+
+
         UserRate userRate = UserRate.builder()
-                .sender(sender)
-                .receiver(receiver)
-                .post(post)
-                .ratePoint(requestUserRate.getPoint())
+                .sender(sender) // 점수를 주는 사람 의 입장에서는 점수를 주고 나면 안보여야하고
+                .receiver(receiver) // 점수를 받는 사람 입장에서는 점수를 받았지만 내가 안줬으니 ? 보여야함.
+                .post(post) //현재 게시글
+                .rateStatus(false) // 상태
+                .ratePoint(requestUserRate.getPoint()) // 점수
                 .build();
 
         userRateRepository.save(userRate);
