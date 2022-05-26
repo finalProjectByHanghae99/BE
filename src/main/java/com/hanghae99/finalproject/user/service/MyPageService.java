@@ -25,7 +25,6 @@ import com.hanghae99.finalproject.user.repository.UserRateRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -330,7 +329,7 @@ public class MyPageService {
            mailService.acceptTeamMailBuilder(new MailDto(user, post));
        }
         //해당 댓글로 이동하는 url
-        String Url = "https://develop.d8m0727pi9ccf.amplifyapp.com/user/"+userApply.getUser().getId();
+        String Url = "https://www.everymohum.com/user/"+userApply.getUser().getId();
         //신청 수락 시 신청 유저에게 실시간 알림 전송 ,
         String content = userApply.getUser().getNickname()+"님! 프로젝트 매칭 알림이 도착했어요!";
         notificationService.send(userApply.getUser(),NotificationType.ACCEPT,content,Url);
@@ -354,7 +353,7 @@ public class MyPageService {
         );
 
         //해당 댓글로 이동하는 url
-        String Url = "https://develop.d8m0727pi9ccf.amplifyapp.com/user/"+userApply.getUser().getId();
+        String Url = "https://www.everymohum.com/user/"+userApply.getUser().getId();
         //신청 수락 시 신청 유저에게 실시간 알림 전송 ,
 
         if(userApply.getIsAccepted() == 0) {
@@ -536,8 +535,10 @@ public class MyPageService {
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
 
+        User sender = userDetails.getUser();
+
         UserRate userRate = UserRate.builder()
-                .sender(userDetails.getUser())
+                .sender(sender)
                 .receiver(receiver)
                 .post(post)
                 .ratePoint(requestUserRate.getPoint())
@@ -546,6 +547,9 @@ public class MyPageService {
         userRateRepository.save(userRate);
         receiver.updateRateStatus(userRate);
 
+        String Url = "https://www.everymohum.com/user/"+receiver.getId();
+        String content = receiver.getNickname()+"님! "+sender.getNickname()+"님이 평점을 남기셨어요!";
+        notificationService.send(receiver,NotificationType.REVIEW,content,Url);
 
     }
 
