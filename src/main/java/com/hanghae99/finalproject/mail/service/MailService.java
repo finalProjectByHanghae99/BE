@@ -71,9 +71,9 @@ public class MailService {
 
         if (user.getEmailAuthCode().equals(code)) {
             user.verifiedEmail(email);
-            return "이메일 인증이 완료되었습니다";
+            return "이메일 인증에 성공했어요!";
         } else {
-            return "유효한 인증 코드가 아닙니다";
+            return "유효한 인증 코드가 아니에요. 다시 시도해주세요!";
         }
     }
 
@@ -94,7 +94,7 @@ public class MailService {
         context.setVariable("fromProfileImg", mailDto.getFromProfileImg());
         context.setVariable("postId", mailDto.getPostId());
 
-        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 프로젝트 신청 알림이 도착했습니다.";
+        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 프로젝트 신청 알림이 도착했어요!";
         String body = templateEngine.process("applicantEmail", context);
         setMail(subject, body, email);
     }
@@ -116,7 +116,7 @@ public class MailService {
         context.setVariable("fromProfileImg", mailDto.getFromProfileImg());
         context.setVariable("postId", mailDto.getPostId());
 
-        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 프로젝트 매칭 알림이 도착했습니다.";
+        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 프로젝트 매칭 알림이 도착했어요!";
         String body = templateEngine.process("acceptTeamEmail", context);
         setMail(subject, body, email);
     }
@@ -138,7 +138,7 @@ public class MailService {
         context.setVariable("fromNickname", mailDto.getFromNickname());
         context.setVariable("postId", mailDto.getPostId());
 
-        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 프로젝트 매칭 실패 알림이 도착했습니다.";
+        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 프로젝트 매칭 실패 알림이 도착했어요.";
         String body = templateEngine.process("rejectTeamEmail", context);
         setMail(subject, body, email);
     }
@@ -160,7 +160,7 @@ public class MailService {
         context.setVariable("fromNickname", mailDto.getFromNickname());
         context.setVariable("postId", mailDto.getPostId());
 
-        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 프로젝트 하차 알림이 도착했습니다.";
+        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 프로젝트 하차 알림이 도착했어요.";
         String body = templateEngine.process("forcedRejectTeamEmail", context);
         setMail(subject, body, email);
     }
@@ -183,7 +183,7 @@ public class MailService {
         context.setVariable("postId", mailDto.getPostId());
         context.setVariable("postTitle", mailDto.getPostTitle());
 
-        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 신규 채팅 알림이 도착했습니다.";
+        String subject = "[모험:모두의 경험] " + mailDto.getToNickname() + "님! 신규 채팅 알림이 도착했어요!";
         String body = templateEngine.process("chatOnEmil", context);
         setMail(subject, body, email);
     }
