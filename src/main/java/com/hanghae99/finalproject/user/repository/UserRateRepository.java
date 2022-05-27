@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface UserRateRepository extends JpaRepository<UserRate,Long> {
     Optional<UserRate> findUserRateByPostAndReceiver(Post post, User user);
 
+    //작성글 / 받는 사람 / 주는 사람
+    Optional<UserRate> findUserRateByPostAndReceiverAndSender(Post post, User toUser, User User);
+
 }

@@ -35,7 +35,17 @@ public class UserRate {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @Column(nullable = false)
+    private Boolean rateStatus;
+
     @Column
     private int ratePoint;
 
+
+    public void checkStatus() {
+        rateStatus = true;
+    }
+
 }
+
+
