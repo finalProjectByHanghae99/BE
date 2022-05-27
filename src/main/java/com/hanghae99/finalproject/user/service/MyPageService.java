@@ -109,6 +109,7 @@ public class MyPageService {
                 if (userPortfolioImg.getPortfolioImgUrl().equals(imgUrlDto.getImgUrl())) {
                     //s3에서 삭제
                     s3UploadService.deleteFile(userPortfolioImg.getPortfolioImgName());
+                    s3UploadService.deleteResizedFile("resized-" + userPortfolioImg.getPortfolioImgName());
                     //해당 유저와 연관관계가 맺어진 포트폴리오 이미지 레포에서도 해당 이미지들을 지운다.
                     userPortfolioImgRepository.deleteById(userPortfolioImg.getId());
                     removeImgList.add(userPortfolioImg);
@@ -476,16 +477,14 @@ public class MyPageService {
         List<MyPageDto.RecruitUserList> recruitUserLists = new ArrayList<>();
 
         User user = userDetails.getUser(); // 현재 로그인한 유저 ,
-
         // 팀원 리뷰 클릭 시 모집마감 list에서 postId를 전달  EX: 1
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new CustomException(ErrorCode.POST_NOT_FOUND)
         );
-
         //현재 모집글들에 참여한 userApplyList 를 불러옴 ,
         List<UserApply> userApplyList = post.getUserApplyList();
 
-        // 타 유저들은 평가 시 게시글 주인도 평가할 수 있어야한다.
+        // 참가자 리스트에는 모집글 유저의 정보가 없기에,
         // post에서 필요한 정보만 DTO에 빌딩
         MyPageDto.ResponsePostToUserApply postUser
                 = MyPageDto.ResponsePostToUserApply.builder()
@@ -493,15 +492,13 @@ public class MyPageService {
                 .nickname(post.getUser().getNickname())
                 .profileImg(post.getUser().getProfileImg())
                 .build();
-
         // 현재 모집글에 지원한 참가자들
         for (UserApply userApply : userApplyList) {
-            // 지원자들 1, 2, 3
+            // 지원자들 1, 2, 3 의 유저평가 정보 조회 -> 점수를 주는 이와 받는이를 기준으로 조회
             Optional<UserRate> userRate = userRateRepository.findUserRateByPostAndReceiverAndSender(post, userApply.getUser(), user);
 
-            // 평점이 존재하지 않고 자기 자신은 보여야하지 않으니깐 .
+            // 평점이 존재하지 않고 자기 자신은 보여야하지 않아야한다.
             if (!userRate.isPresent() && !Objects.equals(user.getId(), userApply.getUser().getId())) {
-                // 평점을 보는 입장에서 자기 자신은 보여서느 안된다.
                 MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
                         .userId(userApply.getUser().getId())
                         .nickname(userApply.getUser().getNickname())
@@ -510,10 +507,7 @@ public class MyPageService {
                 recruitUserLists.add(recruitUserList);
             }
         }
-        // 필터링된 참가자들의 정보 +
-        // 게시글 참여자가 평점을 받지 않은 상태라면 :STATUS == NULL
-        // 게시글 참여자와 필터링된 유저 리스트들이 반환 되어야하고
-        // 게시글 주인의 유저정보 및 평점정보는 현재 참가자 리스트에 없기에 별도로 추가 조회한다.
+        // 필터링된 참가자들의 정보와 모집글을 게시한 유저의 정보
         Optional<UserRate> postUserRate = userRateRepository.findUserRateByPostAndReceiverAndSender(post, post.getUser(), user);
         if (!postUserRate.isPresent() && !Objects.equals(post.getUser().getId(), userDetails.getUser().getId())) {
             return new MyPageDto.RecruitPostUser(postUser, recruitUserLists);
@@ -521,7 +515,6 @@ public class MyPageService {
         } else {
             return new MyPageDto.RecruitPostUser(recruitUserLists);
         }
-
     }
 
     //모집 마감 list에서 특정 게시글 pk에 접근해서 가져온 유저 list에서 특정 유저에게 평점을 준다.
@@ -529,21 +522,16 @@ public class MyPageService {
     public void EvaluationUser(MyPageDto.RequestUserRate requestUserRate, UserDetailsImpl userDetails) {
         //담겨온 유저 정보[평가를받는 ]를 조회한다.
         User receiver = userRepository.findById(requestUserRate.getReceiverId()).orElseThrow(
-                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO)
-        );
-
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO));
         //어떤 모집글에서의 평가가 이루어졌는지 확인
         Post post = postRepository.findById(requestUserRate.getPostId()).orElseThrow(
-                () -> new CustomException(ErrorCode.POST_NOT_FOUND)
-        );
+                () -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         User sender = userDetails.getUser();
 
-
-
         UserRate userRate = UserRate.builder()
-                .sender(sender) // 점수를 주는 사람 의 입장에서는 점수를 주고 나면 안보여야하고
-                .receiver(receiver) // 점수를 받는 사람 입장에서는 점수를 받았지만 내가 안줬으니 ? 보여야함.
+                .sender(sender)
+                .receiver(receiver)
                 .post(post) //현재 게시글
                 .rateStatus(false) // 상태
                 .ratePoint(requestUserRate.getPoint()) // 점수
