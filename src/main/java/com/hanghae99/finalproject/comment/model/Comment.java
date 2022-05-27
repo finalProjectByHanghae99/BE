@@ -56,10 +56,4 @@ public class Comment extends TimeStamped {
         this.comment = requestDto.getComment();
     }
 
-    public void publishEvent(ApplicationEventPublisher eventPublisher, NotificationType notificationType){
-        eventPublisher.publishEvent(new NotificationRequestDto(post.getUser(),notificationType,
-                notificationType.makeContent(post.getTitle()),notificationType.makeUrl(post.getId())));
-
-    }
-
 }
