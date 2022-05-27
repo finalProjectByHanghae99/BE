@@ -51,7 +51,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .from(post)
                 .leftJoin(post.majorList, major)
                 .where(post.currentStatus.eq(CurrentStatus.valueOf("ONGOING")))
-                .orderBy(post.createdAt.desc())
+                .orderBy(post.createdAt.asc())
                 .offset(0)
                 .limit(12)
                 .fetch();
