@@ -86,6 +86,7 @@ public enum ErrorCode {
     APPLY_NOT_FOUND(HttpStatus.BAD_REQUEST,"404", "해당 지원 정보를 찾을 수 없습니다"),
     APPLY_OVER_NO_AUTHORITY(HttpStatus.FORBIDDEN,"403", "권한이 없습니다"),
     APPLY_MESSAGE_INPUT_LENGTH_ERROR(HttpStatus.BAD_REQUEST, "400", "지원 메시지는 20자 이내로 작성해주세요"),
+    EXCEED_APPLY_USER_NUMBER(HttpStatus.INTERNAL_SERVER_ERROR,"500","전공 모집인원이 초과되었습니다."),
 
     NO_DIFFERENCE_STATUS(HttpStatus.FORBIDDEN,"403", "Status 변경 사항이 없습니다"),
 

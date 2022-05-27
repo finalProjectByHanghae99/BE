@@ -56,7 +56,7 @@ public class MyPageDto {
         private Long userId;
         private String nickname;
         private String title;
-        private LocalDateTime createAt;
+        private LocalDateTime createdAt;
         private CurrentStatus status;
 
 

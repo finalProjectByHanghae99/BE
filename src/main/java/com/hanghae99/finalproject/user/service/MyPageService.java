@@ -31,10 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -175,13 +173,18 @@ public class MyPageService {
                         .nickname(post.getUser().getNickname())
                         .title(post.getTitle())
                         .status(post.getCurrentStatus())
-                        .createAt(post.getCreatedAt())
+                        .createdAt(post.getCreatedAt())
                         .build();
                 //리스트에 담아준다
                 appliedResponseDtoList.add(appliedResponseDto);
             }
         }
-        return appliedResponseDtoList;
+        return appliedResponseDtoList
+                .stream()
+                .sorted(Comparator.comparing(MyPageDto.AppliedResponseDto::getCreatedAt).reversed())
+                .collect(Collectors.toList());
+
+
     }
 
     //마이페이지 내의 모집중 리스트를 찾아온다.
@@ -214,7 +217,10 @@ public class MyPageService {
                 recruitResponseDtosList.add(recruitResponseDto);
             }
         }
-        return recruitResponseDtosList;
+        return recruitResponseDtosList
+                .stream()
+                .sorted(Comparator.comparing( MyPageDto.RecruitResponseDto::getCreateAt).reversed())
+                .collect(Collectors.toList());
     }
 
     //userApplyList 무한참조 방지를 위해 DTO 타입으로 매핑 후 전달
@@ -311,9 +317,8 @@ public class MyPageService {
         // ex) SET : 2 / APPLY : 0 -> SET : 2 /APPLY : 1
         // ex) SET : 3 / APPLY : 0 -> SET : 3 /APPLY : 1
         for (Major major : majorList) {
-            if (major.getMajorName().equals(userApply.getApplyMajor())) {
-                major.increaseApplyCount();
-            }
+            if (major.getMajorName().equals(userApply.getApplyMajor())) major.increaseApplyCount();
+            if (major.getNumOfPeopleSet() < major.getNumOfPeopleApply()) throw new CustomException(ErrorCode.EXCEED_APPLY_USER_NUMBER);
             //구하는 전체 인원수를 쌓는다.    2 + 3..= 구하는 전공들의 전체 인원수
             totalSetCount += major.getNumOfPeopleSet();
             //현재 major의 총 지원자수를 초기화 시켜준다.
@@ -321,8 +326,6 @@ public class MyPageService {
         }
         // 구하는 전체인원수와 지원한 인원수가 같다면 마감
         if(totalSetCount == totalApplyCount) post.updateStatus(CurrentStatus.RECRUITING_CLOSE);
-
-
 
         // 수락시 지원자에게 메일 발송(지원자가 이메일 인증 했을 경우만)
        if (user.getIsVerifiedEmail() != null) {
@@ -438,7 +441,9 @@ public class MyPageService {
             }
         }
 
-        return recruitOverLists;
+        return recruitOverLists.stream()
+                .sorted(Comparator.comparing(MyPageDto.RecruitOverList::getCreatedAt).reversed())
+                .collect(Collectors.toList());
     }
 
     // userApply 리스트들을 dtolist로 파싱
@@ -492,16 +497,10 @@ public class MyPageService {
         // 현재 모집글에 지원한 참가자들
         for (UserApply userApply : userApplyList) {
             // 지원자들 1, 2, 3
-
-            // 모집글 1번에 대한 1번 지원자에 대한 평점 정보가 존재하느냐
-//            Optional<UserRate> userRate =
-//                    userRateRepository.findUserRateByPostAndReceiver(post,userApply.getUser());
-
-            Optional<UserRate> userRate = userRateRepository.findUserRateByPostAndReceiverAndSender(post,userApply.getUser(),user);
+            Optional<UserRate> userRate = userRateRepository.findUserRateByPostAndReceiverAndSender(post, userApply.getUser(), user);
 
             // 평점이 존재하지 않고 자기 자신은 보여야하지 않으니깐 .
-            if (!userRate.isPresent()&&!Objects.equals(user.getId(), userApply.getUser().getId())) {
-
+            if (!userRate.isPresent() && !Objects.equals(user.getId(), userApply.getUser().getId())) {
                 // 평점을 보는 입장에서 자기 자신은 보여서느 안된다.
                 MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
                         .userId(userApply.getUser().getId())
@@ -515,11 +514,11 @@ public class MyPageService {
         // 게시글 참여자가 평점을 받지 않은 상태라면 :STATUS == NULL
         // 게시글 참여자와 필터링된 유저 리스트들이 반환 되어야하고
         // 게시글 주인의 유저정보 및 평점정보는 현재 참가자 리스트에 없기에 별도로 추가 조회한다.
-        Optional<UserRate> postUserRate = userRateRepository.findUserRateByPostAndReceiverAndSender(post,post.getUser(),user);
-        if(!postUserRate.isPresent()&&!Objects.equals(post.getUser().getId(), userDetails.getUser().getId())){
-            return new MyPageDto.RecruitPostUser(postUser,recruitUserLists);
-        // 게시글 주인이 평점을 받았다면 필터링된 유저들의 정보만 내려준다.
-        }else{
+        Optional<UserRate> postUserRate = userRateRepository.findUserRateByPostAndReceiverAndSender(post, post.getUser(), user);
+        if (!postUserRate.isPresent() && !Objects.equals(post.getUser().getId(), userDetails.getUser().getId())) {
+            return new MyPageDto.RecruitPostUser(postUser, recruitUserLists);
+            // 게시글 주인이 평점을 받았다면 필터링된 유저들의 정보만 내려준다.
+        } else {
             return new MyPageDto.RecruitPostUser(recruitUserLists);
         }
 

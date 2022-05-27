@@ -12,6 +12,7 @@ import com.hanghae99.finalproject.sse.repository.EmitterRepositoryImpl;
 import com.hanghae99.finalproject.sse.repository.NotificationRepository;
 import com.hanghae99.finalproject.user.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -101,7 +102,7 @@ public class NotificationService {
 
      */
 
-
+    @Async
     public void send(User receiver, NotificationType notificationType, String content, String url) {
 
         Notification notification = notificationRepository.save(createNotification(receiver, notificationType, content, url));
