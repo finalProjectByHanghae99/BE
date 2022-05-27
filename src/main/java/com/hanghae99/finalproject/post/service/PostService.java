@@ -181,6 +181,7 @@ public class PostService {
             for (ImgUrlDto imgUrlDto : putRequestDto.getImgUrl()) {
                 if (img.getImgUrl().equals(imgUrlDto.getImgUrl())) {
                     s3UploadService.deleteFile(img.getImgName());
+                    s3UploadService.deleteResizedFile("resized-" + img.getImgName());
                     imgRepository.deleteById(img.getId());
                     // removeImgList에 수정할 이미지 담기
                     removeImgList.add(img);
