@@ -105,7 +105,7 @@ public class JwtTokenProvider {
       }
     } catch (ExpiredJwtException e) {
       log.info("만료된 JWT 토큰입니다");
-      throw new CustomException(ErrorCode.JWT_TOKEN_EXPIRED);
+      return JwtReturn.EXPIRED;
     } catch (UnsupportedJwtException e) {
       log.info("지원되지 않는 JWT 토큰입니다");
       throw new CustomException(ErrorCode.JWT_TOKEN_NOT_SUPPORTED);
@@ -128,7 +128,6 @@ public class JwtTokenProvider {
 
   public Long getUserIdFromToken(String token) {
     Claims claims = getAllClaims(token);
-
     return Long.valueOf(String.valueOf(claims.getSubject()));
   }
 
