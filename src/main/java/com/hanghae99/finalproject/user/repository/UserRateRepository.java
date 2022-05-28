@@ -5,6 +5,7 @@ import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.model.UserRate;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRateRepository extends JpaRepository<UserRate,Long> {
@@ -14,4 +15,6 @@ public interface UserRateRepository extends JpaRepository<UserRate,Long> {
     Optional<UserRate> findUserRateByPostAndReceiverAndSender(Post post, User toUser, User User);
 
     void deleteAllByPostId(Long postId);
+
+    List<UserRate> findAllByReceiver(User receiver);
 }

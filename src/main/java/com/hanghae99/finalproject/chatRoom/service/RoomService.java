@@ -28,8 +28,10 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -194,6 +196,7 @@ public class RoomService {
                         .postId(userRoom.getRoom().getRoomPostId())
                         .user(chatUserDto)
                         .lastMessage(lastMessageDto)
+                        .lastMessageTime(lastMessageDto.getCreatedAt())
                         .notReadingMessageCount(userRoom.getCount())
                         .build();
             } else {
@@ -202,11 +205,13 @@ public class RoomService {
                         .postId(userRoom.getRoom().getRoomPostId())
                         .user(chatUserDto)
                         .lastMessage(lastMessageDto)
+                        .lastMessageTime(lastMessageDto.getCreatedAt())
                         .notReadingMessageCount(userRoom.getCount())
                         .build();
             }
             chatRoomDtos.add(chatRoomDto);
         }
-        return chatRoomDtos;
+        return chatRoomDtos.stream().sorted(Comparator.comparing(ChatRoomDto::getLastMessageTime).reversed())
+                .collect(Collectors.toList());
     }
 }

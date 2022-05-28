@@ -41,6 +41,7 @@ public class MyPageDto {
         private String major;
         private String portfolioLink; //포트폴리오 링크
         private List<String> userPortfolioImgList; //유저 포트폴리오 이미지리스트
+        private int userRateTotal;
         private int projectCount;// 해결한 프로젝트 카운트
         private int likeCount; // 좋아요 갯수 .
 

@@ -14,5 +14,6 @@ public class ChatRoomDto {
     private ChatUserDto user;
     private LastMessageDto lastMessage;
     private CurrentStatus currentStatus;
+    private String lastMessageTime;
     private int notReadingMessageCount;
 }
