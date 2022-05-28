@@ -208,6 +208,7 @@ public class UserApplyService {
                             // 존재한다면 projectCount += 1
                     member.ifPresent(value -> value.updateProjectCount(memberNewProjectCount));
                 }
+                if(userApply.getIsAccepted() == 0) userApplyRepository.deleteById(userApply.getId());
             }
         }
     }

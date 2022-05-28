@@ -65,6 +65,11 @@ public class MyPageService {
                 imgUrlDtoList.add(portfolioImgList.getPortfolioImgUrl());
             }
         }
+
+        //해당 유저가 받은 유저 점수
+        List<UserRate> userRateList = userRateRepository.findAllByReceiver(user);
+        int userRateTotalCount = userRateList.size();
+
         //이미지가 없다면 ,Default 값 전달해야함. 디자이너분들과 상의 후 변경필요
         //리스트값이 비었다면 프론트단에서 디폴트 이미지를 보여주기로 협의
 
@@ -78,6 +83,7 @@ public class MyPageService {
                 .portfolioLink(user.getPortfolioLink())
                 .major(user.getMajor())
                 .userPortfolioImgList(imgUrlDtoList)
+                .userRateTotal(userRateTotalCount)
                 .projectCount(user.getProjectCount()) //연관관계 메서드 설정 필요
                 .likeCount(user.getLikeCount())
                 .build();
@@ -396,7 +402,7 @@ public class MyPageService {
     //모집 마감 목록 조회
     //신청한 글들과 모집한 글들을 전부 찾아와 스테이터스가 모집마감인 상태의 글들을 반환해준다.
     @Transactional
-    public List<MyPageDto.RecruitOverList> findRecruitOverList(Long userId) {
+    public List<MyPageDto.RecruitOverList> findRecruitOverList(Long userId, UserDetailsImpl userDetails) {
         //최종적으로 보낼 값들을 담아줄 list 선언
         List<MyPageDto.RecruitOverList> recruitOverLists = new ArrayList<>();
 
@@ -407,7 +413,12 @@ public class MyPageService {
         // 모집글 list를 전부 가져온다
         List<Post> recruitPostLists = postRepository.findPostsByUser(user);
 
+
+        // 모집 마감 시 해당 글에 속해있는 userlist에 acceted == 0 인 유저를 지운다.
+        // 그럼 해당글에는 유저리스트의 상태가 1인 사람들만 존재한다.
+
         //유저가 신청한 모집글 list 를 전부 가져온다.
+        // 가져올 때는 이미 유저 리스에는 수락이 신청된 인원만 존재한다.
         List<UserApply> userApplyLists = userApplyRepository.findUserApplyByUser(user);
 
         //userApplyList ->Dto파싱
@@ -498,7 +509,8 @@ public class MyPageService {
             Optional<UserRate> userRate = userRateRepository.findUserRateByPostAndReceiverAndSender(post, userApply.getUser(), user);
 
             // 평점이 존재하지 않고 자기 자신은 보여야하지 않아야한다.
-            if (!userRate.isPresent() && !Objects.equals(user.getId(), userApply.getUser().getId())) {
+            if (!userRate.isPresent() && !Objects.equals(user.getId(), userApply.getUser().getId())
+            && userApply.getIsAccepted() == 1) {
                 MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
                         .userId(userApply.getUser().getId())
                         .nickname(userApply.getUser().getNickname())
