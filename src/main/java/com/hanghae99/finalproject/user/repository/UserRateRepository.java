@@ -13,4 +13,5 @@ public interface UserRateRepository extends JpaRepository<UserRate,Long> {
     //작성글 / 받는 사람 / 주는 사람
     Optional<UserRate> findUserRateByPostAndReceiverAndSender(Post post, User toUser, User User);
 
+    void deleteAllByPostId(Long postId);
 }
