@@ -19,6 +19,7 @@ import com.hanghae99.finalproject.user.model.UserApply;
 import com.hanghae99.finalproject.user.model.UserStatus;
 import com.hanghae99.finalproject.user.repository.MajorRepository;
 import com.hanghae99.finalproject.user.repository.UserApplyRepository;
+import com.hanghae99.finalproject.user.repository.UserRateRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import com.hanghae99.finalproject.user.service.UserApplyService;
 import com.hanghae99.finalproject.validator.PostValidator;
@@ -45,6 +46,7 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final MajorRepository majorRepository;
     private final UserApplyRepository userApplyRepository;
+    private final UserRateRepository userRateRepository;
 
     private final FileUploadService fileUploadService;
     private final AwsS3UploadService s3UploadService;
@@ -213,6 +215,10 @@ public class PostService {
         if (!post.getUser().equals(user)) {
             throw new CustomException(ErrorCode.POST_DELETE_WRONG_ACCESS);
         }
+
+        // post 삭제시 평점 기록도 삭제
+        userRateRepository.deleteAllByPostId(postId);
+
         postRepository.deleteById(postId);
     }
 
