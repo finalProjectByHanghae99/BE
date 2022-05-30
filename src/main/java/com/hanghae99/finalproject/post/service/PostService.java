@@ -171,7 +171,6 @@ public class PostService {
         List<Img> removeImgList = new ArrayList<>();
 
         // 수정할 이미지 S3, 이미지 DB에서 삭제하기
-
         for (Img img : imgList) {
             for (ImgUrlDto imgUrlDto : putRequestDto.getImgUrl()) {
                 if (img.getImgUrl().equals(imgUrlDto.getImgUrl())) {
@@ -214,6 +213,13 @@ public class PostService {
         // 본인 post만 삭제 가능
         if (!post.getUser().equals(user)) {
             throw new CustomException(ErrorCode.POST_DELETE_WRONG_ACCESS);
+        }
+
+        // post 삭제시 s3에 저장된 이미지도 삭제
+        List<Img> imgList = imgRepository.findAllByPost(post);
+        for (Img img : imgList) {
+            s3UploadService.deleteFile(img.getImgName());
+            s3UploadService.deleteFile(img.getImgName().replace("post/", "post-resized/"));
         }
 
         // post 삭제시 평점 기록도 삭제
