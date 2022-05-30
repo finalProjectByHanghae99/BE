@@ -7,7 +7,10 @@ name: Spring Boot & Gradle CI/CD
 # logging-deploy.yml
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 env: # 새로 추가한 부분
   S3_BUCKET_NAME: everymohum
