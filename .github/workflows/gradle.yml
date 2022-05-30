@@ -44,7 +44,7 @@ jobs:
 
       # 압축파일 형태로 전달
       - name: Make zip file
-        run: zip -r -qq -j ./springboot-intro-build.zip ./deploy
+        run: zip -r -qq -j ./FinalProject-Spring-build.zip ./deploy
 
       # S3 Bucket으로 copy
       - name: Deliver to AWS S3
@@ -53,5 +53,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           aws s3 cp \
-          --region ap-northeast-2 \
-          --acl private \ ./springboot-intro-build.zip s3://everymohum
+            --region ap-northeast-2 \
+            ./build/libs/*.jar s3://everymohum
+ 
