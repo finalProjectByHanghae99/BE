@@ -54,5 +54,5 @@ jobs:
         run: |
           aws s3 cp \
             --region ap-northeast-2 \
-            ./build/libs/*.jar s3://everymohum
+            ./build/libs/*.jar s3://everymohum/
  
