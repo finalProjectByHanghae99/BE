@@ -47,7 +47,7 @@ jobs:
         run: zip -r -qq -j ./FinalProject-Spring-build.zip ./deploy
 
       # S3 Bucket으로 copy
-      - name: Deliver to AWS S3
+      - name: everymohum
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
