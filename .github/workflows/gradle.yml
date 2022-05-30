@@ -59,7 +59,7 @@ jobs:
           aws s3 cp \
           --region ap-northeast-2 \
           --acl private \
-          ./springboot-intro-build.zip s3://everymohum/
+          ./$GITHUB_SHA.zip s3://everymohum/
 
       # Deploy
       - name: deploy
@@ -71,5 +71,5 @@ jobs:
           --application-name Github-Actions-Deploy \
           --deployment-group-name Github-Actions-Group \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=everymohum,bundleType=zip,key=springboot-intro-build.zip \
+          --s3-location bucket=everymohum,bundleType=zip,key=$GITHUB_SHA.zip \
           --region ap-northeast-2
