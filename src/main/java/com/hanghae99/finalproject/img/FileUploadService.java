@@ -43,7 +43,8 @@ public class FileUploadService {
 
         // 사진 크기 줄이기
         BufferedImage resizedImage = Thumbnails.of(file.getInputStream())
-                .size(292,190)
+                .outputQuality(1.0f)
+                .scale(0.75)
                 .asBufferedImage();
 
         // 사진 확장자 확인
