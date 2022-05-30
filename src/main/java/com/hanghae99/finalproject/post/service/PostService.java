@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hanghae99.finalproject.comment.dto.CommentResponseDto;
 import com.hanghae99.finalproject.comment.model.Comment;
 import com.hanghae99.finalproject.comment.repository.CommentRepository;
-import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.exception.ErrorCode;
 import com.hanghae99.finalproject.img.*;
 import com.hanghae99.finalproject.post.dto.PostDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
@@ -63,7 +63,7 @@ public class PostService {
 
         if (imgs != null) {
             for (MultipartFile img : imgs) {
-                ImgDto imgDto = fileUploadService.uploadImage(img);
+                ImgDto imgDto = fileUploadService.uploadImage(img, "post");
                 imgDtoList.add(imgDto);
             }
         }
@@ -176,7 +176,7 @@ public class PostService {
             for (ImgUrlDto imgUrlDto : putRequestDto.getImgUrl()) {
                 if (img.getImgUrl().equals(imgUrlDto.getImgUrl())) {
                     s3UploadService.deleteFile(img.getImgName());
-                    s3UploadService.deleteResizedFile("resized-" + img.getImgName());
+                    s3UploadService.deleteFile(img.getImgName().replace("post/", "post-resized/"));
                     imgRepository.deleteById(img.getId());
                     // removeImgList에 수정할 이미지 담기
                     removeImgList.add(img);
@@ -193,7 +193,7 @@ public class PostService {
         if (imgs != null) {
             for (MultipartFile img : imgs) {
                 if(!img.isEmpty()) {
-                    ImgDto imgDto = fileUploadService.uploadImage(img);
+                    ImgDto imgDto = fileUploadService.uploadImage(img, "post");
                     imgDtoList.add(imgDto);
                 }
             }
