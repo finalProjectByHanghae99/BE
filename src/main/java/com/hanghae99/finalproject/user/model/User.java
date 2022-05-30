@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -61,6 +62,10 @@ public class User {
     private int likeCount;
 
     @Column
+    @ColumnDefault(value = "0")
+    private int userRateCount;
+
+    @Column
     private Long kakaoId;
 
     @Column
@@ -97,6 +102,12 @@ public class User {
     public void updateRateStatus(UserRate userRate) {
         this.likeCount += userRate.getRatePoint();
     }
+
+    public void updateRateCount(){
+        this.userRateCount += 1;
+    }
+
+
 
     // 모집 마감시 ProjectCount 변경(projectCount += 1)
     public void updateProjectCount(int newProjectCount) {

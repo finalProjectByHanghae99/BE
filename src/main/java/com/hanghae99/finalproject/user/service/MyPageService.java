@@ -66,12 +66,10 @@ public class MyPageService {
             }
         }
 
-        //해당 유저가 받은 유저 점수
-        List<UserRate> userRateList = userRateRepository.findAllByReceiver(user);
-        int userRateTotalCount = userRateList.size();
-
         //이미지가 없다면 ,Default 값 전달해야함. 디자이너분들과 상의 후 변경필요
         //리스트값이 비었다면 프론트단에서 디폴트 이미지를 보여주기로 협의
+
+
 
         // 닉네임/프로필 이미지/자기소개/ 등록한 포폴 이미지/ 내가 올린 글 목록
         return MyPageDto.ResponseDto.builder()
@@ -82,8 +80,13 @@ public class MyPageService {
                 .intro(user.getIntro()) // default 값 or 수정 소개글
                 .portfolioLink(user.getPortfolioLink())
                 .major(user.getMajor())
+
                 .userPortfolioImgList(imgUrlDtoList)
-                .userRateTotal(userRateTotalCount)
+                .userRateTotal(user.getUserRateCount())
+                    //해당 유저가 받은 유저
+                    // primitive 타입은 - > null 값을 허용안함.  -> default 값을 0으로 설정해야함.
+                    // 1 . nullable이 가능한 rapper 사용 ,
+                    // 2.
                 .projectCount(user.getProjectCount()) //연관관계 메서드 설정 필요
                 .likeCount(user.getLikeCount())
                 .build();
@@ -510,7 +513,7 @@ public class MyPageService {
 
             // 평점이 존재하지 않고 자기 자신은 보여야하지 않아야한다.
             if (!userRate.isPresent() && !Objects.equals(user.getId(), userApply.getUser().getId())
-            && userApply.getIsAccepted() == 1) {
+                    && userApply.getIsAccepted() == 1) {
                 MyPageDto.RecruitUserList recruitUserList = MyPageDto.RecruitUserList.builder()
                         .userId(userApply.getUser().getId())
                         .nickname(userApply.getUser().getNickname())
@@ -533,6 +536,7 @@ public class MyPageService {
     @Transactional
     public void EvaluationUser(MyPageDto.RequestUserRate requestUserRate, UserDetailsImpl userDetails) {
         //담겨온 유저 정보[평가를받는 ]를 조회한다.
+
         User receiver = userRepository.findById(requestUserRate.getReceiverId()).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_USER_INFO));
         //어떤 모집글에서의 평가가 이루어졌는지 확인
@@ -551,6 +555,7 @@ public class MyPageService {
 
         userRateRepository.save(userRate);
         receiver.updateRateStatus(userRate);
+        receiver.updateRateCount();
 
         String Url = "https://www.everymohum.com/user/"+receiver.getId();
         String content = receiver.getNickname()+"님! "+sender.getNickname()+"님이 평점을 남기셨어요!";
