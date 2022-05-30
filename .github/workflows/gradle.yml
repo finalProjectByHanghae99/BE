@@ -56,7 +56,7 @@ jobs:
         run: |
           aws deploy create-deployment \
           --application-name springboot-intro \
-          --deployment-group-name springboot-intro-deploy-group \
+          --deployment-group-name springboot-intro \
           --file-exists-behavior OVERWRITE \
           --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=springboot-intro-build.zip \
           --region ap-northeast-2
