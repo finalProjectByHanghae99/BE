@@ -31,9 +31,6 @@ public class AwsS3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${cloud.aws.s3.bucket-resized}")
-    private String bucketResized;
-
     @Value("${cloud.aws.region.static}")
     private String region;
 
@@ -59,11 +56,6 @@ public class AwsS3UploadService {
     // DeleteObject를 통해 S3 파일 삭제
     public void deleteFile(String fileName){
         DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucket, fileName);
-        amazonS3.deleteObject(deleteObjectRequest);
-    }
-
-    public void deleteResizedFile(String fileName) {
-        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucketResized, fileName);
         amazonS3.deleteObject(deleteObjectRequest);
     }
 }

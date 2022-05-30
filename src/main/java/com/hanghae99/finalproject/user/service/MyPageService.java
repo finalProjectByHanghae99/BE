@@ -118,7 +118,6 @@ public class MyPageService {
                 if (userPortfolioImg.getPortfolioImgUrl().equals(imgUrlDto.getImgUrl())) {
                     //s3에서 삭제
                     s3UploadService.deleteFile(userPortfolioImg.getPortfolioImgName());
-                    s3UploadService.deleteResizedFile("resized-" + userPortfolioImg.getPortfolioImgName());
                     //해당 유저와 연관관계가 맺어진 포트폴리오 이미지 레포에서도 해당 이미지들을 지운다.
                     userPortfolioImgRepository.deleteById(userPortfolioImg.getId());
                     removeImgList.add(userPortfolioImg);
@@ -137,7 +136,7 @@ public class MyPageService {
             for (MultipartFile img : imgs) {
                 if (!imgs.isEmpty()) {
                     // 파일 name과 url을 dto에 빌드
-                    ImgDto imgDto = fileUploadService.uploadImage(img);
+                    ImgDto imgDto = fileUploadService.uploadImage(img, "user");
                     imgDtoList.add(imgDto);
                 }
             }
