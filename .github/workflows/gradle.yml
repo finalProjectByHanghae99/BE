@@ -55,4 +55,4 @@ jobs:
           aws s3 cp \
           --region ap-northeast-2 \
           --acl private \ 
-	  ./FinalProject-Spring-build.zip s3://FinalProject-Spring-build/
+	./FinalProject-Spring-build.zip s3://FinalProject-Spring-build/
