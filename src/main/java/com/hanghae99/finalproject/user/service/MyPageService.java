@@ -136,7 +136,7 @@ public class MyPageService {
             for (MultipartFile img : imgs) {
                 if (!imgs.isEmpty()) {
                     // 파일 name과 url을 dto에 빌드
-                    ImgDto imgDto = fileUploadService.uploadImage(img, "user");
+                    ImgDto imgDto = fileUploadService.uploadImage(img,"user");
                     imgDtoList.add(imgDto);
                 }
             }
