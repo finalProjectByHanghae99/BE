@@ -21,9 +21,9 @@ public class PostValidator {
             throw new CustomException(ErrorCode.POST_WRONG_INPUT);
         }
 
-//        if (title.length() > 24) {
-//            throw new CustomException(ErrorCode.POST_TITLE_INPUT_LENGTH_ERROR);
-//        }
+        if (title.length() > 40) {
+            throw new CustomException(ErrorCode.POST_TITLE_INPUT_LENGTH_ERROR);
+        }
 
         if (content.length() > 250) {
             throw  new CustomException(ErrorCode.POST_CONTENT_INPUT_LENGTH_ERROR);
