@@ -4,11 +4,11 @@ files:
   - source: /
     destination: /home/ec2-user/app/deploy
 
-permissions:
-  - object: /home/ec2-user/app/deploy/
-    owner: ubuntu
-    group: ubuntu
-    mode: 755
+# permissions:
+#   - object: /home/ec2-user/app/deploy/
+#     owner: ubuntu
+#     group: ubuntu
+#     mode: 755
 
 hooks:
   AfterInstall:
