@@ -24,7 +24,7 @@ jobs:
         run: ./gradlew build
         shell: bash
 
-      # 추가
+      
       - name: Make zip file #1
         run: zip -qq -r ./$GITHUB_SHA.zip .
         shell: bash
