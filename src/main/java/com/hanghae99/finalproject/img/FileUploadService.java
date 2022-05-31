@@ -41,46 +41,46 @@ public class FileUploadService {
         // 원본 이미지 업로드
         s3UploadService.uploadFile(inputStream,objectMetadata,filename);
 
-        if(Objects.equals(dirName,"post"))
-        {
-            // 리사이징 이미지 파일 이름
-            String resizedFilename = filename.replace(dirName, dirName + "-resized");
-
-            BufferedImage srcImage = ImageIO.read(file.getInputStream());
-            int srcHeight = srcImage.getHeight();
-            int srcWidth = srcImage.getWidth();
-            double dWidth;
-            double dHeight;
-
-            if (srcWidth == srcHeight) {
-                dWidth = 600;
-                dHeight = 600;
-            } else if (srcWidth > srcHeight) {
-                dWidth = 600;
-                dHeight = ((double) srcHeight / (double) srcWidth) * 600;
-            } else {
-                dHeight = 600;
-                dWidth = ((double) srcWidth / (double) srcHeight) * 600;
-            }
-
-            Image imgTarget = srcImage.getScaledInstance((int) dWidth, (int) dHeight, Image.SCALE_SMOOTH);
-            int pixels[] = new int[(int) (dWidth * dHeight)];
-            PixelGrabber pg = new PixelGrabber(imgTarget, 0, 0, (int) dWidth, (int) dHeight, pixels, 0, (int) dWidth);
-            try {
-                pg.grabPixels();
-            } catch (InterruptedException e) {
-                throw new IOException(e.getMessage());
-            }
-            BufferedImage destImg;
-            if(checkImageType(file).toUpperCase().equals("png")){
-                destImg = new BufferedImage((int) dWidth, (int) dHeight, BufferedImage.TYPE_INT_ARGB);
-            }else{
-                destImg = new BufferedImage((int) dWidth, (int) dHeight, BufferedImage.TYPE_INT_RGB);
-            }
-            destImg.setRGB(0, 0, (int) dWidth, (int) dHeight, pixels, 0, (int) dWidth);
-
-            ByteArrayOutputStream uploadOs = new ByteArrayOutputStream();
-            ImageIO.write(destImg,  checkImageType(file), uploadOs);
+//        if(Objects.equals(dirName,"post"))
+//        {
+//            // 리사이징 이미지 파일 이름
+//            String resizedFilename = filename.replace(dirName, dirName + "-resized");
+//
+//            BufferedImage srcImage = ImageIO.read(file.getInputStream());
+//            int srcHeight = srcImage.getHeight();
+//            int srcWidth = srcImage.getWidth();
+//            double dWidth;
+//            double dHeight;
+//
+//            if (srcWidth == srcHeight) {
+//                dWidth = 290;
+//                dHeight = 290;
+//            } else if (srcWidth > srcHeight) {
+//                dWidth = 290;
+//                dHeight = ((double) srcHeight / (double) srcWidth) * 290;
+//            } else {
+//                dHeight = 290;
+//                dWidth = ((double) srcWidth / (double) srcHeight) * 290;
+//            }
+//
+//            Image imgTarget = srcImage.getScaledInstance((int) dWidth, (int) dHeight, Image.SCALE_SMOOTH);
+//            int pixels[] = new int[(int) (dWidth * dHeight)];
+//            PixelGrabber pg = new PixelGrabber(imgTarget, 0, 0, (int) dWidth, (int) dHeight, pixels, 0, (int) dWidth);
+//            try {
+//                pg.grabPixels();
+//            } catch (InterruptedException e) {
+//                throw new IOException(e.getMessage());
+//            }
+//            BufferedImage destImg;
+//            if(checkImageType(file).toUpperCase().equals("png")){
+//                destImg = new BufferedImage((int) dWidth, (int) dHeight, BufferedImage.TYPE_INT_ARGB);
+//            }else{
+//                destImg = new BufferedImage((int) dWidth, (int) dHeight, BufferedImage.TYPE_INT_RGB);
+//            }
+//            destImg.setRGB(0, 0, (int) dWidth, (int) dHeight, pixels, 0, (int) dWidth);
+//
+//            ByteArrayOutputStream uploadOs = new ByteArrayOutputStream();
+//            ImageIO.write(destImg,  checkImageType(file), uploadOs);
 
 
 //            // 사진 크기 줄이기
@@ -103,11 +103,11 @@ public class FileUploadService {
 //            } else {
 //                uploadOs = os;
 //            }
-
-            InputStream is = new ByteArrayInputStream(uploadOs.toByteArray());
-            ObjectMetadata ob = new ObjectMetadata();
-            ob.setContentType(checkImageType(file));
-            ob.setContentLength(uploadOs.size());
+//
+//            InputStream is = new ByteArrayInputStream(uploadOs.toByteArray());
+//            ObjectMetadata ob = new ObjectMetadata();
+//            ob.setContentType(checkImageType(file));
+//            ob.setContentLength(uploadOs.size());
 
 
 //            InputStream is = new ByteArrayInputStream(uploadOs.toByteArray());
@@ -115,9 +115,9 @@ public class FileUploadService {
 //            ob.setContentType(extension);
 //            ob.setContentLength(uploadOs.size());
 
-            // 리사이징 이미지 업로드
-            s3UploadService.uploadFile(is,ob,resizedFilename);
-        }
+//            // 리사이징 이미지 업로드
+//            s3UploadService.uploadFile(is,ob,resizedFilename);
+//        }
 
         // 원본 이미지 정보만 db에 저장
         return ImgDto.builder()
