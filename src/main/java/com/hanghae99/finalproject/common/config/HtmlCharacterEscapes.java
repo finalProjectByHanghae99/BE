@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.config;
+package com.hanghae99.finalproject.common.config;
 
 import com.fasterxml.jackson.core.SerializableString;
 import com.fasterxml.jackson.core.io.CharacterEscapes;

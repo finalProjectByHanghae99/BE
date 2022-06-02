@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.sse.controller;
 
 
-import com.hanghae99.finalproject.exception.StatusResponseDto;
+import com.hanghae99.finalproject.common.exception.StatusResponseDto;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.sse.dto.NotificationCountDto;
 import com.hanghae99.finalproject.sse.dto.NotificationDto;

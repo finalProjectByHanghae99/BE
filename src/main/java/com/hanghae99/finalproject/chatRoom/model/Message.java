@@ -2,9 +2,9 @@ package com.hanghae99.finalproject.chatRoom.model;
 
 import com.hanghae99.finalproject.chatRoom.dto.MessageDto;
 import com.hanghae99.finalproject.chatRoom.repository.RoomRepository;
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.CustomException;
-import com.hanghae99.finalproject.timeConversion.TimeStamped;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.CustomException;
+import com.hanghae99.finalproject.common.timeConversion.TimeStamped;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.Builder;

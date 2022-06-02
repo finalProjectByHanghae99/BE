@@ -4,9 +4,8 @@ import com.hanghae99.finalproject.comment.dto.CommentCreateResponseDto;
 import com.hanghae99.finalproject.comment.dto.CommentRequestDto;
 import com.hanghae99.finalproject.comment.model.Comment;
 import com.hanghae99.finalproject.comment.repository.CommentRepository;
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.CustomException;
-import com.hanghae99.finalproject.mail.dto.MailDto;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.CustomException;
 import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
@@ -16,12 +15,9 @@ import com.hanghae99.finalproject.sse.service.NotificationService;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Objects;
 

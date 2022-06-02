@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.aop;
+package com.hanghae99.finalproject.common.aop;
 
 
 import java.lang.annotation.ElementType;

@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.aop;
+package com.hanghae99.finalproject.common.aop;
 
 
 import lombok.extern.slf4j.Slf4j;

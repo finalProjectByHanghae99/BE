@@ -1,9 +1,9 @@
 package com.hanghae99.finalproject.post.model;
 
 import com.hanghae99.finalproject.comment.model.Comment;
-import com.hanghae99.finalproject.img.Img;
+import com.hanghae99.finalproject.img.model.Img;
 import com.hanghae99.finalproject.post.dto.PostDto;
-import com.hanghae99.finalproject.timeConversion.TimeStamped;
+import com.hanghae99.finalproject.common.timeConversion.TimeStamped;
 import com.hanghae99.finalproject.user.model.Major;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.model.UserApply;

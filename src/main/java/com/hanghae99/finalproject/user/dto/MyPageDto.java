@@ -1,14 +1,12 @@
 package com.hanghae99.finalproject.user.dto;
 
 
-import com.hanghae99.finalproject.img.ImgUrlDto;
+import com.hanghae99.finalproject.img.dto.ImgUrlDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
-import com.hanghae99.finalproject.user.model.UserApply;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 
 public class MyPageDto {

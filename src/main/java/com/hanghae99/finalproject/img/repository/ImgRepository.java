@@ -1,5 +1,6 @@
-package com.hanghae99.finalproject.img;
+package com.hanghae99.finalproject.img.repository;
 
+import com.hanghae99.finalproject.img.model.Img;
 import com.hanghae99.finalproject.post.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 

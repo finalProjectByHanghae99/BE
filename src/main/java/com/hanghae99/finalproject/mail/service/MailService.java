@@ -1,11 +1,11 @@
 package com.hanghae99.finalproject.mail.service;
 
-import com.hanghae99.finalproject.exception.CustomException;
-import com.hanghae99.finalproject.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.CustomException;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
 import com.hanghae99.finalproject.mail.dto.MailDto;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.repository.UserRepository;
-import com.hanghae99.finalproject.validator.MailValidator;
+import com.hanghae99.finalproject.common.validator.MailValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;

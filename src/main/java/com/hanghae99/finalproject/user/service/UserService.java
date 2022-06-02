@@ -1,8 +1,8 @@
 package com.hanghae99.finalproject.user.service;
 
-import com.hanghae99.finalproject.exception.CustomException;
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.StatusResponseDto;
+import com.hanghae99.finalproject.common.exception.CustomException;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.StatusResponseDto;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.security.jwt.JwtReturn;
 import com.hanghae99.finalproject.security.jwt.JwtTokenProvider;
@@ -13,14 +13,13 @@ import com.hanghae99.finalproject.user.model.RefreshToken;
 import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.repository.RefreshTokenRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
-import com.hanghae99.finalproject.validator.UserValidator;
+import com.hanghae99.finalproject.common.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.color.ProfileDataException;
 import java.util.HashMap;
 import java.util.Map;
 

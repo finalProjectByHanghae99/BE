@@ -1,10 +1,10 @@
-package com.hanghae99.finalproject.img;
+package com.hanghae99.finalproject.img.service;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.hanghae99.finalproject.exception.CustomException;
-import com.hanghae99.finalproject.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.CustomException;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
+import com.hanghae99.finalproject.img.dto.ImgDto;
 import lombok.RequiredArgsConstructor;
-import net.coobird.thumbnailator.Thumbnails;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

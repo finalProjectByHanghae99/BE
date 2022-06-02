@@ -1,6 +1,6 @@
 package com.hanghae99.finalproject.post.controller;
 
-import com.hanghae99.finalproject.exception.StatusResponseDto;
+import com.hanghae99.finalproject.common.exception.StatusResponseDto;
 import com.hanghae99.finalproject.post.dto.PostDto;
 import com.hanghae99.finalproject.post.service.PostService;
 import com.hanghae99.finalproject.security.UserDetailsImpl;

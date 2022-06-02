@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.config;
+package com.hanghae99.finalproject.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;

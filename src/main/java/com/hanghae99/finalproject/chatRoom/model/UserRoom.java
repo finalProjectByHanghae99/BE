@@ -1,6 +1,6 @@
 package com.hanghae99.finalproject.chatRoom.model;
 
-import com.hanghae99.finalproject.timeConversion.TimeStamped;
+import com.hanghae99.finalproject.common.timeConversion.TimeStamped;
 import com.hanghae99.finalproject.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

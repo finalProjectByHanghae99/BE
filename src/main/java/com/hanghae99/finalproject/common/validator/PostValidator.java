@@ -1,7 +1,7 @@
-package com.hanghae99.finalproject.validator;
+package com.hanghae99.finalproject.common.validator;
 
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.CustomException;
 import com.hanghae99.finalproject.post.dto.PostDto;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 
