@@ -10,9 +10,8 @@
 
 🚢 **[mohum 서비스 바로가기](https://www.everymohum.com/)**
 
-🎬 **[서비스 시연 영상](https://www.youtube.com/watch?v=T9QGqgg9Y40)**
+🎬 **[서비스 시연 영상](https://youtu.be/flzwczkmAlQ)**
 
-🎤 **[발표 영상](https://www.youtube.com/watch?v=7CAoUo4Ma4c&t=3s)**
 
 <br />
 
