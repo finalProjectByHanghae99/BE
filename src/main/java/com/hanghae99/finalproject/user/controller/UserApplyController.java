@@ -1,11 +1,8 @@
 package com.hanghae99.finalproject.user.controller;
 
-import com.hanghae99.finalproject.exception.StatusResponseDto;
-import com.hanghae99.finalproject.mail.dto.MailDto;
-import com.hanghae99.finalproject.mail.service.MailService;
+import com.hanghae99.finalproject.common.exception.StatusResponseDto;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.user.dto.UserApplyRequestDto;
-import com.hanghae99.finalproject.user.model.UserApply;
 import com.hanghae99.finalproject.user.service.UserApplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

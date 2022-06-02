@@ -1,6 +1,6 @@
 package com.hanghae99.finalproject.mail.controller;
 
-import com.hanghae99.finalproject.exception.StatusResponseDto;
+import com.hanghae99.finalproject.common.exception.StatusResponseDto;
 import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.user.model.User;

@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.timeConversion;
+package com.hanghae99.finalproject.common.timeConversion;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

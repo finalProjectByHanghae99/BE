@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.img;
+package com.hanghae99.finalproject.img.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;

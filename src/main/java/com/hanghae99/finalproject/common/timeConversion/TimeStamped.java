@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.timeConversion;
+package com.hanghae99.finalproject.common.timeConversion;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

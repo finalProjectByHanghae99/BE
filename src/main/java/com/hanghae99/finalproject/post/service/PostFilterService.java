@@ -1,14 +1,12 @@
 package com.hanghae99.finalproject.post.service;
 
-import com.hanghae99.finalproject.img.ImgRepository;
-import com.hanghae99.finalproject.img.ImgResponseDto;
+import com.hanghae99.finalproject.img.dto.ImgResponseDto;
 import com.hanghae99.finalproject.post.dto.PostAllResponseDto;
 import com.hanghae99.finalproject.post.dto.PostFilterRequestDto;
 import com.hanghae99.finalproject.post.dto.PostFilterResponseDto;
 import com.hanghae99.finalproject.post.model.Post;
 import com.hanghae99.finalproject.post.repository.PostRepository;
 import com.hanghae99.finalproject.user.dto.MajorDto;
-import com.hanghae99.finalproject.user.repository.MajorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

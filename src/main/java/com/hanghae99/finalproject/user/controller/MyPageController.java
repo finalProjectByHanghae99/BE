@@ -2,8 +2,8 @@ package com.hanghae99.finalproject.user.controller;
 
 import com.hanghae99.finalproject.user.dto.AcceptedDto;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.ExceptionResponse;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.ExceptionResponse;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.user.dto.RejectDto;
 import com.hanghae99.finalproject.user.service.MyPageService;

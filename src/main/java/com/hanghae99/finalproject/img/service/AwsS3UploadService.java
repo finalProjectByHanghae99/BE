@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.img;
+package com.hanghae99.finalproject.img.service;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

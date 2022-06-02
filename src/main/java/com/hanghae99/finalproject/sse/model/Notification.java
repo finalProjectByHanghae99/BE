@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.sse.model;
 
 
-import com.hanghae99.finalproject.timeConversion.TimeStamped;
+import com.hanghae99.finalproject.common.timeConversion.TimeStamped;
 import com.hanghae99.finalproject.user.model.User;
 import lombok.Builder;
 import lombok.Getter;

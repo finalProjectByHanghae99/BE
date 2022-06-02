@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.exception;
+package com.hanghae99.finalproject.common.exception;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

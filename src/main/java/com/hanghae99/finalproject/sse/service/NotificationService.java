@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.sse.service;
 
-import com.hanghae99.finalproject.exception.CustomException;
-import com.hanghae99.finalproject.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.CustomException;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.sse.dto.NotificationCountDto;
 import com.hanghae99.finalproject.sse.dto.NotificationDto;

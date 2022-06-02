@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.exception;
+package com.hanghae99.finalproject.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
