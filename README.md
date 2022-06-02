@@ -96,7 +96,7 @@
 <br />
 
 ## 🎈 LINK  
-📔  **[노션 링크]( https://maroon-borogovia-266.notion.site/55e2db12612549328acae676de9c9a60)**
+📔  **[노션 링크](https://www.notion.so/9b37170f94b24694aded918592b5ee3d)**
 
 <br />
 
