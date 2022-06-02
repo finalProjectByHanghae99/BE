@@ -64,20 +64,12 @@
  
  <br />
 
-## 👥 팀 소개
+## 👥 백엔드 팀원 소개
 
-#### `Frontend`
- <a href="https://github.com/tty5799" target="_blank"><img height="40"  src="https://img.shields.io/static/v1?label=React&message=윤성용 (팀장) &color=61dafb&style=for-the-badge&>"/></a>
- <a href="https://github.com/losajjang" target="_blank"><img height="40"  src="https://img.shields.io/static/v1?label=React&message=박재민 &color=61dafb&style=for-the-badge&>"/></a>
 
 #### `Backend`
 <a href="https://github.com/kwongyumin" target="_blank"><img height="40"  src="https://img.shields.io/static/v1?label=Spring&message=권규민 (부팀장) &color=08CE5D&style=for-the-badge&>"/></a>
 <a href="https://github.com/hyemco" target="_blank"><img height="40"  src="https://img.shields.io/static/v1?label=Spring&message=유혜민 &color=08CE5D&style=for-the-badge&>"/></a>
-
-
-#### `Designer`
- <img height="40"  src="https://img.shields.io/static/v1?label=Design&message=김정선 &color=FF7F50&style=for-the-badge&>"/></a>
- <img height="40"  src="https://img.shields.io/static/v1?label=Design&message=마은민 &color=FF7F50&style=for-the-badge&>"/></a>
 
 <br />
 
@@ -93,24 +85,15 @@
 
 <br />
 
+## ERD 설계
+<img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/275e4e34-6c62-4d2c-b33e-80e82c5f305e/drawSQL-export-2022-06-01_23_39_1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220602%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220602T065919Z&X-Amz-Expires=86400&X-Amz-Signature=101f7238d712175908f3003a2ce8d96663fc250c0b322bb1d83b6b49cb106242&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22drawSQL-export-2022-06-01_23_39%25201.png%22&x-id=GetObject">
+
+<br />
 
 ## 🎈 LINK  
 📔  **[노션 링크]( https://maroon-borogovia-266.notion.site/55e2db12612549328acae676de9c9a60)**
 
 <br />
-
-## 🛠 Tech Stack
-**Frontend Tech Stack**  
-![리액트](https://user-images.githubusercontent.com/97425158/161745107-cc062718-9c52-4446-8f14-9faba0b9dea7.svg)
-![자바스크립트](https://user-images.githubusercontent.com/97425158/161745127-a3fa5ed0-ceb6-427a-94d1-834d762fd3b4.svg)
-![에이치티엠엘](https://user-images.githubusercontent.com/97425158/161745161-566f015b-0ec2-4bba-82aa-f3bb7498bdd7.svg)
-![씨에스에스](https://user-images.githubusercontent.com/97425158/161745198-92ff3896-7ce0-4946-a8b4-e6d23223eb3b.svg)
-![리덕스](https://user-images.githubusercontent.com/97425158/161745222-ea0ba9bf-86e4-48cb-8a44-f8d8bfec2d02.svg)
-![악시오스](https://user-images.githubusercontent.com/97425158/161745239-453b4075-7bd0-4c63-9c5a-5c1d76021b8d.svg)
-![스타일드컴포넌트](https://user-images.githubusercontent.com/97425158/161745269-27a8a71d-788d-4bdf-97e8-f86c97b224a9.svg)
-![클라우드프론트](https://user-images.githubusercontent.com/97425158/161745404-114d6c7d-c720-4370-b0dd-4aea4893bb1d.svg)
-![아마존S3](https://user-images.githubusercontent.com/97425158/161744999-3ae8a4d1-48d8-41fc-af06-c601f6e1fc4d.svg)
-
 
 **Backend Tech Stack**  
 <img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=java&logoColor=white">
