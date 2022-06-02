@@ -85,8 +85,13 @@
 
 <br />
 
-## 📜 ERD 설계
-<img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/275e4e34-6c62-4d2c-b33e-80e82c5f305e/drawSQL-export-2022-06-01_23_39_1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220602%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220602T065919Z&X-Amz-Expires=86400&X-Amz-Signature=101f7238d712175908f3003a2ce8d96663fc250c0b322bb1d83b6b49cb106242&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22drawSQL-export-2022-06-01_23_39%25201.png%22&x-id=GetObject" width="600px">
+<details>
+<summary>## 📜 ERD 설계</summary>
+<div markdown="1">
+<img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/275e4e34-6c62-4d2c-b33e-80e82c5f305e/drawSQL-export-2022-06-01_23_39_1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220602%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220602T065919Z&X-Amz-Expires=86400&X-Amz-Signature=101f7238d712175908f3003a2ce8d96663fc250c0b322bb1d83b6b49cb106242&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22drawSQL-export-2022-06-01_23_39%25201.png%22&x-id=GetObject" width="700px">
+
+</div>
+</details>
 
 <br />
 
