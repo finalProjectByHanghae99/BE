@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.security.jwt;
 
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.CustomException;
 import com.hanghae99.finalproject.user.model.User;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +19,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.hanghae99.finalproject.user.model.QMajor.major;
 
 @Slf4j
 @RequiredArgsConstructor

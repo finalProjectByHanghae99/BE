@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.img;
+package com.hanghae99.finalproject.img.model;
 
 import com.hanghae99.finalproject.post.model.Post;
 import lombok.*;

@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.sse.service;
 
-import com.hanghae99.finalproject.exception.CustomException;
-import com.hanghae99.finalproject.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.CustomException;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.sse.dto.NotificationCountDto;
 import com.hanghae99.finalproject.sse.dto.NotificationDto;
@@ -39,6 +39,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
 
     public SseEmitter subscribe(Long userId, String lastEventId) {
+        //emitter 하나하나 에 고유의 값을 주기 위해
         String emitterId = makeTimeIncludeId(userId);
 
         Long timeout = 60L * 1000L * 60L; // 1시간

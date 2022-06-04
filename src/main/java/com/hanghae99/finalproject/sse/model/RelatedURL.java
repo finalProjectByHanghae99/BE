@@ -1,8 +1,8 @@
 package com.hanghae99.finalproject.sse.model;
 
 
-import com.hanghae99.finalproject.exception.CustomException;
-import com.hanghae99.finalproject.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.CustomException;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

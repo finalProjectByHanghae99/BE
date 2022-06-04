@@ -1,4 +1,4 @@
-package com.hanghae99.finalproject.config;
+package com.hanghae99.finalproject.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -11,7 +11,7 @@ import java.util.concurrent.Executor;
 @Configuration
 public class AsyncConfig implements AsyncConfigurer {
 
-    @Override // 비동기 처리 설정 / SSE 리스너에 필요함
+    @Override // 비동기 처리 설정 / 이벤트 리스너에도 적용
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         taskExecutor.setCorePoolSize(3);
@@ -22,3 +22,5 @@ public class AsyncConfig implements AsyncConfigurer {
         return taskExecutor;
     }
 }
+
+

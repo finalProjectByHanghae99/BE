@@ -1,6 +1,6 @@
 package com.hanghae99.finalproject.post.repository;
 
-import com.hanghae99.finalproject.img.ImgResponseDto;
+import com.hanghae99.finalproject.img.dto.ImgResponseDto;
 import com.hanghae99.finalproject.img.QImgResponseDto;
 import com.hanghae99.finalproject.post.dto.PostFilterRequestDto;
 import com.hanghae99.finalproject.post.dto.PostFilterResponseDto;

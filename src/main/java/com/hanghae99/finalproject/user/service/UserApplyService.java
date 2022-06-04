@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.user.service;
 
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.CustomException;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.CustomException;
 import com.hanghae99.finalproject.mail.dto.MailDto;
 import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
@@ -18,8 +18,6 @@ import com.hanghae99.finalproject.user.repository.MajorRepository;
 import com.hanghae99.finalproject.user.repository.UserApplyRepository;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;

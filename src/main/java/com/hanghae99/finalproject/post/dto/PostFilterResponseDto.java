@@ -1,6 +1,6 @@
 package com.hanghae99.finalproject.post.dto;
 
-import com.hanghae99.finalproject.img.ImgResponseDto;
+import com.hanghae99.finalproject.img.dto.ImgResponseDto;
 import com.hanghae99.finalproject.post.model.CurrentStatus;
 import com.hanghae99.finalproject.user.dto.MajorDto;
 import com.querydsl.core.annotations.QueryProjection;

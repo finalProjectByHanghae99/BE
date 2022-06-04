@@ -1,11 +1,11 @@
 package com.hanghae99.finalproject.user.service;
 
-import com.hanghae99.finalproject.exception.CustomException;
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.img.AwsS3UploadService;
-import com.hanghae99.finalproject.img.FileUploadService;
-import com.hanghae99.finalproject.img.ImgDto;
-import com.hanghae99.finalproject.img.ImgUrlDto;
+import com.hanghae99.finalproject.common.exception.CustomException;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
+import com.hanghae99.finalproject.img.service.AwsS3UploadService;
+import com.hanghae99.finalproject.img.service.FileUploadService;
+import com.hanghae99.finalproject.img.dto.ImgDto;
+import com.hanghae99.finalproject.img.dto.ImgUrlDto;
 import com.hanghae99.finalproject.mail.dto.MailDto;
 import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.post.model.CurrentStatus;

@@ -1,19 +1,18 @@
 package com.hanghae99.finalproject.user.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.ExceptionResponse;
-import com.hanghae99.finalproject.exception.StatusResponseDto;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.ExceptionResponse;
+import com.hanghae99.finalproject.common.exception.StatusResponseDto;
 import com.hanghae99.finalproject.mail.service.MailService;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.security.jwt.TokenDto;
 import com.hanghae99.finalproject.security.jwt.TokenRequestDto;
 import com.hanghae99.finalproject.user.dto.*;
-import com.hanghae99.finalproject.user.model.User;
 import com.hanghae99.finalproject.user.repository.UserRepository;
 import com.hanghae99.finalproject.user.service.KakaoUserService;
 import com.hanghae99.finalproject.user.service.UserService;
-import com.hanghae99.finalproject.validator.UserValidator;
+import com.hanghae99.finalproject.common.validator.UserValidator;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,8 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
-import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor

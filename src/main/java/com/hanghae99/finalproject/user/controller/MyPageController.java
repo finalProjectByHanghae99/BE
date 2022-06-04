@@ -2,8 +2,8 @@ package com.hanghae99.finalproject.user.controller;
 
 import com.hanghae99.finalproject.user.dto.AcceptedDto;
 import com.hanghae99.finalproject.user.dto.MyPageDto;
-import com.hanghae99.finalproject.exception.ErrorCode;
-import com.hanghae99.finalproject.exception.ExceptionResponse;
+import com.hanghae99.finalproject.common.exception.ErrorCode;
+import com.hanghae99.finalproject.common.exception.ExceptionResponse;
 import com.hanghae99.finalproject.security.UserDetailsImpl;
 import com.hanghae99.finalproject.user.dto.RejectDto;
 import com.hanghae99.finalproject.user.service.MyPageService;
@@ -37,6 +37,7 @@ public class MyPageController {
     }
 
 
+    @ApiOperation(value = "회원 정보 수정",notes = "특정 회원의 정보를 수정한다.")
     @PatchMapping("/user/info/{userId}/modify")
     public ResponseEntity<ExceptionResponse> userInfoModify(@PathVariable Long userId,
                                                             @RequestPart MyPageDto.RequestDto requestDto,
