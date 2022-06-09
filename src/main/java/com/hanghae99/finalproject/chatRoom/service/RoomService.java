@@ -71,7 +71,7 @@ public class RoomService {
             }
         }
 
-        /* 대화하고 있던 방이 없다면 여기부터 새로운 방정보 생성*/
+        // 대화하고 있던 방이 없다면 여기부터 새로운 방정보 생성
         String roomName = UUID.randomUUID().toString();
 
         //방생성
@@ -89,7 +89,6 @@ public class RoomService {
                 .user(user)
                 .toUser(toUser)
                 .lastMessageId(null)
-                .count(0)
                 .build();
         userRoomRepository.save(userRoom);
 
@@ -99,7 +98,6 @@ public class RoomService {
                 .user(toUser)
                 .toUser(user)
                 .lastMessageId(null)
-                .count(0)
                 .build();
         userRoomRepository.save(toUserRoom);
 
@@ -190,25 +188,13 @@ public class RoomService {
             ChatRoomDto chatRoomDto;
             //현재 방이름, 모집글 pk , 유저정보 , 마지막메시지 , 카운트 ,
             //모집글이 없더라도 , 채팅방은 남겨둔다.
-            if (post == null) {
-                chatRoomDto = ChatRoomDto.builder()
-                        .roomName(userRoom.getRoom().getRoomName())
-                        .postId(userRoom.getRoom().getRoomPostId())
-                        .user(chatUserDto)
-                        .lastMessage(lastMessageDto)
-                        .lastMessageTime(lastMessageDto.getCreatedAt())
-                        .notReadingMessageCount(userRoom.getCount())
-                        .build();
-            } else {
-                chatRoomDto = ChatRoomDto.builder()
-                        .roomName(userRoom.getRoom().getRoomName())
-                        .postId(userRoom.getRoom().getRoomPostId())
-                        .user(chatUserDto)
-                        .lastMessage(lastMessageDto)
-                        .lastMessageTime(lastMessageDto.getCreatedAt())
-                        .notReadingMessageCount(userRoom.getCount())
-                        .build();
-            }
+            chatRoomDto = ChatRoomDto.builder()
+                    .roomName(userRoom.getRoom().getRoomName())
+                    .postId(userRoom.getRoom().getRoomPostId())
+                    .user(chatUserDto)
+                    .lastMessage(lastMessageDto)
+                    .lastMessageTime(lastMessageDto.getCreatedAt())
+                    .build();
             chatRoomDtos.add(chatRoomDto);
         }
         return chatRoomDtos.stream().sorted(Comparator.comparing(ChatRoomDto::getLastMessageTime).reversed())

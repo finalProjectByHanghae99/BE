@@ -35,19 +35,19 @@ public class UserRoom extends TimeStamped {
     @Column
     private Long lastMessageId;
 
-    @Column(nullable = false)
-    private int count;
+//    @Column(nullable = false)
+//    private int count;
 
     public void lastMessageIdChange(Long Id){
         this.lastMessageId = Id;
     }
 
-    public void countChange(){
-        this.count = this.count+1;
-    }
-
-    public void countInit(){
-        this.count = 0;
-    }
+//    public void countChange(){
+//        this.count = this.count+1;
+//    }
+//
+//    public void countInit(){
+//        this.count = 0;
+//    }
 
 }
