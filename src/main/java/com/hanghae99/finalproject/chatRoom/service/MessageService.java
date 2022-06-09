@@ -206,7 +206,7 @@ public class MessageService {
         );
         UserRoom userRoom = userRoomRepository.findByRoomAndUser(room,user);
         //해당 유저방에 카운팅 -> 0
-        userRoom.countInit();
+       // userRoom.countInit();
         return room;
 
     }
@@ -224,6 +224,6 @@ public class MessageService {
 
         UserRoom userRoom = userRoomRepository.findByRoomAndUser(room, user);
 
-        userRoom.countChange();
+       // userRoom.countChange();
     }
 }

@@ -31,7 +31,8 @@ public class RoomController {
 
     //1. 방 생성 api -> '모집글' pk 와 '모집글'작성 유저의 pk를 받아온다.
     @PostMapping("/api/room")
-    public RoomDto.Response roomCreate(@RequestBody RoomDto.Request roomDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws MessagingException {
+    public RoomDto.Response roomCreate(@RequestBody RoomDto.Request roomDto,
+                                       @AuthenticationPrincipal UserDetailsImpl userDetails) throws MessagingException {
         return roomService.createRoomService(roomDto, userDetails);
     }
 

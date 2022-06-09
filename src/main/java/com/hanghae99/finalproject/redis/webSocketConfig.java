@@ -32,7 +32,4 @@ public class webSocketConfig implements WebSocketMessageBrokerConfigurer {
         // 구독 요청의 prefix /sub 으로 시작 하도록 설정
         // 현재 엔드포인트 -> /webSocket
     }
-
-
-
 }
