@@ -25,12 +25,6 @@ public class MessageController {
     @MessageMapping("/message")
     public void message(@RequestBody MessageDto messageDto){
         messageService.sendMessage(messageDto);
-
-    }
-
-    @PostMapping("/api/roomcount")
-    public void updateCount(@RequestBody RoomDto.UpdateCountDto updateCountDto){
-        messageService.updateRoomMessageCount(updateCountDto);
     }
 
     //발행된 메시지 조회
@@ -38,7 +32,7 @@ public class MessageController {
     public MessageListDto showMessageList(@RequestBody RoomDto.findRoomDto roomDto,
                                           @PageableDefault(size = 200, sort = "createdAt") Pageable pageable,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails
-    ){
+    ) {
         return messageService.showMessageList(roomDto, pageable,userDetails);
     }
 

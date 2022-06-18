@@ -36,14 +36,6 @@ public class Message extends TimeStamped {
     @JoinColumn(name = "room_id")
     private Room room; // 현재 방 정보
 
-    @Builder
-    public Message(Long id, User user, String content, MessageType messageType, Room room) {
-        this.id = id;
-        this.user = user;
-        this.content = content;
-        this.messageType = messageType;
-        this.room = room;
-    }
 
     @Builder
     public Message(MessageDto sendMessageDto, UserRepository userRepository, RoomRepository roomRepository) {

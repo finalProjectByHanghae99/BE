@@ -26,7 +26,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods("*");
     }
 
-
     @Bean
     public TomcatContextCustomizer sameSiteCookiesConfig() {
         return context -> {
