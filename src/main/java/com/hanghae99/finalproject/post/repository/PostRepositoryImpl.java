@@ -1,7 +1,7 @@
 package com.hanghae99.finalproject.post.repository;
 
 import com.hanghae99.finalproject.img.dto.ImgResponseDto;
-import com.hanghae99.finalproject.img.QImgResponseDto;
+import com.hanghae99.finalproject.img.dto.QImgResponseDto;
 import com.hanghae99.finalproject.post.dto.PostFilterRequestDto;
 import com.hanghae99.finalproject.post.dto.PostFilterResponseDto;
 import com.hanghae99.finalproject.post.dto.QPostFilterResponseDto;
@@ -22,7 +22,8 @@ import org.springframework.data.support.PageableExecutionUtils;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.hanghae99.finalproject.img.QImg.img;
+
+import static com.hanghae99.finalproject.img.model.QImg.img;
 import static com.hanghae99.finalproject.post.model.QPost.post;
 import static com.hanghae99.finalproject.user.model.QMajor.major;
 import static org.springframework.util.StringUtils.hasText;

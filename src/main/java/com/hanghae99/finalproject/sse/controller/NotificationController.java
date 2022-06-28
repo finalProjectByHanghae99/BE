@@ -21,7 +21,6 @@ public class NotificationController {
 
 
     private final NotificationService notificationService;
-
     // MIME TYPE - text/event-stream 형태로 받아야함.
     // 클라이어트로부터 오는 알림 구독 요청을 받는다.
     // 로그인한 유저는 SSE 연결
@@ -34,7 +33,6 @@ public class NotificationController {
 
         return notificationService.subscribe(userDetails.getUser().getId(),lastEventId);
     }
-
 
     //알림조회
     @GetMapping(value = "/notifications")
