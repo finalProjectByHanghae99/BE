@@ -41,7 +41,7 @@
  
   <img src="https://velog.velcdn.com/images/tty5799/post/6d8c53af-300f-4aeb-bbac-655b90f74cb5/image.png" width="60%" >
  
- [WebSocket / Stomp pub/sub] 을 활용한 실시간 데이터 전송으로 유저간 1: 1 채팅 기능을 구현했습니다.
+ [WebSocket / Redis pub/sub] 을 활용한 실시간 데이터 전송으로 유저간 1: 1 채팅 기능을 구현했습니다.
  
  
  
